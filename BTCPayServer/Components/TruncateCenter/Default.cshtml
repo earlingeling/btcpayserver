@@ -5,12 +5,12 @@
     @if (Model.Copy) classes += " truncate-center--copy";
     @if (Model.Elastic) classes += " truncate-center--elastic";
 }
-<span class="truncate-center @classes">
+<span class="truncate-center @classes" data-text="@Model.Text" data-padding="@Model.Padding">
     @if (Model.IsVue)
     {
         <span class="truncate-center-truncated" data-bs-toggle="tooltip" :title=@Safe.Json(Model.Text)>
-            <span class="truncate-center-start" v-text=@Safe.Json(Model.Text) v-if="Model.Text.length > Model.Padding"></span>
-            <span class="truncate-center-end" v-text=@Safe.Json($"{Model.Text}.slice(-{Model.Padding})") v-if="Model.Text.length > Model.Padding"></span>
+            <span class="truncate-center-start" v-text=@Safe.Json(Model.Text) v-if="$el.getAttribute('data-text').length > parseInt($el.getAttribute('data-padding'))"></span>
+            <span class="truncate-center-end" v-text=@Safe.Json($"{Model.Text}.slice(-{Model.Padding})") v-if="$el.getAttribute('data-text').length > parseInt($el.getAttribute('data-padding'))"></span>
         </span>
         <span class="truncate-center-text" v-text=@Safe.Json(Model.Text) v-else></span>
     }
