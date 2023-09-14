@@ -8,7 +8,7 @@
     <div class="payment-box">
         <div v-if="model.btcDue" class="input-group mt-3">
             <div class="form-floating" id="Due_@Model.PaymentMethodId">
-                <vc text="model.btcDue" is-vue="true" padding="15" elastic="true" classes="form-control-plaintext" />
+                <vc:truncate-right text="model.btcDue" is-vue="true" padding="15" elastic="true" classes="form-control-plaintext" />
                 <label v-t="{ path: 'amount_due', args: { paymentMethod: model.paymentMethodName }}"></label>
             </div>
         </div>
