@@ -94,9 +94,8 @@
                         :show-recommended-fee="showRecommendedFee"
                         class="pb-4" />
                 </div>
-
                 
-@if (displayedPaymentMethods.Count > 1 || hasPaymentPlugins)
+                @if (displayedPaymentMethods.Count > 1 || hasPaymentPlugins)
                 {
                     <div class="mt-3 mb-2">
                         <h6 class="text-center mb-3" v-t="'pay_with'"></h6>
@@ -115,7 +114,7 @@
                     </div>
                 }
                 <component v-if="paymentMethodComponent" :is="paymentMethodComponent" :model="srvModel" />
-
+            </section>
 <!-- About Payment start -->
 <div class="intro mt-1 mb-2">
 <h4 class="mt-1 text-center">
