@@ -27,6 +27,8 @@
     <partial name="LayoutHead"/>
     <meta name="robots" content="noindex,nofollow">
     <link href="~/checkout-v2/checkout.css" asp-append-version="true" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" crossorigin="anonymous" />
     <partial name="LayoutHeadStoreBranding" model="@(Model.BrandColor, Model.CssFileId, "", "")" />
     @if (!string.IsNullOrEmpty(Model.PaymentSoundUrl))
     {
@@ -46,7 +48,6 @@
 		@if (Model.ShowStoreHeader)
 		{
 			<partial name="_StoreHeader" model="(Model.StoreName, Model.LogoFileId)" />
-            HELLO THIS IS A TEST!
 		}
 		<main class="shadow-lg">
             <nav v-if="isModal">
@@ -54,6 +55,7 @@
                     <vc:icon symbol="close"/>
                 </button>
             </nav>
+            <select id="languageSelect" asp-for="DefaultLang" asp-items="@LangService.GetLanguageSelectListItems()" class="form-select mt-3 mx-auto" v-on:change="changeLanguage" style="width: auto;"></select>
             <section id="payment" v-if="isActive">
                 <div class="d-flex justify-content-center mt-1 text-center">
                     @if (Model.IsUnsetTopUp)
@@ -232,7 +234,6 @@
         }
         <footer class="store-footer">
             <a class="store-powered-by" href="https://btcpayserver.org" target="_blank" rel="noreferrer noopener">
-                HELLO THIS IS A TEST!
                 {{$t("powered_by")}} <partial name="_StoreFooterLogo" />
             </a>
             <select asp-for="DefaultLang" asp-items="@LangService.GetLanguageSelectListItems()" class="form-select" v-on:change="changeLanguage"></select>
