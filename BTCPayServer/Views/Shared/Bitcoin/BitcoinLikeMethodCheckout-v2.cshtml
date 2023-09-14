@@ -8,8 +8,12 @@
     <div class="payment-box">
         <div v-if="model.btcDue" class="input-group mt-3">
             <div class="form-floating">
-                <input id="BtcDue_@Model.PaymentMethodId" class="form-control-plaintext" readonly="readonly" :value="model.btcDue + ' BTC'">
-                <label for="BtcDue_@Model.PaymentMethodId" v-t="{ path: 'amount_due', args: { paymentMethod: model.paymentMethodName }}"></label>
+                <!-- Visible input with "BTC" appended -->
+                <input id="BtcDue_Display_@Model.PaymentMethodId" class="form-control-plaintext" readonly="readonly" :value="model.btcDue + ' BTC'">
+                <label for="BtcDue_Display_@Model.PaymentMethodId" v-t="{ path: 'amount_due', args: { paymentMethod: model.paymentMethodName }}"></label>
+                
+                <!-- Hidden input for copying -->
+                <input type="hidden" id="BtcDue_@Model.PaymentMethodId" :value="model.btcDue">
             </div>
             <!-- Copy BTC Due Button -->
             <button type="button" class="btn btn-link p-0" data-clipboard-target="#BtcDue_@Model.PaymentMethodId" :data-clipboard-confirm="$t('copy_confirm')">
