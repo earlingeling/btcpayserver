@@ -6,6 +6,10 @@
 <template id="bitcoin-method-checkout-template">
     @await Component.InvokeAsync("UiExtensionPoint", new {location = "checkout-v2-bitcoin-pre-content", model = Model})
     <div class="payment-box">
+        <div v-if="model.btcDue" class="input-group mt-3">
+            <input id="BtcDue_@Model.PaymentMethodId" class="form-control-plaintext" readonly="readonly" :value="model.btcDue">
+            <label for="BtcDue_@Model.PaymentMethodId" v-t="{ path: 'amount_due', args: { paymentMethod: model.paymentMethodName }}"></label>
+        </div>
         <div v-if="model.btcAddress" class="input-group mt-3">
             <div class="form-floating" id="Address_@Model.PaymentMethodId">
                 <vc:truncate-center text="model.btcAddress" is-vue="true" padding="15" elastic="true" classes="form-control-plaintext" />
