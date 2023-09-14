@@ -189,7 +189,3 @@ section dl > div dd {
 .payment-box .plugins > .payment {
     margin-top: var(--btcpay-space-l);
 }
-
-.header-lang-select {
-    width: 80px;
-}
