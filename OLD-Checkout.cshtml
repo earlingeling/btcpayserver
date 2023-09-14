@@ -44,7 +44,7 @@
     <div id="Checkout-v2" class="public-page-wrap" v-cloak>
         <partial name="_StoreHeader" model="(Model.StoreName, Model.LogoFileId)" />
         <main class="shadow-lg">
-        <div id="SelectLanguage" class="text-center mt-3"><b>{{$t('select_language')}}</b>
+        <div id="SelectLanguage" class="text-center mt-3"><b>{{$t('select_language')}}</b>  
         <select id="languageSelect" asp-for="DefaultLang" asp-items="@LangService.GetLanguageSelectListItems()" class="form-select mt-3 mx-auto" v-on:change="changeLanguage" style="width: auto;"></select>
             <nav v-if="isModal">
                 <button type="button" v-if="isModal" id="close" v-on:click="close">
