@@ -66,7 +66,6 @@
                         <h2 id="AmountDue" v-text="`${srvModel.btcDue} ${srvModel.cryptoCode}`" :data-clipboard="srvModel.btcDue" data-clipboard-hover :data-amount-due="srvModel.btcDue">@Model.BtcDue @Model.CryptoCode</h2>
                     }
                 </div>
-                <select asp-for="DefaultLang" asp-items="@LangService.GetLanguageSelectListItems()" class="form-select" v-on:change="changeLanguage"></select>
                 <div id="PaymentInfo" class="info mt-3 mb-2" v-collapsible="showInfo">
                     <div>
                         <div class="timer" v-if="showTimer">
