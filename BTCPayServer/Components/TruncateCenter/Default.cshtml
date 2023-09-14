@@ -9,10 +9,10 @@
     @if (Model.IsVue)
     {
         <span class="truncate-center-truncated" data-bs-toggle="tooltip" :title=@Safe.Json(Model.Text)>
-            <span class="truncate-center-start" v-text=@Safe.Json(Model.Text)></span>
-            <span class="truncate-center-end" v-text=@Safe.Json($"{Model.Text}.slice(-{Model.Padding})")></span>
+            <span class="truncate-center-start" v-text=@Safe.Json(Model.Text) v-if="Model.Text.length > Model.Padding"></span>
+            <span class="truncate-center-end" v-text=@Safe.Json($"{Model.Text}.slice(-{Model.Padding})") v-if="Model.Text.length > Model.Padding"></span>
         </span>
-        <span class="truncate-center-text" v-text=@Safe.Json(Model.Text)></span>
+        <span class="truncate-center-text" v-text=@Safe.Json(Model.Text) v-else></span>
     }
     else
     {
