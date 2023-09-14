@@ -55,7 +55,6 @@
                     <vc:icon symbol="close"/>
                 </button>
             </nav>
-            <select asp-for="DefaultLang" asp-items="@LangService.GetLanguageSelectListItems()" class="form-select" v-on:change="changeLanguage"></select>
             <section id="payment" v-if="isActive">
                 <div class="d-flex justify-content-center mt-1 text-center">
                     @if (Model.IsUnsetTopUp)
@@ -67,6 +66,7 @@
                         <h2 id="AmountDue" v-text="`${srvModel.btcDue} ${srvModel.cryptoCode}`" :data-clipboard="srvModel.btcDue" data-clipboard-hover :data-amount-due="srvModel.btcDue">@Model.BtcDue @Model.CryptoCode</h2>
                     }
                 </div>
+                <select asp-for="DefaultLang" asp-items="@LangService.GetLanguageSelectListItems()" class="form-select" v-on:change="changeLanguage"></select>
                 <div id="PaymentInfo" class="info mt-3 mb-2" v-collapsible="showInfo">
                     <div>
                         <div class="timer" v-if="showTimer">
@@ -93,9 +93,150 @@
                         :btc-due="btcDue"
                         :show-recommended-fee="showRecommendedFee"
                         class="pb-4" />
-
-                    <b>does this show up?</b>
                 </div>
+
+<script>
+function toggleInstructions(button) {
+  var targetId = button.getAttribute("data-target");
+  var target = document.getElementById(targetId);
+  target.hidden = !target.hidden;
+}
+</script>
+
+                <!-- Heading start -->
+<div class="intro mt-1 mb-2">
+<h4 class="mt-1 text-center">
+    {{$t('pmnt_heading_payment')}}
+</h4>
+</div>
+<!-- Heading stop -->
+
+<!-- Introbody start -->
+<div class="intro mt-3 mb-2">
+    {{$t('pmnt_intro')}}
+</div>
+
+<div class="intro mt-3 mb-2">
+    {{$t('pmnt_intro2')}}
+</div>
+<!-- Introbody stop -->
+
+
+<!-- Heading start -->
+<div class="intro mt-1">
+<h4 class="mt-1 text-center">
+    {{$t('pmnt_heading_options')}}
+</h4>
+</div>
+<!-- Heading stop -->
+
+<!-- Coinbase start -->
+<div class="info mt-3 mb-2">
+  <button class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button" onclick="toggleInstructions(this)" data-target="CoinbaseInstructions">
+    <span class="fw-semibold"></span>
+    <vc:icon symbol="caret-down"/>
+    Coinbase
+  </button>
+  <div class="payment-details" id="CoinbaseInstructions" hidden>
+    {{$t('pmnt_guide_moonpay_1')}}<br><br>
+    <a href="https://moonpay.com/buy" target="_new">{{$t('pmnt_guide_moonpay_2')}}</a><br>
+    {{$t('pmnt_guide_moonpay_3')}}<br> 
+    <h5 id="AmountDue" class="mt-1 text-center" v-text="`${srvModel.btcDue} ${srvModel.cryptoCode}`" :data-clipboard="srvModel.btcDue" :data-clipboard-confirm="$t('copy_confirm')" :data-amount-due="srvModel.btcDue">@Model.BtcDue @Model.CryptoCode</h2>
+    {{$t('pmnt_guide_moonpay_4')}}<br>
+    {{$t('pmnt_guide_moonpay_5')}}<br><br>
+    {{$t('pmnt_guide_moonpay_6')}}
+  </div>
+</div>
+<!-- Coinbase end -->
+
+<!-- Moonpay start -->
+<div class="info mt-3 mb-2">
+  <button class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button" onclick="toggleInstructions(this)" data-target="MoonpayInstructions">
+    <span class="fw-semibold"></span>
+    <vc:icon symbol="caret-down"/>
+    Moonpay
+  </button>
+  <div class="payment-details" id="MoonpayInstructions" hidden>
+    {{$t('pmnt_guide_moonpay_1')}}<br><br>
+    <a href="https://moonpay.com/buy" target="_new">{{$t('pmnt_guide_moonpay_2')}}</a><br>
+    {{$t('pmnt_guide_moonpay_3')}}<br> 
+    <h5 id="AmountDue" class="mt-1 text-center" v-text="`${srvModel.btcDue} ${srvModel.cryptoCode}`" :data-clipboard="srvModel.btcDue" :data-clipboard-confirm="$t('copy_confirm')" :data-amount-due="srvModel.btcDue">@Model.BtcDue @Model.CryptoCode</h2>
+    {{$t('pmnt_guide_moonpay_4')}}<br>
+    {{$t('pmnt_guide_moonpay_5')}}<br><br>
+    {{$t('pmnt_guide_moonpay_6')}}
+  </div>
+</div>
+<!-- Moonpay end -->
+
+<!-- Safello start -->
+<div class="info mt-3 mb-2">
+<button class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button" onclick="toggleInstructions(this)" data-target="SafelloInstructions">
+    <span class="fw-semibold"></span>
+    <vc:icon symbol="caret-down"/>
+    Safello (<i class="flag-icon flag-icon-se"></i> only)
+</button>
+<div class="payment-details" id="SafelloInstructions" hidden>
+    Here comes some other text...<br>Lorem ipsum and so on...
+</div>
+</div>
+<!-- Safello end -->
+
+<!-- Firi start -->
+<div class="info mt-3 mb-2">
+  <button class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button" onclick="toggleInstructions(this)" data-target="FiriInstructions">
+    <span class="fw-semibold"></span>
+    <vc:icon symbol="caret-down"/>
+    Firi (<i class="flag-icon flag-icon-no"></i> / <i class="flag-icon flag-icon-dk"></i> only)
+  </button>
+    <div class="payment-details" id="FiriInstructions" hidden>
+        <h6>{{$t('pmnt_guide_advantages')}}:</h6>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><i class="fas fa-check"></i> {{$t('pmnt_guide_advantage_firi_1')}}</li>
+            <li class="list-group-item"><i class="fas fa-check"></i> {{$t('pmnt_guide_advantage_firi_2')}}</li>
+            <li class="list-group-item"><i class="fas fa-check"></i> {{$t('pmnt_guide_advantage_firi_3')}}</li>
+            <li class="list-group-item mb-3"></li>
+        </ul>
+        <h6>{{$t('pmnt_guide_disadvantages')}}:</h6>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><i class="fas fa-times"></i> {{$t('pmnt_guide_disadvantage_firi_1')}}</li>
+            <li class="list-group-item"><i class="fas fa-times"></i> {{$t('pmnt_guide_disadvantage_firi_2')}}</li>
+            <li class="list-group-item"><i class="fas fa-times"></i> {{$t('pmnt_guide_disadvantage_firi_3')}}</li>
+            <li class="list-group-item mb-3"></li>
+        </ul>
+
+        <h6>{{$t('pmnt_heading_about')}} Firi:</h6>
+            <div class="mt-3 mb-2 text-left">
+                {{$t('pmnt_guide_firi_info_1')}}
+            </div>
+
+            <div class="mt-3 mb-2 text-left">
+                {{$t('pmnt_guide_firi_info_2')}}
+            </div>
+
+            <div class="mt-3 mb-3 text-left">
+                {{$t('pmnt_guide_firi_info_3')}}
+            </div>
+
+        <h6>{{$t('pmnt_heading_guide')}}:</h6>
+        <div class="mt-3 mb-2">
+            <ol class="list-group list-group-numbered list-group-flush text-start">
+                <li class="list-group-item">{{$t('pmnt_guide_firi_step_1')}}</li>
+                <li class="list-group-item">{{$t('pmnt_guide_firi_step_2')}}</li>
+                <li class="list-group-item">{{$t('pmnt_guide_firi_step_3')}}</li>
+                <li class="list-group-item">{{$t('pmnt_guide_firi_step_4')}}</li>
+                <li class="list-group-item">{{$t('pmnt_guide_firi_step_5')}}</li>
+                <li class="list-group-item mb-3">{{$t('pmnt_guide_firi_step_6')}}</li>
+            </ol>
+        </div>
+        <h6>{{$t('pmnt_heading_kyc')}}</h6>
+            <div class="mt-3 mb-2 text-left">
+                {{$t('pmnt_guide_firi_kyc_1')}}
+            </div>
+        
+    </div>
+<!-- Firi end -->
+
+
                 @if (displayedPaymentMethods.Count > 1 || hasPaymentPlugins)
                 {
                     <div class="mt-3 mb-2">
