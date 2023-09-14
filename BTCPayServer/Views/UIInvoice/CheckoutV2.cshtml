@@ -95,29 +95,6 @@
                         class="pb-4" />
                 </div>
 
-<!-- Payment details start -->
-                <div id="PaymentInfo" class="info mt-3 mb-2" v-collapsible="showInfo">
-                    <div>
-                        <div class="timer" v-if="showTimer">
-                            <span class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden"></span></span>
-                            <span v-t="'expiry_info'"></span> <span class="expiryTime">{{timeText}}</span>
-                        </div>
-                        <div class="payment-due" v-if="showPaymentDueInfo">
-                            <vc:icon symbol="info"/>
-                            <span v-t="'partial_payment_info'"></span>
-                        </div>
-                        <div v-if="showPaymentDueInfo" v-html="replaceNewlines($t('still_due', { amount: `${srvModel.btcDue} ${srvModel.cryptoCode}` }))"></div>
-                    </div>
-                </div>
-                <button id="DetailsToggle" class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button" :aria-expanded="displayPaymentDetails ? 'true' : 'false'" v-on:click="displayPaymentDetails = !displayPaymentDetails">
-                    <span class="fw-semibold" v-t="'view_details'"></span>
-                    <vc:icon symbol="caret-down"/>
-                </button>
-                <div id="PaymentDetails" class="payment-details" v-collapsible="displayPaymentDetails">
-                    <payment-details :srv-model="srvModel" :is-active="isActive" class="pb-4"></payment-details>
-                </div>
-            <!-- Payment details end -->
-
 <!-- About Payment start -->
 <div class="intro mt-1 mb-2">
 <h4 class="mt-1 text-center">
