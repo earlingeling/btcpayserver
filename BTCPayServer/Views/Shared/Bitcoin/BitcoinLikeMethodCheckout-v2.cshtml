@@ -7,10 +7,11 @@
     @await Component.InvokeAsync("UiExtensionPoint", new {location = "checkout-v2-bitcoin-pre-content", model = Model})
     <div class="payment-box">
         <div v-if="model.btcDue" class="input-group mt-3">
-            <div class="form-floating" id="Due_@Model.PaymentMethodId">
-                <vc:truncate-center text="model.btcDue" is-vue="true" padding="15" elastic="true" classes="form-control-plaintext" />
-                <label v-t="{ path: 'cryptoCode', args: { paymentMethod: model.paymentMethodName }}"></label>
+            <div class="form-floating">
+                <input id="BtcDue_@Model.PaymentMethodId" class="form-control-plaintext" readonly="readonly" :value="model.btcDue">
+                <label for="BtcDue_@Model.PaymentMethodId" v-t="{ path: 'amount_due', args: { paymentMethod: model.paymentMethodName }}"></label>
             </div>
+            <button type="button" class="btn btn-link" data-clipboard-target="#BtcDue_@Model.PaymentMethodId" :data-clipboard-confirm="$t('copy_confirm')" v-t="'copy'"></button>
         </div>
         <div v-if="model.btcAddress" class="input-group mt-3">
             <div class="form-floating" id="Address_@Model.PaymentMethodId">
