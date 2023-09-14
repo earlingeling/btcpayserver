@@ -8,7 +8,7 @@
     <div class="payment-box">
         <div v-if="model.btcDue" class="input-group mt-3">
             <div class="form-floating">
-                <input id="BtcDue_@Model.PaymentMethodId" class="form-control-plaintext" readonly="readonly" :value="model.btcDue">
+                <input id="BtcDue_@Model.PaymentMethodId" class="form-control-plaintext" readonly="readonly" :value="model.btcDue + ' BTC'">
                 <label for="BtcDue_@Model.PaymentMethodId" v-t="{ path: 'amount_due', args: { paymentMethod: model.paymentMethodName }}"></label>
             </div>
             <!-- Copy BTC Due Button -->
