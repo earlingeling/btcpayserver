@@ -46,6 +46,7 @@
 		@if (Model.ShowStoreHeader)
 		{
 			<partial name="_StoreHeader" model="(Model.StoreName, Model.LogoFileId)" />
+            HELLO THIS IS A TEST!
 		}
 		<main class="shadow-lg">
             <nav v-if="isModal">
@@ -231,6 +232,7 @@
         }
         <footer class="store-footer">
             <a class="store-powered-by" href="https://btcpayserver.org" target="_blank" rel="noreferrer noopener">
+                HELLO THIS IS A TEST!
                 {{$t("powered_by")}} <partial name="_StoreFooterLogo" />
             </a>
             <select asp-for="DefaultLang" asp-items="@LangService.GetLanguageSelectListItems()" class="form-select" v-on:change="changeLanguage"></select>
