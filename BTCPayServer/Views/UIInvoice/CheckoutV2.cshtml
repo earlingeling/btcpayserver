@@ -49,7 +49,7 @@
 		{
 			<partial name="_StoreHeader" model="(Model.StoreName, Model.LogoFileId)" />
 		}
-        <select asp-for="DefaultLang" asp-items="@LangService.GetLanguageSelectListItems()" class="form-select" v-on:change="changeLanguage"></select>
+        <select asp-for="DefaultLang" asp-items="@LangService.GetLanguageSelectListItems()" class="form-select header-lang-select" v-on:change="changeLanguage"></select>
 		<main class="shadow-lg">
             <nav v-if="isModal">
                 <button type="button" v-if="isModal" id="close" v-on:click="close">
