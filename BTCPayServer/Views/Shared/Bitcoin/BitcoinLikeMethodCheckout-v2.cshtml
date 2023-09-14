@@ -9,7 +9,7 @@
         <div v-if="model.btcDue" class="input-group mt-3">
             <div class="form-floating" id="Due_@Model.PaymentMethodId">
                 <vc:truncate-center text="model.btcDue" is-vue="true" padding="15" elastic="true" classes="form-control-plaintext" />
-                <label v-t="{ path: 'amount_due', args: { paymentMethod: model.paymentMethodName }}"></label>
+                <label v-t="{ path: 'cryptoCode', args: { paymentMethod: model.paymentMethodName }}"></label>
             </div>
         </div>
         <div v-if="model.btcAddress" class="input-group mt-3">
