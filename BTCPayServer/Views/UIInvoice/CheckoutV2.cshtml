@@ -306,14 +306,13 @@
 
         <h4>{{$t('pmnt_heading_guide')}}:</h4>
         <div class="mt-3 mb-2">
-            <!--
             <ol class="list-group list-group-numbered list-group-flush text-start">
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step1')}}: <a href="https://apps.apple.com/se/app/safello/id1514429922" target="_new">iOS</a> / <a href="https://play.google.com/store/apps/details?id=com.safello.androidsapp&hl=no&gl=US" target="_new">Android</a></li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step2')}}</li>
                 <li class="list-group-item">
                     {{$t('pmnt_guide_safello_step3')}} 
                     {{((parseFloat(srvModel.orderAmountFiat.replace(/[^0-9 .]/g, '').replace(/[\s.]/g, '')) * 1.05) + 
-                        (0.00025 * parseFloat(srvModel.Rate.replace(/[^0-9 .]/g, '').replace(/[\s.]/g, ''))) + 
+                        (0.00025 * parseFloat(srvModel.rate.replace(/[^0-9 .]/g, '').replace(/[\s.]/g, ''))) + 
                         20).toFixed(0)
                     }}
                 </li>
@@ -327,12 +326,6 @@
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step10')}}</li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step11')}}</li>
             </ol>
-            -->
-
-            <p>srvModel.orderAmountFiat value: {{ srvModel.orderAmountFiat }}</p>
-            <p>srvModel.orderAmountFiat type: {{ typeof srvModel.orderAmountFiat }}</p>
-            <p>srvModel.Rate value: {{ srvModel.rate }}</p>
-            <p>srvModel.Rate type: {{ typeof srvModel.rate }}</p>
         </div>
 
         <h4>{{$t('pmnt_heading_whatnow')}}</h4>
