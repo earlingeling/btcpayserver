@@ -319,6 +319,26 @@
                         ).toFixed(0)
                     }}
                 </li>
+
+                <li class="list-group-item">
+    srvModel.orderAmountFiat value: {{ parseFloat(srvModel.orderAmountFiat.replace(/[^0-9 .]/g, '').replace(/[\s.]/g, '')) }}
+</li>
+<li class="list-group-item">
+    srvModel.orderAmountFiat * 1.05: {{ parseFloat(srvModel.orderAmountFiat.replace(/[^0-9 .]/g, '').replace(/[\s.]/g, '')) * 1.05 }}
+</li>
+<li class="list-group-item">
+    srvModel.rate value: {{ parseFloat(srvModel.rate.replace(/[^0-9 .]/g, '').replace(/[\s.]/g, '')) }}
+</li>
+<li class="list-group-item">
+    srvModel.rate * 0.00025: {{ parseFloat(srvModel.rate.replace(/[^0-9 .]/g, '').replace(/[\s.]/g, '')) * 0.00025 }}
+</li>
+<li class="list-group-item">
+    Total without flat fee: {{ parseFloat(srvModel.orderAmountFiat.replace(/[^0-9 .]/g, '').replace(/[\s.]/g, '')) * 1.05 + parseFloat(srvModel.rate.replace(/[^0-9 .]/g, '').replace(/[\s.]/g, '')) * 0.00025 }}
+</li>
+<li class="list-group-item">
+    Total with flat fee: {{ parseFloat(srvModel.orderAmountFiat.replace(/[^0-9 .]/g, '').replace(/[\s.]/g, '')) * 1.05 + parseFloat(srvModel.rate.replace(/[^0-9 .]/g, '').replace(/[\s.]/g, '')) * 0.00025 + 20 }}
+</li>
+
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step4')}}</li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step5')}}</li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step6')}}</li>
