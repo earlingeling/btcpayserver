@@ -309,7 +309,7 @@
             <ol class="list-group list-group-numbered list-group-flush text-start">
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step1')}}: <a href="https://apps.apple.com/se/app/safello/id1514429922" target="_new">iOS</a> / <a href="https://play.google.com/store/apps/details?id=com.safello.androidsapp&hl=no&gl=US" target="_new">Android</a></li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step2')}}</li>
-                <li class="list-group-item">{{$t('pmnt_guide_safello_step3')}} {{parseFloat((srvModel.orderAmountFiat * 1.05) + (0.00025 * srvModel.Rate) + 20).toFixed(8)}}</li>
+                <li class="list-group-item">{{$t('pmnt_guide_safello_step3')}} {{((parseFloat(srvModel.orderAmountFiat.replace(/[^0-9 .]/g, '').replace(/[\s.]/g, '')) * 1.05) + (0.00025 * srvModel.Rate) + 20).toFixed(0)}}</li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step4')}}</li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step5')}}</li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step6')}}</li>
