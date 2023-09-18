@@ -311,10 +311,7 @@
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step2')}}</li>
                 <li class="list-group-item">
                     {{$t('pmnt_guide_safello_step3')}} 
-                    {{
-                        ((parseFloat(srvModel.orderAmountFiat.replace(/[^0-9 .]/g, '').replace(/[\s.]/g, '')) * 1.05) + 
-                        (0.00025 * parseFloat(srvModel.Rate.replace(/[^0-9 .]/g, '').replace(/[\s.]/g, ''))) + 
-                        20).toFixed(0)
+                    {{((parseFloat(srvModel.orderAmountFiat.replace(/[^0-9 .]/g, '').replace(/[\s.]/g, '')) * 1.05) + (0.00025 * parseFloat(srvModel.Rate.replace(/[^0-9 .]/g, '').replace(/[\s.]/g, ''))) + 20).toFixed(8)
                     }}
                 </li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step4')}}</li>
