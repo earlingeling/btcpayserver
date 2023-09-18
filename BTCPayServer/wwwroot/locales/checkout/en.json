@@ -130,8 +130,8 @@
   "pmnt_guide_paybis_step2": "Fill in the BTC amount found at the bottom of this page.",
   "pmnt_guide_paybis_step3": "Press next. Fill in and complete what Paybis asks you. (We do not receive any personal information that you provide here)",
   "pmnt_guide_paybis_step4": "Select 'External Wallet' as recipient, not Paybis Wallet.",
-  "pmnt_guide_paybis_step5": "Fill in the address at the bottom of this page. Then go ahead and select your payment method.",
-  "pmnt_guide_paybis_extra1": "Important: You must fill in the amount in the field for bitcoin, not Norwegian kroner, if the transfer is to be approved by us. (The amount is higher in pure kroner than the order amount due to the payment fee.)",
+  "pmnt_guide_paybis_step5": "Fill in the address at the bottom of this page. Then go ahead and select your payment method, and finish your purchase.",
+  "pmnt_guide_paybis_extra1": "Important: You must fill in the amount in the field for bitcoin, not your local currency for the transfer is to be approved by us. (The amount is higher in Euro than the order amount due to the payment fee.)",
   "pmnt_guide_advantage_paybis_1": "Easiest, cheapest and fastest",
   "pmnt_guide_advantage_paybis_2": "Legitimation-free as long as you buy for less than 2000 USD annually!",
   "pmnt_guide_disadvantage_paybis_1": "None!"
