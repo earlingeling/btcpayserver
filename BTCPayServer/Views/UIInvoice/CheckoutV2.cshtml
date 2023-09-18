@@ -125,6 +125,53 @@
 </div>
 <!-- Heading stop -->
 
+<!-- Paybis start -->
+<div class="info mt-3 mb-2">
+  <button class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button" onclick="toggleInstructions(this)" data-target="PaybisInstructions">
+    <span class="fw-semibold"></span>
+    <vc:icon symbol="caret-down"/>
+    Paybis <b>{{$t('pmtn_guide_recommended')}}</b>
+  </button>
+  <div class="payment-details" id="PaybisInstructions" hidden>
+
+    <h4>{{$t('pmnt_guide_advantages')}}:</h4>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><i class="fas fa-check"></i> {{$t('pmnt_guide_advantage_paybis_1')}}</li>
+            <li class="list-group-item"><i class="fas fa-check"></i> {{$t('pmnt_guide_advantage_paybis_2')}}</li>
+            <li class="list-group-item mb-3"></li>
+        </ul>
+        <h4>{{$t('pmnt_guide_disadvantages')}}:</h4>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><i class="fas fa-times"></i> {{$t('pmnt_guide_disadvantage_paybis_1')}}</li>
+            <li class="list-group-item mb-3"></li>
+        </ul>
+
+        <h4>{{$t('pmnt_heading_about')}} Paybis:</h4>
+            <div class="mt-3 mb-2 text-start">
+                {{$t('pmnt_guide_paybis_info1')}}
+            </div>
+
+        <h4>{{$t('pmnt_heading_guide')}}:</h4>
+        <div class="mt-3 mb-2">
+            <ol class="list-group list-group-numbered list-group-flush text-start">
+                <li class="list-group-item"><a href="https://paybis.com" target="_new">{{$t('pmnt_guide_paybis_step1')}}</a></li>
+                <li class="list-group-item">{{$t('pmnt_guide_paybis_step2')}} <b>{{$t('pmnt_guide_moonpay_extra1')}}</b></li>
+                <li class="list-group-item">{{$t('pmnt_guide_paybis_step3')}}</li>
+                <li class="list-group-item">{{$t('pmnt_guide_paybis_step4')}}</li>
+                <li class="list-group-item">{{$t('pmnt_guide_paybis_step5')}}</li>
+            </ol>
+        </div>
+
+        <h4>{{$t('pmnt_heading_whatnow')}}</h4>
+        <div class="mt-3 mb-2 text-start">
+                {{$t('pmnt_guide_whatnow_info1')}}
+        </div>
+
+
+  </div>
+</div>
+<!-- Paybis end -->
+
 <!-- Coinbase start -->
 <div class="info mt-3 mb-2">
   <button class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button" onclick="toggleInstructions(this)" data-target="CoinbaseInstructions">
@@ -211,9 +258,9 @@
         <div class="mt-3 mb-2">
             <ol class="list-group list-group-numbered list-group-flush text-start">
                 <li class="list-group-item"><a href="https://moonpay.com/buy" target="_new">{{$t('pmnt_guide_moonpay_step1')}}</a></li>
-                <li class="list-group-item">{{$t('pmnt_guide_moonpay_step2')}} <b>{{$t('pmnt_guide_moonpay_extra1')}}</b></b></li>
+                <li class="list-group-item">{{$t('pmnt_guide_moonpay_step2')}} <b>{{$t('pmnt_guide_moonpay_extra1')}}</b></li>
                 <li class="list-group-item">{{$t('pmnt_guide_moonpay_step3')}}</li>
-                <li class="list-group-item">{{$t('pmnt_guide_moonpay_step4')}} <b>{{$t('pmnt_guide_moonpay_extra2')}}</b></b></li>
+                <li class="list-group-item">{{$t('pmnt_guide_moonpay_step4')}} <b>{{$t('pmnt_guide_moonpay_extra2')}}</b></li>
             </ol>
         </div>
 

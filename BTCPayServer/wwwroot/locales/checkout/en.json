@@ -123,5 +123,16 @@
   "pmnt_guide_safello_step8": "Enter a fictitious recipient name. Do not write anything about us or IPTV.",
   "pmnt_guide_safello_step9": "Enter the bitcoin address at the bottom of this page.",
   "pmnt_guide_safello_step10": "Press 'Add recipients'. It is very important that you do NOT transfer to the old address entry if you have transferred to us before. The address changes with each order, and if you send to an old address it is no guarantee that we will find the money again.",
-  "pmnt_guide_safello_step11": "Press next and approve the transfer with BankID."
+  "pmnt_guide_safello_step11": "Press next and approve the transfer with BankID.",
+  "pmtn_guide_recommended": "Recommended!",
+  "pmnt_guide_paybis_info1": "Paybis allows you to buy cryptocurrency directly by card or Google Pay and transfer it to your crypto wallet of choice. This makes the process easier than other options. They are the fastest payment provider on this list, and for first-time users, free of charge (with the exception of low network charges). Perhaps this is your sign to take out a longer subscription? ;)",
+  "pmnt_guide_paybis_step1": "Open Paybis by pressing here.",
+  "pmnt_guide_paybis_step2": "Fill in the BTC amount found at the bottom of this page.",
+  "pmnt_guide_paybis_step3": "Press next. Fill in and complete what Paybis asks you. (We do not receive any personal information that you provide here)",
+  "pmnt_guide_paybis_step4": "Select 'External Wallet' as recipient, not Paybis Wallet.",
+  "pmnt_guide_paybis_step5": "Fill in the address at the bottom of this page. Then go ahead and select your payment method.",
+  "pmnt_guide_paybis_extra1": "Important: You must fill in the amount in the field for bitcoin, not Norwegian kroner, if the transfer is to be approved by us. (The amount is higher in pure kroner than the order amount due to the payment fee.)",
+  "pmnt_guide_advantage_paybis_1": "Easiest, cheapest and fastest",
+  "pmnt_guide_advantage_paybis_2": "Legitimation-free as long as you buy for less than 2000 USD annually!",
+  "pmnt_guide_disadvantage_paybis_1": "None!"
 }

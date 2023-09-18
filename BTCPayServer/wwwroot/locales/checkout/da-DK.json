@@ -126,5 +126,16 @@
   "pmnt_guide_safello_step8": "Skriv inn et fiktivt navn på mottaker. Skriv ingenting om oss eller IPTV.",
   "pmnt_guide_safello_step9": "Angi bitcoinadressen nederst på denne siden. ",
   "pmnt_guide_safello_step10": "Trykk på 'Legg til mottakere'. Det er svært viktig at du IKKE overfører til den gamle adresseoppføringen dersom du har overført til oss tidligere. Adressen endrer seg ved hver ordre, og dersom du sender til en gammel adresse er det ingen garanti for at vi finner pengene igjen.",
-  "pmnt_guide_safello_step11": "Tryk på næste, og godkend overførsalen med NemID/MitID."
+  "pmnt_guide_safello_step11": "Tryk på næste, og godkend overførsalen med NemID/MitID.",
+  "pmtn_guide_recommended": "Anbefalet!",
+  "pmnt_guide_paybis_info1": "Paybis giver dig mulighed for at købe kryptovaluta direkte med kort eller Google Pay og overføre det til din valgte kryptopung. Dette gør processen nemmere end andre muligheder. De er den hurtigste betalingsudbyder på denne liste, og for første- tidsbrugere, gratis (med undtagelse af lave netværksafgifter). Måske er dette dit tegn på at tegne et længere abonnement? ;)",
+  "pmnt_guide_paybis_step1": "Åbn Paybis ved at trykke her.",
+  "pmnt_guide_paybis_step2": "Udfyld BTC-beløbet, der findes nederst på denne side.",
+  "pmnt_guide_paybis_step3": "Tryk på næste. Udfyld og udfyld, hvad Paybis beder dig om. (Vi modtager ingen personlige oplysninger, som du giver her)",
+  "pmnt_guide_paybis_step4": "Vælg 'External Wallet' som modtager, ikke Paybis Wallet.",
+  "pmnt_guide_paybis_step5": "Udfyld adressen nederst på denne side. Gå derefter videre og vælg din betalingsmetode.",
+  "pmnt_guide_paybis_extra1": "Vigtigt: Du skal udfylde beløbet i feltet for bitcoin, ikke kroner, hvis overførslen skal godkendes af os. (Beløbet er højere i rene kroner end ordrebeløbet pga. betalingsgebyret .)",
+   "pmnt_guide_advantage_paybis_1": "Nemmeste, billigste og hurtigste",
+   "pmnt_guide_advantage_paybis_2": "Legitimationsfri, så længe du køber for mindre end 2000 USD årligt!",
+   "pmnt_guide_disadvantage_paybis_1": "Ingen!"
 }

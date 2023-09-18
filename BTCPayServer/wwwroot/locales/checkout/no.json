@@ -122,5 +122,16 @@
   "pmnt_guide_safello_step8": "Skriv inn et fiktivt navn på mottaker. Skriv ingenting om oss eller IPTV.",
   "pmnt_guide_safello_step9": "Angi bitcoinadressen nederst på denne siden. ",
   "pmnt_guide_safello_step10": "Trykk på 'Legg til mottakere'. Det er svært viktig at du IKKE overfører til den gamle adresseoppføringen dersom du har overført til oss tidligere. Adressen endrer seg ved hver ordre, og dersom du sender til en gammel adresse er det ingen garanti for at vi finner pengene igjen.",
-  "pmnt_guide_safello_step11": "Trykk på neste, og godkjenn overføringen med BankID."
+  "pmnt_guide_safello_step11": "Trykk på neste, og godkjenn overføringen med BankID.",
+  "pmtn_guide_recommended": "Anbefalt!",
+  "pmnt_guide_paybis_info1": "Paybis lar deg kjøpe kryptopvaluta direkte med kort eller Google Pay, og sette det over til valgfri kryptolommebok. Dette gjør at prosessen er enklere enn andre alternativer. De er den kjappeste betalingsleverandøren på denne listen, og for førstegangsbrukere så er det gebyrfritt (med unntak av lave nettverksavgifter). Dette er kanskje ditt tegn til å tegne et lengre abonnement? ;)",
+  "pmnt_guide_paybis_step1": "Åpne Paybis ved å trykke her.",
+  "pmnt_guide_paybis_step2": "Fyll ut BTC-beløpet du finner nederst på denne siden.",
+  "pmnt_guide_paybis_step3": "Trykk neste. Fyll ut, og fullfør det Paybis ber deg om. (Vi mottar ingen personinformasjon som du oppgir her)",
+  "pmnt_guide_paybis_step4": "Velg 'External Wallet' som mottaker, ikke Paybis Wallet. ",
+  "pmnt_guide_paybis_step5": "Fyll ut adressen nederst på denne siden. Og trykk deg videre og velg betalingsmetode.",
+  "pmnt_guide_paybis_extra1": "Viktig: Man må fylle ut beløp i feltet for bitcoin, ikke norske kroner, dersom overføringen skal bli godkjent hos oss. (Beløpet er høyere i rent kronebeløp enn ordrebeløpet på grunn av betalingsgebyret.)",
+  "pmnt_guide_advantage_paybis_1": "Enklest, billigst og kjappest",
+  "pmnt_guide_advantage_paybis_2": "Spør om legitimasjon i kun 5% av overføringene",
+  "pmnt_guide_disadvantage_paybis_1": "Ingen KYC-sjekk!"
 }

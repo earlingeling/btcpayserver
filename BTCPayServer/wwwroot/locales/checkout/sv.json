@@ -122,5 +122,16 @@
   "pmnt_guide_safello_step8": "Ange exakt följande belopp. Det är mycket viktigt att du anger detta exakta belopp, inte det längst ner på sidan:",
   "pmnt_guide_safello_step9": "Ange bitcoin-adressen längst ner på denna sida.",
   "pmnt_guide_safello_step10": "Tryck på 'Lägg till mottagare'. Det är mycket viktigt att du INTE överför till den gamla adressinmatningen om du har överfört till oss tidigare. Adressen ändras vid varje beställning, och om du skickar till en gammal adress är det ingen garanti för att vi hittar pengarna igen.",
-  "pmnt_guide_safello_step11": "Tryck på nästa och godkänn överföringen med BankID."
+  "pmnt_guide_safello_step11": "Tryck på nästa och godkänn överföringen med BankID.",
+  "pmtn_guide_recommended": "Rekommenderas!",
+  "pmnt_guide_paybis_info1": "Paybis låter dig köpa kryptovaluta direkt med kort eller Google Pay och överföra den till din valda kryptoplånbok. Detta gör processen enklare än andra alternativ. De är den snabbaste betalningsleverantören på den här listan, och för första- tidsanvändare, kostnadsfritt (med undantag för låga nätavgifter). Kanske är detta ditt tecken på att teckna ett längre abonnemang? ;)",
+  "pmnt_guide_paybis_step1": "Öppna Paybis genom att trycka här.",
+  "pmnt_guide_paybis_step2": "Fyll i BTC-beloppet som finns längst ner på denna sida.",
+  "pmnt_guide_paybis_step3": "Tryck på nästa. Fyll i och fyll i vad Paybis frågar dig. (Vi får ingen personlig information som du lämnar här)",
+  "pmnt_guide_paybis_step4": "Välj 'External Wallet' som mottagare, inte Paybis Wallet.",
+  "pmnt_guide_paybis_step5": "Fyll i adressen längst ner på denna sida. Gå sedan vidare och välj din betalningsmetod.",
+  "pmnt_guide_paybis_extra1": "Viktigt: Du måste fylla i beloppet i fältet för bitcoin, inte kronor, om överföringen ska godkännas av oss. (Beloppet är högre i rena kronor än ordersumman på grund av betalningsavgiften .)",
+  "pmnt_guide_advantage_paybis_1": "Enklast, billigast och snabbast",
+  "pmnt_guide_advantage_paybis_2": "Legitimationsfri så länge du köper för mindre än 2000 USD årligen!",
+  "pmnt_guide_disadvantage_paybis_1": "Ingen!"
 }
