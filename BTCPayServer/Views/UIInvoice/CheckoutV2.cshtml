@@ -309,12 +309,11 @@
             <ol class="list-group list-group-numbered list-group-flush text-start">
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step1')}}: <a href="https://apps.apple.com/se/app/safello/id1514429922" target="_new">iOS</a> / <a href="https://play.google.com/store/apps/details?id=com.safello.androidsapp&hl=no&gl=US" target="_new">Android</a></li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step2')}}</li>
-                <li class="list-group-item">{{$t('pmnt_guide_safello_step3')}}</li>
+                <li class="list-group-item">{{$t('pmnt_guide_safello_step3')}} {{parseFloat((srvModel.orderAmountFiat * 1.05) + (0.00025 * srvModel.Rate) + 20).toFixed(8)}}</li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step4')}}</li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step5')}}</li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step6')}}</li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step7')}}</li>
-                <li class="list-group-item">The orderamount is: {{srvModel.orderAmountFiat}} manual kr</li>
                 <li class="list-group-item text-warning font-weight-bold">{{$t('pmnt_guide_safello_step8')}} <br><br>
                     <div class="text-danger font-weight-normal">{{(parseFloat(srvModel.btcDue) + 0.00025).toFixed(8)}} BTC<br></div></li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step9')}}</li>

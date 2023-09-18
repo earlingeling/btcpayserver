@@ -114,7 +114,7 @@
   "pmnt_guide_safello_info2": "Safello är en operatör som tar bort sina avgifter från mottagarens del av överföringen. På grund av detta måste du vara mycket försiktig när du gör insättningar, så att du faktiskt får tillräckligt med Bitcoin för att slutföra transaktionen. Om för litet belopp kommer till oss kommer din prenumeration inte att aktiveras förrän det återstående beloppet har överförts.",
   "pmnt_guide_safello_step1": "Ladda ner Safello.",
   "pmnt_guide_safello_step2": "Skapa ett konto. BankID används för att skapa ditt konto.",
-  "pmnt_guide_safello_step3": "Välj 'Handla'. Ange önskat belopp. Beloppet du anger bör vara minst 10 % högre än beloppet på din beställning. (Multiplicera beloppet med 1,1 i en kalkylator för att hitta beloppet. Överskjutande belopp har du kvar på ditt Safello-konto tills nästa gång du handlar).",
+  "pmnt_guide_safello_step3": "Välj 'Handla'. Ange önskat belopp. För att ha tillräckligt för att täcka köpet av bitcoin och Safellos avgift måste du fylla på minst:",
   "pmnt_guide_safello_step4": "Följ instruktionerna och auktorisera med Swish och BankID tills du har Bitcoin i din plånbok.",
   "pmnt_guide_safello_step5": "Gå nu till 'Handla' igen. Då hittar du fliken 'Skicka'.",
   "pmnt_guide_safello_step6": "Trycka på Mottagare. Välj sedan 'Annan' under kategori.",
