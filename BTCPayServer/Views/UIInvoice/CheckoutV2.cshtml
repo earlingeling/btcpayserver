@@ -309,38 +309,18 @@
             <ol class="list-group list-group-numbered list-group-flush text-start">
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step1')}}: <a href="https://apps.apple.com/se/app/safello/id1514429922" target="_new">iOS</a> / <a href="https://play.google.com/store/apps/details?id=com.safello.androidsapp&hl=no&gl=US" target="_new">Android</a></li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step2')}}</li>
-<li class="list-group-item">
-    {{$t('pmnt_guide_safello_step3')}} 
-    {{
-        (
-            (/\.\d{3},\d{2}/.test(srvModel.orderAmountFiat) ? parseFloat(srvModel.orderAmountFiat.replace(/\./g, '').replace(',', '.')) : parseFloat(srvModel.orderAmountFiat.replace(/[^0-9,]/g, '').replace(',', '.')) / 100) * 1.05 + 
-            (/\.\d{3},\d{2}/.test(srvModel.rate) ? parseFloat(srvModel.rate.replace(/\./g, '').replace(',', '.')) : parseFloat(srvModel.rate.replace(/[^0-9,]/g, '').replace(',', '.')) / 100) * 0.00025 + 
-            20
-        ).toFixed(0)
-    }}
-</li>
-
-
-<li class="list-group-item">
-    srvModel.orderAmountFiat value: {{ parseFloat(srvModel.orderAmountFiat.replace(/[^0-9.]/g, '')) / 100 }}
-</li>
-<li class="list-group-item">
-    srvModel.orderAmountFiat * 1.05: {{ parseFloat(srvModel.orderAmountFiat.replace(/[^0-9.]/g, '')) / 100 * 1.05 }}
-</li>
-<li class="list-group-item">
-    srvModel.rate value: {{ parseFloat(srvModel.rate.replace(/[^0-9.]/g, '')) / 100 }}
-</li>
-<li class="list-group-item">
-    srvModel.rate * 0.00025: {{ parseFloat(srvModel.rate.replace(/[^0-9.]/g, '')) / 100 * 0.00025 }}
-</li>
-<li class="list-group-item">
-    Total without flat fee: {{ parseFloat(srvModel.orderAmountFiat.replace(/[^0-9.]/g, '')) / 100 * 1.05 + parseFloat(srvModel.rate.replace(/[^0-9.]/g, '')) / 100 * 0.00025 }}
-</li>
-<li class="list-group-item">
-    Total with flat fee: {{ parseFloat(srvModel.orderAmountFiat.replace(/[^0-9.]/g, '')) / 100 * 1.05 + parseFloat(srvModel.rate.replace(/[^0-9.]/g, '')) / 100 * 0.00025 + 20 }}
-</li>
-
-
+                <li class="list-group-item">
+                    {{$t('pmnt_guide_safello_step3')}} 
+                    <b>{{
+                        (
+                            (parseFloat(srvModel.orderAmountFiat.replace(/[^0-9.]/g, '')) / 100 * 1.05) + 
+                            (0.00025 * parseFloat(srvModel.rate.replace(/[^0-9.]/g, '')) / 100) + 
+                            20
+                        ).toFixed(0)
+                    }}
+                    </b>
+                     kr
+                </li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step4')}}</li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step5')}}</li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step6')}}</li>
