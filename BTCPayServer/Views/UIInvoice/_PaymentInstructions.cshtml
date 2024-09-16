@@ -1,0 +1,96 @@
+@model PaymentModel
+@using Newtonsoft.Json
+@using System.Globalization
+
+@{
+    // Determine the language code, defaulting to "en" if not set
+    var lang = Model.DefaultLang?.Split('-')[0] ?? "en";
+
+    // Path to the PaymentProvidersConfig.json file
+    var configFilePath = Server.MapPath("~/Views/UIInvoice/PaymentProvidersConfig.json");
+
+    // Read and deserialize the configuration file
+    var providersJson = System.IO.File.ReadAllText(configFilePath);
+    var providers = JsonConvert.DeserializeObject<List<dynamic>>(providersJson);
+
+    // Sort providers based on the "order" property
+    var sortedProviders = providers.OrderBy(p => (int)p.order);
+
+    // Get the exchange rate and order amount in fiat currency
+    decimal exchangeRate = decimal.Parse(Model.Rate, CultureInfo.InvariantCulture);
+    decimal orderAmountFiat = decimal.Parse(Model.OrderAmountFiat.Replace(Model.Currency, "").Trim(), CultureInfo.InvariantCulture);
+}
+
+<script>
+    function toggleInstructions(button) {
+        var targetId = button.getAttribute("data-target");
+        var target = document.getElementById(targetId);
+        target.hidden = !target.hidden;
+    }
+</script>
+
+<!-- Start of Payment Instructions -->
+@foreach (var provider in sortedProviders)
+{
+    // Get provider details
+    var providerName = (string)provider.name;
+    var providerId = providerName.Replace(" ", "") + "Instructions";
+    var isRecommended = (bool)provider.recommended;
+
+    // Get advantages and disadvantages in the current language
+    var advantages = provider.advantages.ToObject<List<dynamic>>();
+    var disadvantages = provider.disadvantages.ToObject<List<dynamic>>();
+
+    // Get the guide text in the current language, fallback to English
+    var guideTexts = provider.guide.ToObject<Dictionary<string, string>>();
+    var guideText = guideTexts.ContainsKey(lang) ? guideTexts[lang] : guideTexts["en"];
+
+    // Fees
+    decimal percentageFee = (decimal)provider.fees.percentageFee;
+    decimal transferFee = (decimal)provider.fees.transferFee;
+
+    // Calculate total amount to deposit
+    decimal totalAmountFiat = (orderAmountFiat * (1 + (percentageFee / 100))) + (transferFee * exchangeRate);
+    totalAmountFiat = Math.Round(totalAmountFiat, 2);
+}
+
+<div class="info mt-3 mb-2">
+    <button class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button" onclick="toggleInstructions(this)" data-target="@providerId">
+        <span class="fw-semibold"></span>
+        <vc:icon symbol="caret-down" />
+        @providerName @if (isRecommended) { <b>({{ $t('pmtn_guide_recommended') }})</b> }
+    </button>
+    <div class="payment-details" id="@providerId" hidden>
+        <!-- Advantages -->
+        <h4>{{ $t('pmnt_guide_advantages') }}:</h4>
+        <ul class="list-group list-group-flush">
+            @foreach (var advantage in advantages)
+            {
+                var advantageText = advantage.ContainsKey(lang) ? advantage[lang] : advantage["en"];
+                <li class="list-group-item"><i class="fas fa-check"></i> @advantageText</li>
+            }
+        </ul>
+
+        <!-- Disadvantages -->
+        <h4>{{ $t('pmnt_guide_disadvantages') }}:</h4>
+        <ul class="list-group list-group-flush">
+            @foreach (var disadvantage in disadvantages)
+            {
+                var disadvantageText = disadvantage.ContainsKey(lang) ? disadvantage[lang] : disadvantage["en"];
+                <li class="list-group-item"><i class="fas fa-times"></i> @disadvantageText</li>
+            }
+        </ul>
+
+        <!-- Guide Text -->
+        <h4>{{ $t('pmnt_heading_guide') }}:</h4>
+        <div class="mt-3 mb-2">
+            @Html.Raw(guideText)
+        </div>
+
+        <!-- Total Amount to Deposit -->
+        <h4>{{ $t('pmnt_total_amount_to_deposit') }}:</h4>
+        <p>@totalAmountFiat.ToString("N2", CultureInfo.InvariantCulture) @Model.Currency</p>
+    </div>
+</div>
+<!-- End of Payment Instructions -->
+

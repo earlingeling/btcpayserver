@@ -1,0 +1,65 @@
+[
+    {
+      "order": 1,
+      "name": "Coinbase",
+      "recommended": true,
+      "advantages": [
+        {
+          "en": "Easy to use for beginners.",
+          "no": "Enkel å bruke for nybegynnere.",
+          "sv": "Lätt att använda för nybörjare.",
+          "dk": "Let at bruge for begyndere."
+        }
+      ],
+      "disadvantages": [
+        {
+          "en": "Requires account verification.",
+          "no": "Krever konto verifisering.",
+          "sv": "Kräver kontoverifiering.",
+          "dk": "Kræver konto verifikation."
+        }
+      ],
+      "guide": {
+        "en": "<p>Step-by-step guide in English...</p>",
+        "no": "<p>Trinn-for-trinn guide på norsk...</p>",
+        "sv": "<p>Steg-för-steg guide på svenska...</p>",
+        "dk": "<p>Trin-for-trin guide på dansk...</p>"
+      },
+      "fees": {
+        "percentageFee": 1.5,
+        "transferFee": 0.00025
+      }
+    },
+    {
+      "order": 2,
+      "name": "Moonpay",
+      "recommended": false,
+      "advantages": [
+        {
+          "en": "Supports multiple payment methods.",
+          "no": "Støtter flere betalingsmetoder.",
+          "sv": "Stöder flera betalningsmetoder.",
+          "dk": "Understøtter flere betalingsmetoder."
+        }
+      ],
+      "disadvantages": [
+        {
+          "en": "Higher fees compared to others.",
+          "no": "Høyere avgifter sammenlignet med andre.",
+          "sv": "Högre avgifter jämfört med andra.",
+          "dk": "Højere gebyrer sammenlignet med andre."
+        }
+      ],
+      "guide": {
+        "en": "<p>Step-by-step guide for Moonpay in English...</p>",
+        "no": "<p>Trinn-for-trinn guide for Moonpay på norsk...</p>",
+        "sv": "<p>Steg-för-steg guide för Moonpay på svenska...</p>",
+        "dk": "<p>Trin-for-trin guide for Moonpay på dansk...</p>"
+      },
+      "fees": {
+        "percentageFee": 2.0,
+        "transferFee": 0.0003
+      }
+    }
+  ]
+  
