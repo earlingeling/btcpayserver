@@ -1,3 +1,10 @@
+@using BTCPayServer.Services
+@using BTCPayServer.Abstractions.Contracts
+@inject LanguageService LangService
+@inject BTCPayServerEnvironment Env
+@inject IEnumerable<IUIExtension> UiExtensions 
+@inject PaymentMethodHandlerDictionary PaymentMethodHandlerDictionary
+@inject BTCPayServer.Security.ContentSecurityPolicies Csp
 @model PaymentModel
 @using Newtonsoft.Json
 @using System.Globalization
