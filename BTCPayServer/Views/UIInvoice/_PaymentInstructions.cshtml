@@ -1,20 +1,14 @@
-@using BTCPayServer.Services
-@using BTCPayServer.Abstractions.Contracts
-@inject LanguageService LangService
-@inject BTCPayServerEnvironment Env
-@inject IEnumerable<IUIExtension> UiExtensions 
-@inject PaymentMethodHandlerDictionary PaymentMethodHandlerDictionary
-@inject BTCPayServer.Security.ContentSecurityPolicies Csp
 @model PaymentModel
 @using Newtonsoft.Json
 @using System.Globalization
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment
 
 @{
     // Determine the language code, defaulting to "en" if not set
     var lang = Model.DefaultLang?.Split('-')[0] ?? "en";
 
     // Path to the PaymentProvidersConfig.json file
-    var configFilePath = Server.MapPath("~/Views/UIInvoice/PaymentProvidersConfig.json");
+    var configFilePath = System.IO.Path.Combine(WebHostEnvironment.ContentRootPath, "Views", "UIInvoice", "PaymentProvidersConfig.json");
 
     // Read and deserialize the configuration file
     var providersJson = System.IO.File.ReadAllText(configFilePath);
@@ -25,7 +19,7 @@
 
     // Get the exchange rate and order amount in fiat currency
     decimal exchangeRate = decimal.Parse(Model.Rate, CultureInfo.InvariantCulture);
-    decimal orderAmountFiat = decimal.Parse(Model.OrderAmountFiat.Replace(Model.Currency, "").Trim(), CultureInfo.InvariantCulture);
+    decimal orderAmountFiat = decimal.Parse(Model.OrderAmountFiat.Replace(Model.FiatCode, "").Trim(), CultureInfo.InvariantCulture);
 }
 
 <script>
@@ -59,45 +53,48 @@
     // Calculate total amount to deposit
     decimal totalAmountFiat = (orderAmountFiat * (1 + (percentageFee / 100))) + (transferFee * exchangeRate);
     totalAmountFiat = Math.Round(totalAmountFiat, 2);
-}
 
-<div class="info mt-3 mb-2">
-    <button class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button" onclick="toggleInstructions(this)" data-target="@providerId">
-        <span class="fw-semibold"></span>
-        <vc:icon symbol="caret-down" />
-        @providerName @if (isRecommended) { <b>({{ $t('pmtn_guide_recommended') }})</b> }
-    </button>
-    <div class="payment-details" id="@providerId" hidden>
-        <!-- Advantages -->
-        <h4>{{ $t('pmnt_guide_advantages') }}:</h4>
-        <ul class="list-group list-group-flush">
-            @foreach (var advantage in advantages)
-            {
-                var advantageText = advantage.ContainsKey(lang) ? advantage[lang] : advantage["en"];
-                <li class="list-group-item"><i class="fas fa-check"></i> @advantageText</li>
-            }
-        </ul>
+    <!-- HTML Rendering -->
+    <div class="info mt-3 mb-2">
+        <button class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button" onclick="toggleInstructions(this)" data-target="@providerId">
+            <span class="fw-semibold"></span>
+            <vc:icon symbol="caret-down" />
+            @providerName @if (isRecommended) { <b>({{ $t('pmtn_guide_recommended') }})</b> }
+        </button>
+        <div class="payment-details" id="@providerId" hidden>
+            <!-- Advantages -->
+            <h4>{{ $t('pmnt_guide_advantages') }}:</h4>
+            <ul class="list-group list-group-flush">
+                @foreach (var advantage in advantages)
+                {
+                    var advantageDict = advantage.ToObject<Dictionary<string, string>>();
+                    var advantageText = advantageDict.ContainsKey(lang) ? advantageDict[lang] : advantageDict["en"];
+                    <li class="list-group-item"><i class="fas fa-check"></i> @advantageText</li>
+                }
+            </ul>
 
-        <!-- Disadvantages -->
-        <h4>{{ $t('pmnt_guide_disadvantages') }}:</h4>
-        <ul class="list-group list-group-flush">
-            @foreach (var disadvantage in disadvantages)
-            {
-                var disadvantageText = disadvantage.ContainsKey(lang) ? disadvantage[lang] : disadvantage["en"];
-                <li class="list-group-item"><i class="fas fa-times"></i> @disadvantageText</li>
-            }
-        </ul>
+            <!-- Disadvantages -->
+            <h4>{{ $t('pmnt_guide_disadvantages') }}:</h4>
+            <ul class="list-group list-group-flush">
+                @foreach (var disadvantage in disadvantages)
+                {
+                    var disadvantageDict = disadvantage.ToObject<Dictionary<string, string>>();
+                    var disadvantageText = disadvantageDict.ContainsKey(lang) ? disadvantageDict[lang] : disadvantageDict["en"];
+                    <li class="list-group-item"><i class="fas fa-times"></i> @disadvantageText</li>
+                }
+            </ul>
 
-        <!-- Guide Text -->
-        <h4>{{ $t('pmnt_heading_guide') }}:</h4>
-        <div class="mt-3 mb-2">
-            @Html.Raw(guideText)
+            <!-- Guide Text -->
+            <h4>{{ $t('pmnt_heading_guide') }}:</h4>
+            <div class="mt-3 mb-2">
+                @Html.Raw(guideText)
+            </div>
+
+            <!-- Total Amount to Deposit -->
+            <h4>{{ $t('pmnt_total_amount_to_deposit') }}:</h4>
+            <p>@totalAmountFiat.ToString("N2", CultureInfo.InvariantCulture) @Model.FiatCode</p>
         </div>
-
-        <!-- Total Amount to Deposit -->
-        <h4>{{ $t('pmnt_total_amount_to_deposit') }}:</h4>
-        <p>@totalAmountFiat.ToString("N2", CultureInfo.InvariantCulture) @Model.Currency</p>
     </div>
-</div>
+    <!-- End of HTML Rendering -->
+}
 <!-- End of Payment Instructions -->
-
