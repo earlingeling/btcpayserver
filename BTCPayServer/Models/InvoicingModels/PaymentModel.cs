@@ -72,6 +72,12 @@ namespace BTCPayServer.Models.InvoicingModels
         public string ReceiptLink { get; set; }
         public int? RequiredConfirmations { get; set; }
         public long? ReceivedConfirmations { get; set; }
+            // New numeric properties
+        public decimal BtcDueNumeric { get; set; }
+        public decimal BtcPaidNumeric { get; set; }
+        public decimal OrderAmountNumeric { get; set; }
+        public decimal NetworkFeeNumeric { get; set; }
+        public decimal RateNumeric { get; set; }
 
         public HashSet<string> ExtensionPartials { get; } = new HashSet<string>();
     }

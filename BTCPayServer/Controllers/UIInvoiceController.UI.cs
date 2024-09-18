@@ -918,6 +918,12 @@ namespace BTCPayServer.Controllers
                 RedirectAutomatically = invoice.RedirectAutomatically,
                 StoreName = store.StoreName,
                 StoreSupportUrl = supportUrl,
+                // New numeric properties
+                BtcDueNumeric = accounting.Due,
+                BtcPaidNumeric = accounting.Paid,
+                OrderAmountNumeric = accounting.TotalDue - (prompt.PaymentMethodFee - prompt.TweakFee),
+                NetworkFeeNumeric = prompt.PaymentMethodFee - prompt.TweakFee,
+                RateNumeric = prompt.Rate,
                 TxCount = accounting.TxRequired,
                 TxCountForFee = storeBlob.NetworkFeeMode switch
                 {
