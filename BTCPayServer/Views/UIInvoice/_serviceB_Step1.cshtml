@@ -1,0 +1,10 @@
+@model PaymentModel
+@inject BTCPayServer.Services.LanguageService LangService
+@{
+    var langCode = Model.DefaultLang ?? "en";
+    var translations = LangService.GetTranslations(langCode);
+    Func<string, string> T = key => translations[key]?.ToString() ?? key;
+}
+
+<h3>@T("Step 1: Register with Service A")</h3>
+<p>@T("serviceA_step1_description")</p>

@@ -1,0 +1,19 @@
+{
+    "intro_text": "NORSKTo complete your purchase, please choose one of the following options.",
+    "Invoice Summary": "Invoice Summary",
+    "Amount Due": "Amount Due",
+    "BTC Due": "BTC Due",
+    "Choose a Payment Option": "Choose a Payment Option",
+    "I'm an expert, take me to the checkout page": "I'm an expert, take me to the checkout page",
+    "I will use Service A": "I will use Service A",
+    "I will use Service B": "I will use Service B",
+    "serviceA_title": "Payment via Service A",
+    "serviceA_intro": "Follow these steps to pay using Service A.",
+    "serviceA_step1_description": "Register an account with Service A.",
+    "serviceA_step2_description": "Verify your account.",
+    "serviceA_step3_description": "Make a payment to the provided address.",
+    "Back": "Back",
+    "Next": "Next",
+    "Proceed to Payment": "Proceed to Payment",
+    "Cancel": "Cancel"
+}

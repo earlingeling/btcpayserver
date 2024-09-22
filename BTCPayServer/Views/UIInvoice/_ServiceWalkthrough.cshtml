@@ -1,0 +1,56 @@
+@model PaymentModel
+@inject BTCPayServer.Services.LanguageService LangService
+@{
+    var langCode = Model.DefaultLang ?? "en";
+    var translations = LangService.GetTranslations(langCode);
+    Func<string, string> T = key => translations[key]?.ToString() ?? key;
+
+    var selectedService = Request.Query["service"].ToString();
+    var currentStep = int.TryParse(Request.Query["step"], out int step) ? step : 1;
+    var totalSteps = GetTotalStepsForService(selectedService);
+}
+
+<div class="service-walkthrough">
+    <h2>@T($"{selectedService}_title")</h2>
+    <p>@T($"{selectedService}_intro")</p>
+
+    <!-- Display the current step content -->
+    @Html.Partial($"_{selectedService}_Step{currentStep}", Model)
+
+    <div class="navigation-buttons">
+        @if (currentStep > 1)
+        {
+            <a href="?service=@selectedService&step=@(currentStep - 1)&lang=@langCode" class="btn btn-secondary">
+                @T("Back")
+            </a>
+        }
+        @if (currentStep < totalSteps)
+        {
+            <a href="?service=@selectedService&step=@(currentStep + 1)&lang=@langCode" class="btn btn-primary">
+                @T("Next")
+            </a>
+        }
+        else
+        {
+            <a href="?expert=true&lang=@langCode" class="btn btn-primary">
+                @T("Proceed to Payment")
+            </a>
+        }
+        <a href="?cancel=true&lang=@langCode" class="btn btn-link">
+            @T("Cancel")
+        </a>
+    </div>
+</div>
+
+@functions {
+    int GetTotalStepsForService(string service)
+    {
+        var steps = new Dictionary<string, int>
+        {
+            { "serviceA", 3 },
+            { "serviceB", 2 },
+            // Add more services and their step counts
+        };
+        return steps.ContainsKey(service) ? steps[service] : 1;
+    }
+}

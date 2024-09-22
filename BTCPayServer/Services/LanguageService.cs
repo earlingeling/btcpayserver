@@ -7,11 +7,9 @@ using System.Linq;
 using BTCPayServer.Client.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 
 namespace BTCPayServer.Services
 {
@@ -31,30 +29,72 @@ namespace BTCPayServer.Services
     {
         private readonly ILogger<LanguageService> _logger;
         private readonly Language[] _languages;
+        private readonly Dictionary<string, JObject> _translations;
 
         public LanguageService(IWebHostEnvironment environment, ILogger<LanguageService> logger)
         {
             _logger = logger;
-            var path = environment.WebRootPath;
-            path = Path.Combine(path, "locales", "checkout");
+            _translations = new Dictionary<string, JObject>(StringComparer.OrdinalIgnoreCase);
+
+            // Load standard translations
+            var standardPath = Path.Combine(environment.WebRootPath, "locales", "checkout");
+            LoadTranslationsFromPath(standardPath);
+
+            // Load custom translations
+            var customPath = Path.Combine(environment.WebRootPath, "locales", "checkout", "custom");
+            LoadTranslationsFromPath(customPath, isCustom: true);
+
+            // Collect the languages from the translations
+            _languages = _translations.Values
+                .Select(t => t.ToObject<Language>())
+                .Where(l => l != null)
+                .ToArray()!;
+        }
+
+        private void LoadTranslationsFromPath(string path, bool isCustom = false)
+        {
+            if (!Directory.Exists(path))
+            {
+                _logger.LogWarning($"Directory not found: {path}");
+                return;
+            }
+
             var files = Directory.GetFiles(path, "*.json");
-            var result = new List<Language>();
             foreach (var file in files)
             {
                 try
                 {
-
                     using var stream = new StreamReader(file);
                     var json = stream.ReadToEnd();
-                    result.Add(JObject.Parse(json).ToObject<Language>()!);
+                    var langObject = JObject.Parse(json);
+
+                    var langCode = langObject["code"]?.ToString();
+                    if (string.IsNullOrEmpty(langCode))
+                    {
+                        _logger.LogWarning($"Language code not found in file {file}");
+                        continue;
+                    }
+
+                    if (!_translations.TryGetValue(langCode, out var existingTranslation))
+                    {
+                        _translations[langCode] = langObject;
+                    }
+                    else
+                    {
+                        // Merge translations, custom translations override standard ones
+                        existingTranslation.Merge(langObject, new JsonMergeSettings
+                        {
+                            MergeArrayHandling = MergeArrayHandling.Union,
+                            MergeNullValueHandling = MergeNullValueHandling.Merge
+                        });
+                        _translations[langCode] = existingTranslation;
+                    }
                 }
                 catch (Exception e)
                 {
                     _logger.LogError(e, $"Could not parse language file {file}");
                 }
             }
-
-            _languages = result.ToArray();
         }
 
         public Language[] GetLanguages()
@@ -64,20 +104,19 @@ namespace BTCPayServer.Services
 
         public IEnumerable<SelectListItem> GetLanguageSelectListItems()
         {
-            IEnumerable<SelectListItem> items = GetLanguages().Select(l => new SelectListItem
+            return GetLanguages().Select(l => new SelectListItem
             {
                 Value = l.Code,
                 Text = l.DisplayName,
                 Disabled = false
             }).OrderBy(lang => lang.Text);
-
-            return items;
         }
 
         public Language? FindLanguageInAcceptLanguageHeader(string? acceptLanguageHeader)
         {
             if (acceptLanguageHeader is null)
                 return null;
+
             IDictionary<string, float> acceptedLocales = new Dictionary<string, float>();
             var locales = acceptLanguageHeader.Split(',', StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < locales.Length; i++)
@@ -127,10 +166,6 @@ namespace BTCPayServer.Services
             return null;
         }
 
-        /**
-         * Look for a supported language that matches the given locale (can be in different notations like "nl" or "nl-NL").
-         * Example: "nl" is not supported, but we do have "nl-NL"
-         */
         public Language? FindLanguage(string locale)
         {
             var supportedLangs = GetLanguages();
@@ -159,6 +194,15 @@ namespace BTCPayServer.Services
                 return FindLanguageInAcceptLanguageHeader(acceptLanguage.ToString()) ?? FindLanguageInAcceptLanguageHeader(defaultLang);
             }
             return FindLanguageInAcceptLanguageHeader(defaultLang);
+        }
+
+        public JObject GetTranslations(string langCode)
+        {
+            if (_translations.TryGetValue(langCode, out var translation))
+            {
+                return translation;
+            }
+            return new JObject();
         }
     }
 }

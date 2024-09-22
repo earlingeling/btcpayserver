@@ -1,0 +1,33 @@
+@model PaymentModel
+@inject BTCPayServer.Services.LanguageService LangService
+@{
+    var langCode = Model.DefaultLang ?? "en";
+    var translations = LangService.GetTranslations(langCode);
+    Func<string, string> T = key => translations[key]?.ToString() ?? key;
+}
+
+<div class="introductory-page">
+    <h2>@T("Welcome to") @Model.StoreName</h2>
+    <p>@T("intro_text")</p>
+
+    <h3>@T("Invoice Summary")</h3>
+    <ul>
+        <li>@T("Amount Due"): @Model.OrderAmountFiat</li>
+        <li>@T("BTC Due"): @Model.BtcDue @Model.CryptoCode</li>
+    </ul>
+
+    <h3>@T("Choose a Payment Option")</h3>
+    <div class="payment-options">
+        <a href="?expert=true" class="btn btn-primary">
+            @T("I'm an expert, take me to the checkout page")
+        </a>
+        <a href="?service=serviceA&step=1" class="btn btn-secondary">
+            @T("I will use Service A")
+        </a>
+        <!-- Add more services as needed -->
+    </div>
+</div>
+
+<footer class="store-footer">
+    @Html.Partial("_LanguageSelector", Model)
+</footer>
