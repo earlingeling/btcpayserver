@@ -13,10 +13,16 @@
 <template id="@BitcoinCheckoutModelExtension.CheckoutBodyComponentName">
     @await Component.InvokeAsync("UiExtensionPoint", new {location = "checkout-bitcoin-pre-content", model = Model})
     <div class="payment-box">
-
         <div v-if="model.due" class="input-group mt-3">
             <div class="form-floating">
-                <dd :data-clipboard="model.due" data-clipboard-hover="start" class="form-control-plaintext">{{ model.due }} BTC</dd>
+                <vc:truncate-center 
+                    text="`${model.due} ${model.paymentMethodCurrency}`" 
+                    is-vue="true" 
+                    padding="0" 
+                    elastic="false" 
+                    copy="true"
+                    classes="form-control-plaintext" 
+                />
                 <label v-t="{ path: 'amount_due', args: { paymentMethod: model.paymentMethodName }}"></label>
             </div>
         </div>
