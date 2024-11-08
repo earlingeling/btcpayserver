@@ -14,14 +14,15 @@
     @await Component.InvokeAsync("UiExtensionPoint", new {location = "checkout-bitcoin-pre-content", model = Model})
     <div class="payment-box">
         <div v-if="model.due" class="input-group mt-3">
-            <div class="form-floating d-flex align-items-center">
-                <span class="form-control-plaintext">{{ model.due }} {{ model.paymentMethodCurrency }}</span>
-                <button 
-                    class="btn btn-outline-secondary btn-sm ms-2" 
-                    :data-clipboard-text="model.due" 
-                    title="Copy to clipboard">
-                    Copy
-                </button>
+            <div class="form-floating unselectable">
+                <vc:truncate-center 
+                    text="`${model.due}`" 
+                    is-vue="true" 
+                    padding="0" 
+                    elastic="false" 
+                    copy="true"
+                    classes="form-control-plaintext" 
+                />
                 <label v-t="{ path: 'amount_due', args: { paymentMethod: model.paymentMethodName }}"></label>
             </div>
         </div>
