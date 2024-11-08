@@ -26,6 +26,8 @@
     <partial name="LayoutHead"/>
     <meta name="robots" content="noindex,nofollow">
     <link href="~/checkout/checkout.css" asp-append-version="true" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" crossorigin="anonymous" />
     @if (!string.IsNullOrEmpty(Model.PaymentSoundUrl))
     {
         <link rel="preload" href="@Model.PaymentSoundUrl" as="audio" />
@@ -276,7 +278,7 @@
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step6')}}</li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step7')}}</li>
                 <li class="list-group-item text-warning font-weight-bold">{{$t('pmnt_guide_safello_step8')}} <br><br>
-                    <div class="text-danger font-weight-normal">{{(parseFloat(srvModel.btcDue) + 0.00025).toFixed(8)}} BTC<br></div></li>
+                    <div class="text-danger font-weight-normal">{{(parseFloat(srvModel.due) + 0.00025).toFixed(8)}} BTC<br></div></li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step9')}}</li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step10')}}</li>
                 <li class="list-group-item">{{$t('pmnt_guide_safello_step11')}}</li>
@@ -413,12 +415,12 @@
                     @await Component.InvokeAsync("UiExtensionPoint", new { location = "checkout-payment-method", model = Model })
                 </div>
                 <script>
-function toggleInstructions(button) {
-  var targetId = button.getAttribute("data-target");
-  var target = document.getElementById(targetId);
-  target.hidden = !target.hidden;
-}
-</script>
+                function toggleInstructions(button) {
+                    var targetId = button.getAttribute("data-target");
+                    var target = document.getElementById(targetId);
+                    target.hidden = !target.hidden;
+                    }
+                </script>
 				<component v-if="paymentMethodComponent" :is="paymentMethodComponent"
                            :model="srvModel"
                            :nfc-scanning="nfc.scanning"

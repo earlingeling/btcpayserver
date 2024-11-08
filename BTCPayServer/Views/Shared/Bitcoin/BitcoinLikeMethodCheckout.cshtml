@@ -7,11 +7,12 @@
 <template id="@BitcoinCheckoutModelExtension.CheckoutBodyComponentName">
     @await Component.InvokeAsync("UiExtensionPoint", new {location = "checkout-bitcoin-pre-content", model = Model})
     <div class="payment-box">
-        <div v-if="model.invoiceBitcoinUrlQR" class="qr-container" :data-qr-value="model.invoiceBitcoinUrlQR" :data-clipboard="model.invoiceBitcoinUrl" data-clipboard-confirm-element="#Address_@Model.PaymentMethodId [data-clipboard]">
-            <div>
-                <qrcode :value="model.invoiceBitcoinUrlQR" tag="div" :options="qrOptions" />
+
+        <div v-if="model.due" class="input-group mt-3">
+            <div class="form-floating" id="Due_@Model.PaymentMethodId">
+                <vc:truncate-center text="model.due" is-vue="true" padding="15" elastic="true" classes="form-control-plaintext" />
+                <label v-t="'due'"></label>
             </div>
-            <img class="qr-icon" :src="model.cryptoImage" :alt="model.paymentMethodName"/>
         </div>
         <div v-if="model.address" class="input-group mt-3">
             <div class="form-floating" id="Address_@Model.PaymentMethodId">
