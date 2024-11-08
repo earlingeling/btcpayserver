@@ -16,7 +16,7 @@
 
         <div v-if="model.due" class="input-group mt-3">
             <div class="form-floating">
-                <vc:truncate-center text="`${model.due} ${model.paymentMethodCurrency}`" is-vue="true" padding="45" elastic="true" classes="form-control-plaintext" />
+                <dd :data-clipboard="model.due" data-clipboard-hover="start" class="form-control-plaintext">{{ model.due }} BTC</dd>
                 <label v-t="{ path: 'amount_due', args: { paymentMethod: model.paymentMethodName }}"></label>
             </div>
         </div>
