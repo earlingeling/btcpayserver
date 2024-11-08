@@ -11,7 +11,7 @@
         <div v-if="model.due" class="input-group mt-3">
             <div class="form-floating" id="BtcDue_Display_@Model.PaymentMethodId">
                 <vc:truncate-center text="model.due" is-vue="true" padding="15" elastic="true" classes="form-control-plaintext" />
-                <label v-t="{ path: 'amount_due', args: { paymentMethod: model.paymentMethodName }} BTC"></label>
+                <label v-t="{ path: 'amount_due', args: { paymentMethod: model.paymentMethodName }}"></label>
             </div>
         </div>
         <div v-if="model.address" class="input-group mt-3">
