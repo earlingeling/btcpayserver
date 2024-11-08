@@ -30,7 +30,7 @@ public class TruncateCenter : ViewComponent
             Text = text,
             Link = link,
             Id = id,
-            IsTruncated = text.Length > 2 * padding
+            IsTruncated = text.Length > 2 * padding && padding > 0
         };
         if (!vm.IsVue)
         {
