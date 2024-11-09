@@ -25,8 +25,8 @@
                 />
                 <label v-t="{ path: 'amount_due', args: { paymentMethod: model.paymentMethodName }}"></label>
             </div>
-            <p class="disclaimer-text mt-2" style="color: #d9534f; font-weight: bold;">
-                {{$t('qr_text')}} Please check the payment instructions above. The amount shown may not account for additional fees from payment processors, which could be deducted from your transfer. Ensure the correct amount is received to avoid delays.
+            <p class="disclaimer-text mt-2" style="color: #d9534f; font-size: 0.775rem;">
+                <strong v-text-translate="'important'">{{$t('amount_important')}}</strong> {{$t('amount_disclaimer')}}
             </p>
         </div>
         <div v-if="model.address" class="input-group mt-3">

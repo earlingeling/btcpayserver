@@ -135,5 +135,8 @@
   "pmnt_guide_paybis_extra1": "Viktig: Man må fylle ut beløp i feltet for bitcoin, ikke norske kroner, dersom overføringen skal bli godkjent hos oss. (Beløpet er høyere i rent kronebeløp enn ordrebeløpet på grunn av betalingsgebyret.)",
   "pmnt_guide_advantage_paybis_1": "Enklest, billigst og kjappest",
   "pmnt_guide_advantage_paybis_2": "Spør om legitimasjon i kun 5% av overføringene",
-  "pmnt_guide_disadvantage_paybis_1": "Ingen KYC-sjekk!"
+  "pmnt_guide_disadvantage_paybis_1": "Ingen KYC-sjekk!",
+
+  "amount_important": "Viktig!",
+  "amount_disclaimer": "Vennligst bruk betalingsinstruksjonene ovenfor før du bruker dette beløpet. Avhengig av betalingsleverandør kan beløpet variere."
 }
