@@ -41,6 +41,16 @@
     {
         <link rel="preload" href="@Model.ErrorSoundUrl" as="audio" />
     }
+
+    <style>
+        .unselectable {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+
 </head>
 <body class="min-vh-100">
     <div id="Checkout" class="public-page-wrap" v-cloak>
@@ -356,14 +366,10 @@
             </div>
             <div v-if="srvModel.address" id="PaymentDetails-Address" key="Address">
                 <dt v-t="'address'"></dt>
-                <dd :data-clipboard="srvModel.address" data-clipboard-hover="start">        
-                <vc:truncate-center 
-                    text="srvModel.address" 
-                    is-vue="true" 
-                    padding="15" 
-                    elastic="true" 
-                    classes="form-control-plaintext" 
-                />
+                <dd :data-clipboard="srvModel.address" data-clipboard-hover="start" class="unselectable">
+                    {{ srvModel.address.length > 30 
+                        ? srvModel.address.substring(0, 10) + '…' + srvModel.address.substring(srvModel.address.length - 10) 
+                        : srvModel.address }}
                 </dd>
             </div>
             <div v-if="orderAmount > 0 && srvModel.orderAmountFiat" id="PaymentDetails-TotalFiat" key="TotalFiat">
