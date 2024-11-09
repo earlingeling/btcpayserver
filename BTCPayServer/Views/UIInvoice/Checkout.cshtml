@@ -78,7 +78,10 @@
                         <div v-if="showPaymentDueInfo" v-html="replaceNewlines($t('still_due', { amount: `${srvModel.due} ${srvModel.paymentMethodCurrency}` }))"></div>
                     </div>
                 </div>
-                <button id="DetailsToggle" class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button" :aria-expanded="displayPaymentDetails ? 'true' : 'false'" v-on:click="displayPaymentDetails = !displayPaymentDetails">
+                <button id="DetailsToggle" class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button" 
+                        :aria-expanded="displayPaymentDetails ? 'true' : 'false'" 
+                        v-bind:displayPaymentDetails="true" <!-- Set default to true -->
+                        v-on:click="displayPaymentDetails = !displayPaymentDetails">
                     <span class="fw-semibold" v-t="'view_details'"></span>
                     <vc:icon symbol="caret-down" />
                 </button>
@@ -371,6 +374,11 @@
             <div v-if="showRecommendedFee" id="PaymentDetails-RecommendedFee" key="RecommendedFee">
                 <dt v-t="'recommended_fee'"></dt>
                 <dd :data-clipboard="asNumber(srvModel.feeRate)" data-clipboard-hover="start" v-t="{ path: 'fee_rate', args: { feeRate: srvModel.feeRate } }"></dd>
+            </div>
+            <!-- Add address from srvModel.adress here -->
+            <div v-if="srvModel.address" id="PaymentDetails-Address" key="Address">
+                <dt v-t="'address'"></dt>
+                <dd :data-clipboard="srvModel.address" data-clipboard-hover="start" v-text="srvModel.address"></dd>
             </div>
         </dl>
     </script>
