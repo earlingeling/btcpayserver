@@ -351,6 +351,12 @@
         </div>
     </noscript>
     <script type="text/x-template" id="payment-details">
+        <div class="disclaimer-container mt-3">
+            <div class="disclaimer-text" style="font-size: 0.85rem; color: #d9534f; background-color: #fff3cd; border: 1px solid #d9534f; padding: 10px; border-radius: 4px; text-align: center;">
+                <strong v-t="'amount_important'"></strong> 
+                <span v-t="'amount_disclaimer'"></span>
+            </div>
+        </div>
         <dl>
             <div v-if="paid > 0" id="PaymentDetails-AmountPaid" key="AmountPaid">
                 <dt v-t="'amount_paid'"></dt>
