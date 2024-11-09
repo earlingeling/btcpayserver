@@ -49,6 +49,14 @@
             -ms-user-select: none;
             user-select: none;
         }
+        .disclaimer-text {
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        @@keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
     </style>
 
 </head>
@@ -351,12 +359,6 @@
         </div>
     </noscript>
     <script type="text/x-template" id="payment-details">
-        <div class="disclaimer-container mt-3">
-            <div class="disclaimer-text" style="font-size: 0.85rem; color: #d9534f; background-color: #fff3cd; border: 1px solid #d9534f; padding: 10px; border-radius: 4px; text-align: center;">
-                <strong v-t="'amount_important'"></strong> 
-                <span v-t="'amount_disclaimer'"></span>
-            </div>
-        </div>
         <dl>
             <div v-if="paid > 0" id="PaymentDetails-AmountPaid" key="AmountPaid">
                 <dt v-t="'amount_paid'"></dt>
@@ -401,6 +403,12 @@
                 <dd :data-clipboard="asNumber(srvModel.feeRate)" data-clipboard-hover="start" v-t="{ path: 'fee_rate', args: { feeRate: srvModel.feeRate } }"></dd>
             </div>
         </dl>
+        <div class="disclaimer-container">
+            <div class="disclaimer-text" style="font-size: 0.7rem; color: #d9534f; background-color: #fff3cd; border: 1px solid #d9534f; padding: 7px; border-radius: 3px; text-align: center;">
+                <strong v-t="'amount_important'"></strong> 
+                <span v-t="'amount_disclaimer'"></span>
+            </div>
+        </div>
     </script>
     <script>
 	    const i18nUrl = @Safe.Json($"{Model.RootPath}misc/translations/checkout/{{{{lng}}}}?v={Env.Version}");
