@@ -359,16 +359,16 @@
             <div v-if="due > 0" id="PaymentDetails-AmountDue" key="AmountDue">
                 <dt v-t="'amount_due'"></dt>
                 <dd :data-clipboard="asNumber(srvModel.due)" data-clipboard-hover="start" v-text="`${srvModel.due} ${srvModel.paymentMethodCurrency}`"></dd>
-            </div>
-            <div v-if="srvModel.address" id="PaymentDetails-Address" key="Address">
-                <dt v-t="'address'"></dt>
-                <dd :data-clipboard="srvModel.address" data-clipboard-hover="start" v-text="srvModel.address"></dd>
+                <div class="disclaimer-text mt-2" style="font-size: 0.7rem; color: #d9534f; text-align: left;">
+                    <strong v-t="'amount_important'"></strong> 
+                    <span v-t="'amount_disclaimer'"></span>
+                </div>
             </div>
             <div v-if="srvModel.address" id="PaymentDetails-Address" key="Address">
                 <dt v-t="'address'"></dt>
                 <dd :data-clipboard="srvModel.address" data-clipboard-hover="start" class="unselectable">
                     {{ srvModel.address.length > 30 
-                        ? srvModel.address.substring(0, 10) + '…' + srvModel.address.substring(srvModel.address.length - 10) 
+                        ? srvModel.address.substring(0, 9) + ' … ' + srvModel.address.substring(srvModel.address.length - 9) 
                         : srvModel.address }}
                 </dd>
             </div>
