@@ -341,9 +341,17 @@
     </noscript>
     <script type="text/x-template" id="payment-details">
         <dl>
-            <div v-if="orderAmount > 0" id="PaymentDetails-TotalPrice" key="TotalPrice">
-                <dt v-t="'total_price'"></dt>
-                <dd :data-clipboard="asNumber(srvModel.orderAmount)" data-clipboard-hover="start">{{srvModel.orderAmount}} {{ srvModel.paymentMethodCurrency }}</dd>
+            <div v-if="paid > 0" id="PaymentDetails-AmountPaid" key="AmountPaid">
+                <dt v-t="'amount_paid'"></dt>
+                <dd :data-clipboard="asNumber(srvModel.paid)" data-clipboard-hover="start" v-text="`${srvModel.paid} ${srvModel.paymentMethodCurrency}`"></dd>
+            </div>
+            <div v-if="due > 0" id="PaymentDetails-AmountDue" key="AmountDue">
+                <dt v-t="'amount_due'"></dt>
+                <dd :data-clipboard="asNumber(srvModel.due)" data-clipboard-hover="start" v-text="`${srvModel.due} ${srvModel.paymentMethodCurrency}`"></dd>
+            </div>
+            <div v-if="srvModel.address" id="PaymentDetails-Address" key="Address">
+                <dt v-t="'address'"></dt>
+                <dd :data-clipboard="srvModel.address" data-clipboard-hover="start" v-text="srvModel.address"></dd>
             </div>
             <div v-if="orderAmount > 0 && srvModel.orderAmountFiat" id="PaymentDetails-TotalFiat" key="TotalFiat">
                 <dt v-t="'total_fiat'"></dt>
@@ -363,22 +371,9 @@
                     <div v-text="`${srvModel.networkFee} ${srvModel.paymentMethodCurrency}`"></div>
                 </dd>
             </div>
-            <div v-if="paid > 0" id="PaymentDetails-AmountPaid" key="AmountPaid">
-                <dt v-t="'amount_paid'"></dt>
-                <dd :data-clipboard="asNumber(srvModel.paid)" data-clipboard-hover="start" v-text="`${srvModel.paid} ${srvModel.paymentMethodCurrency}`"></dd>
-            </div>
-            <div v-if="due > 0" id="PaymentDetails-AmountDue" key="AmountDue">
-                <dt v-t="'amount_due'"></dt>
-                <dd :data-clipboard="asNumber(srvModel.due)" data-clipboard-hover="start" v-text="`${srvModel.due} ${srvModel.paymentMethodCurrency}`"></dd>
-            </div>
             <div v-if="showRecommendedFee" id="PaymentDetails-RecommendedFee" key="RecommendedFee">
                 <dt v-t="'recommended_fee'"></dt>
                 <dd :data-clipboard="asNumber(srvModel.feeRate)" data-clipboard-hover="start" v-t="{ path: 'fee_rate', args: { feeRate: srvModel.feeRate } }"></dd>
-            </div>
-            <!-- Add address from srvModel.adress here -->
-            <div v-if="srvModel.address" id="PaymentDetails-Address" key="Address">
-                <dt v-t="'address'"></dt>
-                <dd :data-clipboard="srvModel.address" data-clipboard-hover="start" v-text="srvModel.address"></dd>
             </div>
         </dl>
     </script>
