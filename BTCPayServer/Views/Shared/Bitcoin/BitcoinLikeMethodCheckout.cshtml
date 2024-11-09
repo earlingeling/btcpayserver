@@ -25,9 +25,9 @@
                 />
                 <label v-t="{ path: 'amount_due', args: { paymentMethod: model.paymentMethodName }}"></label>
             </div>
-            <p class="disclaimer-text mt-2" style="color: #d9534f; font-size: 0.775rem;">
-                <strong v-text-translate="'important'">{{$t('amount_important')}}</strong> {{$t('amount_disclaimer')}}
-            </p>
+            <div class="disclaimer-text mt-2" style="font-size: 0.7rem; text-align: left">
+                <strong style="color: #d9534f;">{{$t('amount_important')}} </strong>{{$t('amount_disclaimer')}}
+            </div>
         </div>
         <div v-if="model.address" class="input-group mt-3">
             <div class="form-floating unselectable" id="Address_@Model.PaymentMethodId">
