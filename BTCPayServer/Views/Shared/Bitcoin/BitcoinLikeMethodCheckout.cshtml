@@ -48,84 +48,19 @@
            :href="model.invoiceBitcoinUrl" :title="$t(hasPayjoin ? 'BIP21 payment link with PayJoin support' : 'BIP21 payment link')" v-t="'pay_in_wallet'"></a>
         @await Component.InvokeAsync("UiExtensionPoint", new {location = "checkout-bitcoin-post-content", model = Model})
     </div>
+    
+    <div id="PaymentDetails" class="payment-details">
+        <payment-details
+            :srv-model="srvModel"
+            :is-active="isActive"
+            :order-amount="orderAmount"
+            :paid="paid"
+            :due="due"
+            :show-recommended-fee="showRecommendedFee"
+            class="pb-4" />
+    </div>
 
 
-
-    <div id="payment" v-if="isActive">
-                <div v-if="srvModel.itemDesc && srvModel.itemDesc !== srvModel.storeName" v-text="srvModel.itemDesc" class="fw-semibold text-center text-break text-muted mb-3"></div>
-                <div class="d-flex justify-content-center mt-1 text-center">
-                    @if (Model.IsUnsetTopUp)
-                    {
-                        <h2 id="AmountDue" v-t="'any_amount'"></h2>
-                    }
-                    else
-                    {
-                        <h2 id="AmountDue" v-text="`${srvModel.due} ${srvModel.paymentMethodCurrency}`" :data-clipboard="asNumber(srvModel.due)" data-clipboard-hover :data-amount-due="srvModel.due">@Model.Due @Model.PaymentMethodCurrency</h2>
-                    }
-                </div>
-                <div id="PaymentInfo" class="info mt-3 mb-2" v-collapsible="showInfo">
-                    <div>
-                        <div class="timer" v-if="showTimer">
-                            <span class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden"></span></span>
-                            <span v-t="'expiry_info'"></span> <span class="expiryTime">{{timeText}}</span>
-                        </div>
-                        <div class="payment-due" v-if="showPaymentDueInfo">
-                            <vc:icon symbol="info" />
-                            <span v-t="'partial_payment_info'"></span>
-                        </div>
-                        <div v-if="showPaymentDueInfo" v-html="replaceNewlines($t('still_due', { amount: `${srvModel.due} ${srvModel.paymentMethodCurrency}` }))"></div>
-                    </div>
-                </div>
-                <button id="DetailsToggle" class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button" :aria-expanded="displayPaymentDetails ? 'true' : 'false'" v-on:click="displayPaymentDetails = !displayPaymentDetails">
-                    <span class="fw-semibold" v-t="'view_details'"></span>
-                    <vc:icon symbol="caret-down" />
-                </button>
-                <div id="PaymentDetails" class="payment-details" v-collapsible="displayPaymentDetails">
-                    <payment-details
-                        :srv-model="srvModel"
-                        :is-active="isActive"
-                        :order-amount="orderAmount"
-                        :paid="paid"
-                        :due="due"
-                        :show-recommended-fee="showRecommendedFee"
-                        class="pb-4" />
-                </div>
-
-        <!-- New -->
-        <div class="payment-wizard mt-3 mb-2">
-            <div id="step1">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">{{$t('pmnt_step1_title')}}</h4>
-                        <p class="card-text">{{$t('pmnt_step1_content')}}</p>
-                        <button class="btn btn-primary me-2" onclick="showStep(2)">{{$t('pmnt_step1_option1')}}</button>
-                        <button class="btn btn-primary" onclick="showStep(3)">{{$t('pmnt_step1_option2')}}</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="step2" hidden>
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">{{$t('pmnt_step2_title')}}</h4>
-                        <p class="card-text">{{$t('pmnt_step2_content')}}</p>
-                        <p>
-                            {{$t('pmnt_dynamic_amount')}}:
-                            <b>
-                                {{
-                                    (
-                                        (parseFloat(srvModel.orderAmountFiat.replace(/[^0-9.]/g, '')) / 100 * 1.05) +
-                                        (0.00025 * parseFloat(srvModel.rate.replace(/[^0-9.]/g, '')) / 100) +
-                                        20
-                                    ).toFixed(0)
-                                }} kr
-                            </b>
-                        </p>
-                        <button class="btn btn-secondary me-2" onclick="showStep(1)">{{$t('back')}}</button>
-                        <button class="btn btn-primary" onclick="showStep(4)">{{$t('next')}}</button>
-                    </div>
-                </div>
-            </div>
 </template>
 
 <script>
