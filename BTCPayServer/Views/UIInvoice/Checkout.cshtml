@@ -358,7 +358,8 @@
             </p>
         </div>
     </noscript>
-    <script type="text/x-template" id="payment-details">
+<script type="text/x-template" id="payment-details">
+    <div>
         <dl>
             <div v-if="paid > 0" id="PaymentDetails-AmountPaid" key="AmountPaid">
                 <dt v-t="'amount_paid'"></dt>
@@ -367,10 +368,6 @@
             <div v-if="due > 0" id="PaymentDetails-AmountDue" key="AmountDue">
                 <dt v-t="'amount_due'"></dt>
                 <dd :data-clipboard="asNumber(srvModel.due)" data-clipboard-hover="start" v-text="`${srvModel.due} ${srvModel.paymentMethodCurrency}`"></dd>
-                <div class="disclaimer-text mt-2" style="font-size: 0.7rem; color: #d9534f; text-align: left;">
-                    <strong v-t="'amount_important'"></strong> 
-                    <span v-t="'amount_disclaimer'"></span>
-                </div>
             </div>
             <div v-if="srvModel.address" id="PaymentDetails-Address" key="Address">
                 <dt v-t="'address'"></dt>
@@ -403,13 +400,15 @@
                 <dd :data-clipboard="asNumber(srvModel.feeRate)" data-clipboard-hover="start" v-t="{ path: 'fee_rate', args: { feeRate: srvModel.feeRate } }"></dd>
             </div>
         </dl>
-        <div class="disclaimer-container">
-            <div class="disclaimer-text" style="font-size: 0.7rem; color: #d9534f; background-color: #fff3cd; border: 1px solid #d9534f; padding: 7px; border-radius: 3px; text-align: center;">
-                <strong v-t="'amount_important'"></strong> 
-                <span v-t="'amount_disclaimer'"></span>
-            </div>
+        <!-- Disclaimer placed after dl -->
+        <div class="disclaimer-text mt-3" style="font-size: 0.85rem; color: #d9534f; background-color: #fff3cd; border: 1px solid #d9534f; padding: 10px; border-radius: 4px; text-align: center;">
+            <i class="fas fa-exclamation-circle" style="margin-right: 5px;"></i>
+            <strong v-t="'amount_important'"></strong> 
+            <span v-t="'amount_disclaimer'"></span>
         </div>
-    </script>
+    </div>
+</script>
+
     <script>
 	    const i18nUrl = @Safe.Json($"{Model.RootPath}misc/translations/checkout/{{{{lng}}}}?v={Env.Version}");
         const statusUrl = @Safe.Json(Url.Action("GetStatus", new { invoiceId = Model.InvoiceId }));
