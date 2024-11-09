@@ -32,6 +32,13 @@
                 <strong style="color: #d9534f;">{{$t('amount_important')}} </strong>{{$t('amount_disclaimer')}}
             </div>
         </div>
+        <!-- Create a new field with amount due, but without truncate - but in same style -->
+        <div v-if="model.due" class="input-group mt-3">
+            <div class="form-floating unselectable">
+                <span class="form-control-plaintext" style="font-size: 1.5rem; font-weight: bold;">{{model.due}}</span>
+                <label v-t="{ path: 'amount_due', args: { paymentMethod: model.paymentMethodName }}"></label>
+            </div>
+        </div>
         <div v-if="model.address" class="input-group mt-3">
             <div class="form-floating unselectable" id="Address_@Model.PaymentMethodId">
                 <vc:truncate-center text="model.address" is-vue="true" padding="15" elastic="true" classes="form-control-plaintext" />
@@ -48,14 +55,6 @@
            :href="model.invoiceBitcoinUrl" :title="$t(hasPayjoin ? 'BIP21 payment link with PayJoin support' : 'BIP21 payment link')" v-t="'pay_in_wallet'"></a>
         @await Component.InvokeAsync("UiExtensionPoint", new {location = "checkout-bitcoin-post-content", model = Model})
     </div>
-    
-    <payment-details
-        :srv-model="model"
-        :order-amount="orderAmount"
-        :paid="paid"
-        :due="due"
-        :show-recommended-fee="showRecommendedFee"
-        class="mt-4" />
 
 </template>
 
@@ -80,43 +79,4 @@
             }
         }
     });
-</script>
-
-<script type="text/x-template" id="payment-details">
-    <dl>
-        <div v-if="orderAmount > 0" id="PaymentDetails-TotalPrice" key="TotalPrice">
-            <dt v-t="'total_price'"></dt>
-            <dd :data-clipboard="asNumber(model.orderAmount)" data-clipboard-hover="start">{{model.orderAmount}} {{ model.paymentMethodCurrency }}</dd>
-        </div>
-        <div v-if="orderAmount > 0 && model.orderAmountFiat" id="PaymentDetails-TotalFiat" key="TotalFiat">
-            <dt v-t="'total_fiat'"></dt>
-            <dd :data-clipboard="asNumber(model.orderAmountFiat)" data-clipboard-hover="start">{{model.orderAmountFiat}}</dd>
-        </div>
-        <div v-if="model.rate && model.paymentMethodCurrency" id="PaymentDetails-ExchangeRate" key="ExchangeRate">
-            <dt v-t="'exchange_rate'"></dt>
-            <dd :data-clipboard="asNumber(model.rate)" data-clipboard-hover="start">
-                <template v-if="model.paymentMethodCurrency === 'sats'">1 sat = {{ model.rate }}</template>
-                <template v-else>1 {{ model.paymentMethodCurrency }} = {{ model.rate }}</template>
-            </dd>
-        </div>
-        <div v-if="model.networkFee" id="PaymentDetails-NetworkCost" key="NetworkCost">
-            <dt v-t="'network_cost'"></dt>
-            <dd :data-clipboard="asNumber(model.networkFee)" data-clipboard-hover="start">
-                <div v-if="model.txCountForFee > 0" v-t="{ path: 'tx_count', args: { count: model.txCount } }"></div>
-                <div v-text="`${model.networkFee} ${model.paymentMethodCurrency}`"></div>
-            </dd>
-        </div>
-        <div v-if="paid > 0" id="PaymentDetails-AmountPaid" key="AmountPaid">
-            <dt v-t="'amount_paid'"></dt>
-            <dd :data-clipboard="asNumber(model.paid)" data-clipboard-hover="start" v-text="`${model.paid} ${model.paymentMethodCurrency}`"></dd>
-        </div>
-        <div v-if="due > 0" id="PaymentDetails-AmountDue" key="AmountDue">
-            <dt v-t="'amount_due'"></dt>
-            <dd :data-clipboard="asNumber(model.due)" data-clipboard-hover="start" v-text="`${model.due} ${model.paymentMethodCurrency}`"></dd>
-        </div>
-        <div v-if="showRecommendedFee" id="PaymentDetails-RecommendedFee" key="RecommendedFee">
-            <dt v-t="'recommended_fee'"></dt>
-            <dd :data-clipboard="asNumber(model.feeRate)" data-clipboard-hover="start" v-t="{ path: 'fee_rate', args: { feeRate: model.feeRate } }"></dd>
-        </div>
-    </dl>
 </script>
