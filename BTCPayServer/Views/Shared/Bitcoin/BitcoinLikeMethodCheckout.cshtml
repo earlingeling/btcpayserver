@@ -10,7 +10,6 @@
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
-        pointer-events: none;
     }
 </style>
 
@@ -22,8 +21,8 @@
                 <vc:truncate-center 
                     text="`${model.due}`" 
                     is-vue="true" 
-                    padding="15" 
-                    elastic="true" 
+                    padding="0" 
+                    elastic="false" 
                     copy="true"
                     classes="form-control-plaintext" 
                 />
