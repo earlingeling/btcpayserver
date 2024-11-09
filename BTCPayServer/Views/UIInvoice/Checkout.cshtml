@@ -400,6 +400,68 @@
     </div>
     </div>
 <!-- Firi end -->
+
+
+<!-- Payment Wizard Start -->
+<div class="payment-wizard mt-3 mb-2" v-bind="{ currentStep: 1 }">
+    <div v-show="currentStep === 1">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{$t('pmnt_step1_title')}}</h4>
+                <p class="card-text">{{$t('pmnt_step1_content')}}</p>
+                <button class="btn btn-primary me-2" v-on:click="currentStep = 2">{{$t('pmnt_step1_option1')}}</button>
+                <button class="btn btn-primary" v-on:click="currentStep = 3">{{$t('pmnt_step1_option2')}}</button>
+            </div>
+        </div>
+    </div>
+
+    <div v-show="currentStep === 2">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{$t('pmnt_step2_title')}}</h4>
+                <p class="card-text">{{$t('pmnt_step2_content')}}</p>
+                <p>
+                    {{$t('pmnt_dynamic_amount')}}:
+                    {{
+                        (
+                            (parseFloat(srvModel.orderAmountFiat.replace(/[^0-9.]/g, '')) / 100 * 1.05) +
+                            (0.00025 * parseFloat(srvModel.rate.replace(/[^0-9.]/g, '')) / 100) +
+                            20
+                        ).toFixed(0)
+                    }} kr
+                </p>
+                <button class="btn btn-secondary me-2" v-on:click="currentStep = 1">{{$t('back')}}</button>
+                <button class="btn btn-primary" v-on:click="currentStep = 4">{{$t('next')}}</button>
+            </div>
+        </div>
+    </div>
+
+    <div v-show="currentStep === 3">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{$t('pmnt_step3_title')}}</h4>
+                <p class="card-text">{{$t('pmnt_step3_content')}}</p>
+                <p>
+                    {{ $t('pmnt_due_amount', { amount: srvModel.due }) }} BTC
+                </p>
+                <button class="btn btn-secondary me-2" v-on:click="currentStep = 1">{{$t('back')}}</button>
+                <button class="btn btn-primary" v-on:click="currentStep = 4">{{$t('next')}}</button>
+            </div>
+        </div>
+    </div>
+
+    <div v-show="currentStep === 4">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{$t('pmnt_step4_title')}}</h4>
+                <p class="card-text">{{$t('pmnt_step4_content')}}</p>
+                <button class="btn btn-secondary" v-on:click="currentStep = 3">{{$t('back')}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Payment Wizard End -->
+
                 <div v-if="displayedPaymentMethods.length > 1 || @Safe.Json(hasPaymentPlugins)" class="mt-3 mb-2">
                     <h6 class="text-center mb-3" v-t="'pay_with'"></h6>
                     <div class="btcpay-pills d-flex flex-wrap align-items-center justify-content-center gap-2 pb-2">
@@ -421,6 +483,20 @@
                     target.hidden = !target.hidden;
                     }
                 </script>
+
+                
+                <script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+        new Vue({
+            el: ".payment-wizard",
+            data: {
+                currentStep: 1,
+            },
+        });
+    });
+</script>
+
 				<component v-if="paymentMethodComponent" :is="paymentMethodComponent"
                            :model="srvModel"
                            :nfc-scanning="nfc.scanning"
