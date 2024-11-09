@@ -49,17 +49,13 @@
         @await Component.InvokeAsync("UiExtensionPoint", new {location = "checkout-bitcoin-post-content", model = Model})
     </div>
     
-    <div id="PaymentDetails" class="payment-details">
-        <payment-details
-            :srv-model="srvModel"
-            :is-active="isActive"
-            :order-amount="orderAmount"
-            :paid="paid"
-            :due="due"
-            :show-recommended-fee="showRecommendedFee"
-            class="pb-4" />
-    </div>
-
+    <payment-details
+        :srv-model="model"
+        :order-amount="orderAmount"
+        :paid="paid"
+        :due="due"
+        :show-recommended-fee="showRecommendedFee"
+        class="mt-4" />
 
 </template>
 
