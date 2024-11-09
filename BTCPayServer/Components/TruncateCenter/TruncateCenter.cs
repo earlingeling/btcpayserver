@@ -32,11 +32,24 @@ public class TruncateCenter : ViewComponent
             Id = id,
             IsTruncated = text.Length > 2 * padding && padding > 0
         };
+        
+        // Update the Start and End properties based on the IsTruncated condition
         if (!vm.IsVue)
         {
-            vm.Start = vm.IsTruncated && !vm.Elastic ? $"{text[..padding]}…" : text;
-            vm.End = vm.IsTruncated ? text[^padding..] : string.Empty;
+            if (vm.IsTruncated && !vm.Elastic)
+            {
+                // Only set Start and End if truncation is needed
+                vm.Start = text[..padding];
+                vm.End = text[^padding..];
+            }
+            else
+            {
+                // No truncation needed, use the full text
+                vm.Start = text;
+                vm.End = string.Empty;
+            }
         }
+        
         return View(vm);
     }
 }
