@@ -390,7 +390,7 @@
             </p>
         </div>
         <dl>
-            <div v-if="order-id" id="PaymentDetails-OrderId" key="OrderId">
+            <div v-if="srvModel.orderId" id="PaymentDetails-OrderId" key="OrderId">
                 <dt v-t="'order_id'"></dt>
                 <dd :data-clipboard="srvModel.orderId" data-clipboard-hover="start">{{srvModel.orderId}}</dd>
             </div>
