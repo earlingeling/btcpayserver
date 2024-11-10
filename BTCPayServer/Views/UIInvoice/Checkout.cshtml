@@ -192,7 +192,7 @@
             </div>
 
             <!-- Payment Guide Introduction -->
-            <div id="step20">
+            <div id="step20" hidden>
                 <div class="card">
                     <h4 class="card-header">{{$t('pmnt_guide_title')}}</h4>
                     <div class="card-body">
@@ -207,15 +207,14 @@
                             <p class="card-text">Some text about the vendor</p>
                         </div>
                         <div class="card-footer">
-                            <div class="text-center mt-2">
-                                <a href="https://Linktovendor.com" class="btn btn-link">Visit</a>
-                            </div>>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-primary" onclick="showStep(300)">Open instructions</button>
+                            </div>
+                        </div>
                     </div>
-
                     <div class="card-footer">
-                        <div class="btn-group btn-group-sm d-flex w-90">
-                            <button class="btn btn-primary flex-fill" onclick="showStep(200)">{{$t('pmnt_button_instructions')}}</button>
-                            <button class="btn btn-secondary flex-fill" onclick="showStep(10)">{{$t('pmnt_button_crypto')}}</button>
+                        <div class="text-center mt-2">
+                            <a onclick="showStep(1)" class="btn btn-link">{{$t('home')}}</a>
                         </div>
                     </div>
                 </div>
