@@ -57,6 +57,11 @@
             font-size: 0.9rem;
         }
 
+        .card-header,
+        .card-footer {
+            border: none;
+        }
+
         @@keyframes fadeIn {
             0% { opacity: 0; }
             100% { opacity: 1; }
@@ -85,7 +90,7 @@
                     }
                     else
                     {
-                        <h2 v-t="'your_invoice'"> @Model.OrderId</h2>
+                        <h2 v-t="'your_invoice'"></h2>
                         // :data-clipboard="asNumber(srvModel.due)" data-clipboard-hover :data-amount-due="srvModel.due">@Model.Due @Model.PaymentMethodCurrency
                     }
                 </div>
@@ -131,8 +136,8 @@
                     </div>
                     <div class="card-footer">
                         <div class="btn-group btn-group-sm">
+                            <button class="btn btn-primary" onclick="showStep(200)">{{$t('pmnt_button_instructions')}}</button>
                             <button class="btn btn-primary" onclick="showStep(300)">{{$t('pmnt_button_crypto')}}</button>
-                            <button class="btn btn-secondary me-2" onclick="showStep(200)">{{$t('pmnt_button_instructions')}}</button>
                         </div>
                     </div>
                 </div>
@@ -385,6 +390,10 @@
             </p>
         </div>
         <dl>
+            <div v-if="order-id" id="PaymentDetails-OrderId" key="OrderId">
+                <dt v-t="'order_id'"></dt>
+                <dd :data-clipboard="srvModel.orderId" data-clipboard-hover="start">{{srvModel.orderId}}</dd>
+            </div>
             <div v-if="paid > 0" id="PaymentDetails-AmountPaid" key="AmountPaid">
                 <dt v-t="'amount_paid'"></dt>
                 <dd :data-clipboard="asNumber(srvModel.paid)" data-clipboard-hover="start" v-text="`${srvModel.paid} ${srvModel.paymentMethodCurrency}`"></dd>
