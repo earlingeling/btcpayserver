@@ -168,6 +168,29 @@
                 </div>
             </div>
 
+            <!-- Information about KYC -->
+            <div id="step11" hidden>
+                <div class="card">
+                    <h4 class="card-header">{{$t('pmnt_kyc_title')}}</h4>
+                    <div class="card-body">
+                        <p class="card-text">{{$t('pmnt_kyc_content')}}</p>
+                        <p class="card-text">{{$t('pmnt_kyc_content_two')}}</p>
+                        <p class="card-text">{{$t('pmnt_kyc_content_three')}}</p>
+                        <p class="card-text">{{$t('pmnt_kyc_content_four')}}</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="btn-group btn-group-sm d-flex w-90">
+                            <button class="btn btn-primary flex-fill" onclick="showStep(200)">{{$t('pmnt_button_instructions')}}</button>
+                            <!-- <button class="btn btn-primary flex-fill" onclick="showStep(11)">KYC</button> -->
+                        </div>
+                        <!-- Add home link here -->
+                        <div class="text-center mt-2">
+                            <a onclick="showStep(1)" class="btn btn-link">{{$t('home')}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="step200" hidden>
                 <div class="card">
                     <div class="card-body">
