@@ -360,6 +360,19 @@
     </noscript>
 <script type="text/x-template" id="payment-details">
     <div>
+        <!-- Disclaimer placed before dl -->
+        <div class="disclaimer-text mt-3" style="font-size: 0.85rem; color: #d9534f; background-color: #fff3cd; border: 1px solid #d9534f; padding: 15px; border-radius: 4px; text-align: center;">
+            <div style="font-size: 1rem; font-weight: bold; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+                <i class="fas fa-exclamation-circle" style="margin-right: 5px;"></i>
+                <strong v-t="'amount_important'"></strong>
+            </div>
+            <p style="margin-top: 10px; font-size: 0.7rem;">
+                <span v-t="'copy_information'"></span>
+            </p>
+            <p style="margin-top: 10px; font-size: 0.7rem;">
+                <span v-t="'amount_disclaimer'"></span>
+            </p>
+        </div>
         <dl>
             <div v-if="paid > 0" id="PaymentDetails-AmountPaid" key="AmountPaid">
                 <dt v-t="'amount_paid'"></dt>
@@ -400,12 +413,6 @@
                 <dd :data-clipboard="asNumber(srvModel.feeRate)" data-clipboard-hover="start" v-t="{ path: 'fee_rate', args: { feeRate: srvModel.feeRate } }"></dd>
             </div>
         </dl>
-        <!-- Disclaimer placed after dl -->
-        <div class="disclaimer-text mt-3" style="font-size: 0.85rem; color: #d9534f; background-color: #fff3cd; border: 1px solid #d9534f; padding: 10px; border-radius: 4px; text-align: center;">
-            <i class="fas fa-exclamation-circle" style="margin-right: 5px;"></i>
-            <strong v-t="'amount_important'"></strong> 
-            <span v-t="'amount_disclaimer'"></span>
-        </div>
     </div>
 </script>
 

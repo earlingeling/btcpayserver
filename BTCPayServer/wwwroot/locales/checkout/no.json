@@ -138,5 +138,6 @@
   "pmnt_guide_disadvantage_paybis_1": "Ingen KYC-sjekk!",
 
   "amount_important": "Viktig!",
-  "amount_disclaimer": "Vennligst les betalingsinstruksjonene nedenfor nøye før du bruker beløpet. Enkelte betalingsleverandører krever at du betaler et høyere beløp enn det som står her for å dekke gebyrer. Dersom du betaler for lite, vil ikke betalingen bli godkjent."
+  "amount_disclaimer": "Vennligst les betalingsinstruksjonene nedenfor nøye før du bruker beløpet. Enkelte betalingsleverandører krever at du betaler et høyere beløp enn det som står her for å dekke gebyrer. Dersom du betaler for lite, vil ikke betalingen bli godkjent.",
+  "copy_information": "Trykk på feltene for å kopiere teksten."
 }
