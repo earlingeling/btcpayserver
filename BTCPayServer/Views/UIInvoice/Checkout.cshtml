@@ -85,7 +85,7 @@
                     }
                     else
                     {
-                        <h2 v-t="'your_invoice'"></h2>
+                        <h2 v-t="'your_invoice'"> @Model.OrderId</h2>
                         // :data-clipboard="asNumber(srvModel.due)" data-clipboard-hover :data-amount-due="srvModel.due">@Model.Due @Model.PaymentMethodCurrency
                     }
                 </div>
@@ -130,8 +130,10 @@
                         <p class="card-text">{{$t('pmnt_intro_content_three')}}</p>
                     </div>
                     <div class="card-footer">
-                        <button class="btn btn-primary btn-sm" onclick="showStep(300)">{{$t('pmnt_button_crypto')}}</button>
-                        <button class="btn btn-secondary me-2 btn-sm mt-2" onclick="showStep(200)">{{$t('pmnt_button_instructions')}}</button>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-primary" onclick="showStep(300)">{{$t('pmnt_button_crypto')}}</button>
+                            <button class="btn btn-secondary me-2" onclick="showStep(200)">{{$t('pmnt_button_instructions')}}</button>
+                        </div>
                     </div>
                 </div>
             </div>
