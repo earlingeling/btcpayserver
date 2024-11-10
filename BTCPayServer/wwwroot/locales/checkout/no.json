@@ -45,11 +45,16 @@
 
   "your_invoice": "Din faktura:",
   "amount_important": "Viktig!",
-  "amount_disclaimer": "Vennligst les betalingsinstruksjonene nedenfor nøye før du bruker beløpet. Enkelte betalingsleverandører krever at du betaler et høyere beløp enn det som står her for å dekke gebyrer. Dersom din betalingsleverandør er en av disse, får du riktig beløp i instruksjonene under.",
+  "amount_disclaimer": "Vennligst les betalingsveiledningen nedenfor nøye før du bruker beløpet. Enkelte betalingsleverandører krever at du betaler et høyere beløp enn det som står her for å dekke gebyrer. Dersom din betalingsleverandør er en av disse, får du riktig beløp i instruksjonene under.",
   "copy_information": "Trykk på feltene for å kopiere.",
 
-  "pmnt_intro_title": "Betalingsinstruksjoner",
-  "pmnt_intro_content": "For å ivareta både din og vår sikkerhet og anonymitet, godtar vi utelukkende betaling med kryptovaluta. Kryptovaluta er en sikker og anonymt betalingsmiddel som er helt ufarlig å bruke. Den åpenbare ulempen er at det er litt mer komplisert å bruke enn tradisjonelle betalingsmetoder. Vi har derfor laget en enkel guide for deg som er nybegynner, og som ikke har brukt kryptovaluta før. Følg instruksjonene nøye, så skal du se at det er enklere enn du tror å betale med kryptovaluta.",
-  "pmnt_intro_content_two": "Dersom vi sammenligner med tradisjonelle betalingsmetoder, så kan du finne kontonummer, beløp og KID-nummer i fakturadetaljene ovenfor. Den største forskjellen er at kontonummer og KID-nummer er erstattet med en bitcoin-adresse og et beløp i kryptovaluta. Dette er det eneste du trenger for å betale fakturaen din. Du trenger ikke å oppgi navn, adresse eller annen personlig informasjon. Dette er en av de mange fordelene med kryptovaluta.",
-  "pmnt_intro_content_three": "For å komme i gang, bruk navigasjonen under. Dersom det ikke er første gangen du betaler, kan du hoppe over introduksjonen og gå direkte til instruksjoner for betalingsleverandører."
+  "pmnt_button_instructions": "Betalingsveiledning",
+  "pmnt_button_crypto": "Om kryptovaluta",
+
+  "pmnt_intro_title": "Om betaling",
+  "pmnt_intro_content": "For å ivareta både din og vår sikkerhet og anonymitet, godtar vi utelukkende betaling med kryptovaluta. Kryptovaluta er en sikker og anonymt betalingsmiddel som er helt ufarlig å bruke. Den åpenbare ulempen er at det er litt mer komplisert å bruke enn tradisjonelle betalingsmetoder.",
+  "pmnt_intro_content_two": "Vi har derfor laget en enkel guide for deg som er nybegynner, og som ikke har kjøpt eller sendt kryptovaluta før. Følg veiledningen nøye, så skal du se at det er mye enklere enn du tror å betale med kryptovaluta.",
+  "pmnt_intro_content_three": "For å komme i gang, bruk navigasjonen under. Hvis det er din aller første gang med kryptovaluta, anbefaler vi at du leser introduksjonen vår til kryptovaluta før du går til veiledningen.",
+
+  "pmnt_intro_content_two2": "Dersom vi sammenligner med tradisjonelle betalingsmetoder, så kan du finne kontonummer, beløp og KID-nummer i fakturadetaljene ovenfor. Den største forskjellen er at kontonummer og KID-nummer er erstattet med en bitcoin-adresse og et beløp i kryptovaluta. Dette er det eneste du trenger for å betale fakturaen din. Du trenger ikke å oppgi navn, adresse eller annen personlig informasjon. Dette er en av de mange fordelene med kryptovaluta."
 }
