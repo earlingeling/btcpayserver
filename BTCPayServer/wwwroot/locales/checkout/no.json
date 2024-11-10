@@ -48,6 +48,10 @@
   "amount_disclaimer": "Vennligst les betalingsveiledningen nedenfor nøye før du bruker beløpet. Enkelte betalingsleverandører krever at du betaler et høyere beløp enn det som står her for å dekke gebyrer. Dersom din betalingsleverandør er en av disse, får du riktig beløp i instruksjonene under.",
   "copy_information": "Trykk på feltene for å kopiere.",
 
+  "back": "Tilbake",
+  "next": "Neste",
+  "home": "Tilbake til forsiden",
+
   "pmnt_button_instructions": "Betalingsveiledning",
   "pmnt_button_crypto": "Kryptovaluta",
 
@@ -56,5 +60,10 @@
   "pmnt_intro_content_two": "Vi har derfor laget en enkel guide for deg som er nybegynner, og som ikke har kjøpt eller sendt kryptovaluta før. Følg veiledningen nøye, så skal du se at det er mye enklere enn du tror å betale med kryptovaluta.",
   "pmnt_intro_content_three": "For å komme i gang, bruk navigasjonen under. Hvis det er din aller første gang med kryptovaluta, anbefaler vi at du leser introduksjonen vår til kryptovaluta før du går til veiledningen.",
 
-  "pmnt_intro_content_two2": "Dersom vi sammenligner med tradisjonelle betalingsmetoder, så kan du finne kontonummer, beløp og KID-nummer i fakturadetaljene ovenfor. Den største forskjellen er at kontonummer og KID-nummer er erstattet med en bitcoin-adresse og et beløp i kryptovaluta. Dette er det eneste du trenger for å betale fakturaen din. Du trenger ikke å oppgi navn, adresse eller annen personlig informasjon. Dette er en av de mange fordelene med kryptovaluta."
+  "pmnt_crypto_title": "Innføring i Kryptovaluta",
+  "pmnt_crypto_content": "Kryptovaluta er en digital valuta som er sikker og anonym å bruke. Kryptovaluta er en desentralisert valuta, noe som betyr at ingen myndigheter eller banker har kontroll over den. Blokkjedeteknologi er kort forklart en teknologi som gjør det mulig å sende penger direkte fra person til person, uten at noen tredjepart er involvert. Dette gjør kryptovaluta til et sikkert og anonymt betalingsmiddel.",
+  "pmnt_crypto_content_two": "I vår butikk brukes Bitcoin som betalingsmiddel. Blokkjeden til Bitcoin er åpen og transparent, noe som betyr at alle transaksjoner er offentlige og kan spores. Åpent og offentlig? Det høres jo ikke særlig sikkert ut? Jo, det er faktisk det.",
+  "pmnt_crypto_content_three": "Dersom vi sammenligner med tradisjonelle betalingsmetoder, så kan du finne kontonummer, beløp og KID-nummer i fakturadetaljene ovenfor. Den største forskjellen er at kontonummer og KID-nummer er erstattet med en bitcoin-adresse og et beløp i kryptovaluta. Dette er det eneste du trenger for å betale fakturaen din. Du trenger ikke å oppgi navn, adresse eller annen personlig informasjon.",
+
+  "pmnt_intro_content_two2": "Dersom vi sammenligner med tradisjonelle betalingsmetoder, så kan du finne kontonummer, beløp og KID-nummer i fakturadetaljene ovenfor. Den største forskjellen er at kontonummer og KID-nummer er erstattet med en bitcoin-adresse og et beløp i kryptovaluta. Dette er det eneste du trenger for å betale fakturaen din. Du trenger ikke å oppgi navn, adresse eller annen personlig informasjon."
 }

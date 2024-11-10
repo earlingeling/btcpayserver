@@ -126,6 +126,8 @@
 
         <!-- Payment Wizard Start -->
         <div class="payment-wizard mt-3 mb-2">
+
+            <!-- Front Page - Introduction to payment -->
             <div id="step1">
                 <div class="card">
                     <h4 class="card-header">{{$t('pmnt_intro_title')}}</h4>
@@ -137,8 +139,30 @@
                     <div class="card-footer">
                         <div class="btn-group btn-group-sm d-flex w-90">
                             <button class="btn btn-primary flex-fill" onclick="showStep(200)">{{$t('pmnt_button_instructions')}}</button>
-                            <button class="btn btn-secondary flex-fill" onclick="showStep(300)">{{$t('pmnt_button_crypto')}}</button>
+                            <button class="btn btn-secondary flex-fill" onclick="showStep(10)">{{$t('pmnt_button_crypto')}}</button>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Information about Cryptocurrency -->
+
+            <div id="step10" hidden>
+                <div class="card">
+                    <h4 class="card-header">{{$t('pmnt_crypto_title')}}</h4>
+                    <div class="card-body">
+                        <p class="card-text">{{$t('pmnt_crypto_content')}}</p>
+                        <p class="card-text">{{$t('pmnt_crypto_content_two')}}</p>
+                        <p class="card-text">{{$t('pmnt_crypto_content_three')}}</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="btn-group btn-group-sm d-flex w-90">
+                            <button class="btn btn-secondary flex-fill" onclick="showStep(1)">{{$t('back')}}</button>
+                            <button class="btn btn-primary flex-fill" onclick="showStep(200)">{{$t('next')}}</button>
+                        </div>
+                        <!-- Add home link here -->
+                        <div class="text-center mt-2">
+                            <a href="" onclick="showStep(1)" class="btn btn-link">{{$t('home')}}</a>
                     </div>
                 </div>
             </div>
