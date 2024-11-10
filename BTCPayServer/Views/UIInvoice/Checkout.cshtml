@@ -157,7 +157,7 @@
                     </div>
                     <div class="card-footer">
                         <div class="btn-group btn-group-sm d-flex w-90">
-                            <button class="btn btn-secondary flex-fill" onclick="showStep(200)">{{$t('pmnt_button_instructions')}}</button>
+                            <button class="btn btn-secondary flex-fill" onclick="showStep(20)">{{$t('pmnt_button_instructions')}}</button>
                             <button class="btn btn-primary flex-fill" onclick="showStep(11)">KYC</button>
                         </div>
                         <!-- Add home link here -->
@@ -180,12 +180,42 @@
                     </div>
                     <div class="card-footer">
                         <div class="btn-group btn-group-sm d-flex w-90">
-                            <button class="btn btn-primary flex-fill" onclick="showStep(200)">{{$t('pmnt_button_instructions')}}</button>
+                            <button class="btn btn-primary flex-fill" onclick="showStep(20)">{{$t('pmnt_button_instructions')}}</button>
                             <!-- <button class="btn btn-primary flex-fill" onclick="showStep(11)">KYC</button> -->
                         </div>
                         <!-- Add home link here -->
                         <div class="text-center mt-2">
                             <a onclick="showStep(1)" class="btn btn-link">{{$t('home')}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Guide Introduction -->
+            <div id="step20">
+                <div class="card">
+                    <h4 class="card-header">{{$t('pmnt_guide_title')}}</h4>
+                    <div class="card-body">
+                        <p class="card-text">{{$t('pmnt_guide_content')}}</p>
+                        <p class="card-text">{{$t('pmnt_guide_content_two')}}</p>
+                        <p class="card-text">{{$t('pmnt_guide_content_three')}}</p>
+                    </div>
+                    <div class="card">
+                        <img class="card-img-top" src="https://via.placeholder.com/150" alt="Card image cap">
+                        <h4 class="card-header">Vendor name</h4>
+                        <div class="card-body">
+                            <p class="card-text">Some text about the vendor</p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="text-center mt-2">
+                                <a href="https://Linktovendor.com" class="btn btn-link">Visit</a>
+                            </div>>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="btn-group btn-group-sm d-flex w-90">
+                            <button class="btn btn-primary flex-fill" onclick="showStep(200)">{{$t('pmnt_button_instructions')}}</button>
+                            <button class="btn btn-secondary flex-fill" onclick="showStep(10)">{{$t('pmnt_button_crypto')}}</button>
                         </div>
                     </div>
                 </div>
