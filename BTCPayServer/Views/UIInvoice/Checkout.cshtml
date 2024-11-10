@@ -53,6 +53,10 @@
             animation: fadeIn 1.5s ease-in-out;
         }
 
+        .card-text {
+            font-size: 0.9rem;
+        }
+
         @@keyframes fadeIn {
             0% { opacity: 0; }
             100% { opacity: 1; }
@@ -81,7 +85,8 @@
                     }
                     else
                     {
-                        <h2 id="AmountDue" v-text="`${srvModel.due} ${srvModel.paymentMethodCurrency}`" :data-clipboard="asNumber(srvModel.due)" data-clipboard-hover :data-amount-due="srvModel.due">@Model.Due @Model.PaymentMethodCurrency</h2>
+                        <h2 v-t="'your_invoice'"></h2>
+                        // :data-clipboard="asNumber(srvModel.due)" data-clipboard-hover :data-amount-due="srvModel.due">@Model.Due @Model.PaymentMethodCurrency
                     }
                 </div>
                 <div id="PaymentInfo" class="info mt-3 mb-2" v-collapsible="showInfo">
@@ -119,8 +124,10 @@
             <div id="step1">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">{{$t('pmnt_step1_title')}}</h4>
-                        <p class="card-text">{{$t('pmnt_step1_content')}}</p>
+                        <h4 class="card-title">{{$t('pmnt_intro_title')}}</h4>
+                        <p class="card-text">{{$t('pmnt_intro_content')}}</p>
+                        <p class="card-text">{{$t('pmnt_intro_content_two')}}</p>
+                        <p class="card-text">{{$t('pmnt_intro_content_two')}}</p>
                         <button class="btn btn-primary me-2" onclick="showStep(2)">{{$t('pmnt_step1_option1')}}</button>
                         <button class="btn btn-primary" onclick="showStep(3)">{{$t('pmnt_step1_option2')}}</button>
                     </div>
@@ -130,7 +137,7 @@
             <div id="step2" hidden>
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">{{$t('pmnt_step2_title')}}</h4>
+                        <h4 class="card-title">{{$t('pmnt_step2_title')}}:</h4>
                         <p class="card-text">{{$t('pmnt_step2_content')}}</p>
                         <p>
                             {{$t('pmnt_dynamic_amount')}}:
