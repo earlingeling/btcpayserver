@@ -44,7 +44,7 @@
   "invoice_paidpartial_body": "En faktura er kun gyldig i {{minutes}} minutter. Denne fakturaen utløp med en betaling under fakturaens sum. Som regel skyldes dette at du ikke har tatt hensyn til betalingsleverandørens avgiftsnivåer i henhold til veiledningen. Dette løser vi som oftest med å endre til et kortere produkt (og gi deg pengene du da har til gode), eventuelt finner vi andre løsninger sammen med deg. Vennligst kontakt oss, slik at vi kan fullføre bestillingen din.",
   "invoice_expired_body": "En faktura er kun gyldig i {{minutes}} minutter. Gå tilbake til {{storeName}} hvis du vil sende inn en ny betaling.",
 
-  "your_invoice": "Din faktura:",
+  "your_invoice": "Faktura:",
   "view_details": "Åpne din faktura",
   "amount_important": "Viktig!",
   "amount_disclaimer": "Vennligst les betalingsveiledningen nedenfor nøye. Enkelte betalingsleverandører krever at du betaler et høyere beløp enn det som oppgitt her for å dekke gebyrer. Dersom din betalingsleverandør er en av disse, får du riktig beløp i instruksjonene under.",

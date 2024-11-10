@@ -138,7 +138,7 @@
                     </div>
                     <div class="card-footer">
                         <div class="btn-group btn-group-sm d-flex w-90">
-                            <button class="btn btn-primary flex-fill" onclick="showStep(200)">{{$t('pmnt_button_instructions')}}</button>
+                            <button class="btn btn-primary flex-fill" onclick="showStep(20)">{{$t('pmnt_button_instructions')}}</button>
                             <button class="btn btn-secondary flex-fill" onclick="showStep(10)">{{$t('pmnt_button_crypto')}}</button>
                         </div>
                     </div>
@@ -281,14 +281,14 @@
                     </div>
                     @await Component.InvokeAsync("UiExtensionPoint", new { location = "checkout-payment-method", model = Model })
                 </div>
-                <script>
-                function toggleInstructions(button) {
-                    var targetId = button.getAttribute("data-target");
-                    var target = document.getElementById(targetId);
-                    target.hidden = !target.hidden;
-                    }
-                </script>
 
+<script>
+function toggleInstructions(button) {
+    var targetId = button.getAttribute("data-target");
+    var target = document.getElementById(targetId);
+    target.hidden = !target.hidden;
+    }
+</script>
 
 <script>
     function showStep(stepNumber) {
