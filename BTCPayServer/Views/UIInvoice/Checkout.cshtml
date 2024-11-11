@@ -200,24 +200,44 @@
                         <p class="card-text">{{$t('pmnt_guide_content_two')}}</p>
                         <p class="card-text">{{$t('pmnt_guide_content_three')}}</p>
                         
-                        <!-- Dropdown Button for Collapsible Content -->
+                        <!-- Dropdown Button for Multiple Collapsible Content -->
                         <div class="dropdown mt-3">
                             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                 {{$t('additional_info_button')}}
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <li>
-                                    <a class="dropdown-item" data-bs-toggle="collapse" href="#collapseContent" role="button" aria-expanded="false" aria-controls="collapseContent">
-                                        {{$t('view_more')}}
+                                    <a class="dropdown-item" data-bs-toggle="collapse" href="#collapseContent1" role="button" aria-expanded="false" aria-controls="collapseContent1">
+                                        {{$t('view_more_1')}}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" data-bs-toggle="collapse" href="#collapseContent2" role="button" aria-expanded="false" aria-controls="collapseContent2">
+                                        {{$t('view_more_2')}}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" data-bs-toggle="collapse" href="#collapseContent3" role="button" aria-expanded="false" aria-controls="collapseContent3">
+                                        {{$t('view_more_3')}}
                                     </a>
                                 </li>
                             </ul>
                         </div>
 
-                        <!-- Collapsible Content -->
-                        <div class="collapse mt-2" id="collapseContent">
+                        <!-- Multiple Collapsible Content Sections -->
+                        <div class="collapse mt-2" id="collapseContent1">
                             <div class="card card-body">
-                                {{$t('pmnt_collapsible_content')}}
+                                {{$t('pmnt_collapsible_content_1')}}
+                            </div>
+                        </div>
+                        <div class="collapse mt-2" id="collapseContent2">
+                            <div class="card card-body">
+                                {{$t('pmnt_collapsible_content_2')}}
+                            </div>
+                        </div>
+                        <div class="collapse mt-2" id="collapseContent3">
+                            <div class="card card-body">
+                                {{$t('pmnt_collapsible_content_3')}}
                             </div>
                         </div>
                     </div>
@@ -229,6 +249,7 @@
                     </div>
                 </div>
             </div>
+
 
 
             <div id="step200" hidden>
