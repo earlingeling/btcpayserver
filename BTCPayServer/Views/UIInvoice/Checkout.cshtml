@@ -29,8 +29,6 @@
     <link href="~/checkout/checkout.css" asp-append-version="true" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" crossorigin="anonymous" />
-        <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
 
     @if (!string.IsNullOrEmpty(Model.PaymentSoundUrl))
@@ -205,8 +203,8 @@
                         <p class="card-text">{{$t('pmnt_guide_content_three')}}</p>
                         
                         <!-- Dropdown Button for Multiple Collapsible Content -->
-                        <div class="dropdown mt-3">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="dropdown mt-3" v-pre>
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                 {{$t('additional_info_button')}}
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -229,17 +227,17 @@
                         </div>
 
                         <!-- Multiple Collapsible Content Sections -->
-                        <div class="collapse mt-2" id="collapseContent1">
+                        <div class="collapse mt-2" id="collapseContent1" v-pre>
                             <div class="card card-body">
                                 {{$t('pmnt_collapsible_content_1')}}
                             </div>
                         </div>
-                        <div class="collapse mt-2" id="collapseContent2">
+                        <div class="collapse mt-2" id="collapseContent2" v-pre>
                             <div class="card card-body">
                                 {{$t('pmnt_collapsible_content_2')}}
                             </div>
                         </div>
-                        <div class="collapse mt-2" id="collapseContent3">
+                        <div class="collapse mt-2" id="collapseContent3" v-pre>
                             <div class="card card-body">
                                 {{$t('pmnt_collapsible_content_3')}}
                             </div>
@@ -253,6 +251,7 @@
                     </div>
                 </div>
             </div>
+
 
 
 
@@ -547,8 +546,6 @@ function toggleInstructions(button) {
         </div>
     </div>
 </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     <script>
 	    const i18nUrl = @Safe.Json($"{Model.RootPath}misc/translations/checkout/{{{{lng}}}}?v={Env.Version}");
         const statusUrl = @Safe.Json(Url.Action("GetStatus", new { invoiceId = Model.InvoiceId }));
