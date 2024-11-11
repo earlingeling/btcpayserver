@@ -203,23 +203,46 @@
                         <p class="card-text">{{$t('pmnt_guide_content_three')}}</p>
                         
                         <!-- Dropdown Button for Multiple Collapsible Content -->
-                        <div class="dropdown mt-3" v-pre>
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="dropdown mt-3">
+                            <button
+                                class="btn btn-primary dropdown-toggle"
+                                type="button"
+                                id="dropdownMenuButton"
+                                v-bind:data-bs-toggle="'dropdown'"
+                                aria-expanded="false">
                                 {{$t('additional_info_button')}}
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <li>
-                                    <a class="dropdown-item" data-bs-toggle="collapse" href="#collapseContent1" role="button" aria-expanded="false" aria-controls="collapseContent1">
+                                    <a
+                                        class="dropdown-item"
+                                        v-bind:data-bs-toggle="'collapse'"
+                                        href="#collapseContent1"
+                                        role="button"
+                                        aria-expanded="false"
+                                        aria-controls="collapseContent1">
                                         {{$t('view_more_1')}}
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" data-bs-toggle="collapse" href="#collapseContent2" role="button" aria-expanded="false" aria-controls="collapseContent2">
+                                    <a
+                                        class="dropdown-item"
+                                        v-bind:data-bs-toggle="'collapse'"
+                                        href="#collapseContent2"
+                                        role="button"
+                                        aria-expanded="false"
+                                        aria-controls="collapseContent2">
                                         {{$t('view_more_2')}}
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" data-bs-toggle="collapse" href="#collapseContent3" role="button" aria-expanded="false" aria-controls="collapseContent3">
+                                    <a
+                                        class="dropdown-item"
+                                        v-bind:data-bs-toggle="'collapse'"
+                                        href="#collapseContent3"
+                                        role="button"
+                                        aria-expanded="false"
+                                        aria-controls="collapseContent3">
                                         {{$t('view_more_3')}}
                                     </a>
                                 </li>
@@ -227,17 +250,17 @@
                         </div>
 
                         <!-- Multiple Collapsible Content Sections -->
-                        <div class="collapse mt-2" id="collapseContent1" v-pre>
+                        <div class="collapse mt-2" id="collapseContent1">
                             <div class="card card-body">
                                 {{$t('pmnt_collapsible_content_1')}}
                             </div>
                         </div>
-                        <div class="collapse mt-2" id="collapseContent2" v-pre>
+                        <div class="collapse mt-2" id="collapseContent2">
                             <div class="card card-body">
                                 {{$t('pmnt_collapsible_content_2')}}
                             </div>
                         </div>
-                        <div class="collapse mt-2" id="collapseContent3" v-pre>
+                        <div class="collapse mt-2" id="collapseContent3">
                             <div class="card card-body">
                                 {{$t('pmnt_collapsible_content_3')}}
                             </div>
@@ -251,8 +274,6 @@
                     </div>
                 </div>
             </div>
-
-
 
 
             <div id="step200" hidden>
@@ -536,12 +557,12 @@ function toggleInstructions(button) {
                 <i class="fas fa-exclamation-circle" style="margin-right: 5px;"></i>
                 <strong v-t="'amount_important'"></strong>
             </div>
-            <p class="mb-2 mt-2" style="font-size: 0.7rem;">
-                <span v-t="'amount_disclaimer'"></span>
-            </p>
             <p class="mb-2 mt-2" style="font-weight: bold; font-size: 0.7rem;">
                 <i class="fas fa-info-circle" style="margin-right: 5px;"></i>
                 <span v-t="'copy_information'"></span>
+            </p>
+            <p class="mb-2 mt-2" style="font-size: 0.7rem;">
+                <span v-t="'amount_disclaimer'"></span>
             </p>
         </div>
     </div>
