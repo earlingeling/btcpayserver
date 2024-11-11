@@ -259,6 +259,15 @@ function initApp() {
             }
         },
         methods: {
+            toggleDropdown(section) {
+                // If the same section is clicked again, close it by setting openDropdown to null
+                if (this.openDropdown === section) {
+                    this.openDropdown = null;
+                } else {
+                    // Otherwise, open the clicked section and close others
+                    this.openDropdown = section;
+                }
+            },
             asNumber,
             changePaymentMethod (id) { // payment method or plugin id
                 if (this.pmId !== id) {

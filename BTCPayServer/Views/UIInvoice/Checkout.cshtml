@@ -70,7 +70,10 @@
             left: 0;
             z-index: 1000;
             margin-top: 0.5rem; /* Adds space between button and dropdown */
+            width: 100%;       /* Ensure dropdown matches the button width */
         }
+
+        .btn-group > button {position: relative;}
 
         @@keyframes fadeIn {
             0% { opacity: 0; }
@@ -213,37 +216,45 @@
                         <!-- Button Group with Dropdowns for Each Country Section -->
                         <div class="btn-group btn-group-sm d-flex w-90 mt-3">
                             <!-- Norway Dropdown -->
-                            <button class="btn btn-primary flex-fill" type="button" @@click="displayNorwayLinks = !displayNorwayLinks" :aria-expanded="displayNorwayLinks">
+                            <button class="btn btn-primary flex-fill" type="button" 
+                                    @@click="toggleDropdown('Norway')" 
+                                    :aria-expanded="openDropdown === 'Norway'">
                                 {{$t('norway')}}
                             </button>
-                            <div v-if="displayNorwayLinks" class="dropdown-menu show custom-dropdown p-2">
+                            <div v-if="openDropdown === 'Norway'" class="dropdown-menu show custom-dropdown p-2">
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(21)">{{$t('norway_link_1')}}</a>
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(22)">{{$t('norway_link_2')}}</a>
                             </div>
 
                             <!-- Sweden Dropdown -->
-                            <button class="btn btn-secondary flex-fill" type="button" @@click="displaySwedenLinks = !displaySwedenLinks" :aria-expanded="displaySwedenLinks">
+                            <button class="btn btn-secondary flex-fill" type="button" 
+                                    @@click="toggleDropdown('Sweden')" 
+                                    :aria-expanded="openDropdown === 'Sweden'">
                                 {{$t('sweden')}}
                             </button>
-                            <div v-if="displaySwedenLinks" class="dropdown-menu show custom-dropdown p-2">
+                            <div v-if="openDropdown === 'Sweden'" class="dropdown-menu show custom-dropdown p-2">
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(23)">{{$t('sweden_link_1')}}</a>
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(24)">{{$t('sweden_link_2')}}</a>
                             </div>
 
                             <!-- Danish Dropdown -->
-                            <button class="btn btn-primary flex-fill" type="button" @@click="displayDanishLinks = !displayDanishLinks" :aria-expanded="displayDanishLinks">
+                            <button class="btn btn-primary flex-fill" type="button" 
+                                    @@click="toggleDropdown('Danish')" 
+                                    :aria-expanded="openDropdown === 'Danish'">
                                 {{$t('danish')}}
                             </button>
-                            <div v-if="displayDanishLinks" class="dropdown-menu show custom-dropdown p-2">
+                            <div v-if="openDropdown === 'Danish'" class="dropdown-menu show custom-dropdown p-2">
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(25)">{{$t('danish_link_1')}}</a>
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(26)">{{$t('danish_link_2')}}</a>
                             </div>
 
                             <!-- Other Dropdown -->
-                            <button class="btn btn-secondary flex-fill" type="button" @@click="displayOtherLinks = !displayOtherLinks" :aria-expanded="displayOtherLinks">
+                            <button class="btn btn-secondary flex-fill" type="button" 
+                                    @@click="toggleDropdown('Other')" 
+                                    :aria-expanded="openDropdown === 'Other'">
                                 {{$t('other')}}
                             </button>
-                            <div v-if="displayOtherLinks" class="dropdown-menu show custom-dropdown p-2">
+                            <div v-if="openDropdown === 'Other'" class="dropdown-menu show custom-dropdown p-2">
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(27)">{{$t('other_link_1')}}</a>
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(28)">{{$t('other_link_2')}}</a>
                             </div>
