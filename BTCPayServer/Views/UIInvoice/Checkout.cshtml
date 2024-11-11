@@ -201,56 +201,47 @@
                         <p class="card-text">{{$t('pmnt_guide_content')}}</p>
                         <p class="card-text">{{$t('pmnt_guide_content_two')}}</p>
                         <p class="card-text">{{$t('pmnt_guide_content_three')}}</p>
-                        
-                        <!-- Norway Links Section -->
-                        <button id="NorwayLinksToggle" class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button"
-                                :aria-expanded="displayNorwayLinks ? 'true' : 'false'"
-                                @@click="displayNorwayLinks = !displayNorwayLinks">
-                            <span class="fw-semibold">{{$t('view_more_norway')}}</span>
-                            <vc:icon symbol="caret-down" />
-                        </button>
-                        <div v-if="displayNorwayLinks" class="btn-group btn-group-sm d-flex w-90 mt-2">
-                            <button class="btn btn-primary flex-fill" @@click="showStep(21)">{{$t('norway_link_1')}}</button>
-                            <button class="btn btn-secondary flex-fill" @@click="showStep(22)">{{$t('norway_link_2')}}</button>
-                        </div>
 
-                        <!-- Sweden Links Section -->
-                        <button id="SwedenLinksToggle" class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button"
-                                :aria-expanded="displaySwedenLinks ? 'true' : 'false'"
-                                @@click="displaySwedenLinks = !displaySwedenLinks">
-                            <span class="fw-semibold">{{$t('view_more_sweden')}}</span>
-                            <vc:icon symbol="caret-down" />
-                        </button>
-                        <div v-if="displaySwedenLinks" class="btn-group btn-group-sm d-flex w-90 mt-2">
-                            <button class="btn btn-primary flex-fill" @@click="showStep(23)">{{$t('sweden_link_1')}}</button>
-                            <button class="btn btn-secondary flex-fill" @@click="showStep(24)">{{$t('sweden_link_2')}}</button>
-                        </div>
+                        <!-- Button Group with Dropdowns for Each Country Section -->
+                        <div class="btn-group btn-group-sm d-flex w-90 mt-3">
+                            <!-- Norway Dropdown -->
+                            <button class="btn btn-primary flex-fill" type="button" @@click="displayNorwayLinks = !displayNorwayLinks" :aria-expanded="displayNorwayLinks">
+                                {{$t('norway')}}
+                            </button>
+                            <div v-if="displayNorwayLinks" class="dropdown-menu show p-2">
+                                <a href="#" class="dropdown-item" @@click.prevent="showStep(1)">{{$t('norway_link_1')}}</a>
+                                <a href="#" class="dropdown-item" @@click.prevent="showStep(1)">{{$t('norway_link_2')}}</a>
+                            </div>
 
-                        <!-- Danish Links Section -->
-                        <button id="DanishLinksToggle" class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button"
-                                :aria-expanded="displayDanishLinks ? 'true' : 'false'"
-                                @@click="displayDanishLinks = !displayDanishLinks">
-                            <span class="fw-semibold">{{$t('view_more_danish')}}</span>
-                            <vc:icon symbol="caret-down" />
-                        </button>
-                        <div v-if="displayDanishLinks" class="btn-group btn-group-sm d-flex w-90 mt-2">
-                            <button class="btn btn-primary flex-fill" @@click="showStep(25)">{{$t('danish_link_1')}}</button>
-                            <button class="btn btn-secondary flex-fill" @@click="showStep(26)">{{$t('danish_link_2')}}</button>
-                        </div>
+                            <!-- Sweden Dropdown -->
+                            <button class="btn btn-secondary flex-fill" type="button" @@click="displaySwedenLinks = !displaySwedenLinks" :aria-expanded="displaySwedenLinks">
+                                {{$t('sweden')}}
+                            </button>
+                            <div v-if="displaySwedenLinks" class="dropdown-menu show p-2">
+                                <a href="#" class="dropdown-item" @@click.prevent="showStep(23)">{{$t('sweden_link_1')}}</a>
+                                <a href="#" class="dropdown-item" @@click.prevent="showStep(24)">{{$t('sweden_link_2')}}</a>
+                            </div>
 
-                        <!-- Other Links Section -->
-                        <button id="OtherLinksToggle" class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button"
-                                :aria-expanded="displayOtherLinks ? 'true' : 'false'"
-                                @@click="displayOtherLinks = !displayOtherLinks">
-                            <span class="fw-semibold">{{$t('view_more_other')}}</span>
-                            <vc:icon symbol="caret-down" />
-                        </button>
-                        <div v-if="displayOtherLinks" class="btn-group btn-group-sm d-flex w-90 mt-2">
-                            <button class="btn btn-primary flex-fill" @@click="showStep(27)">{{$t('other_link_1')}}</button>
-                            <button class="btn btn-secondary flex-fill" @@click="showStep(28)">{{$t('other_link_2')}}</button>
+                            <!-- Danish Dropdown -->
+                            <button class="btn btn-primary flex-fill" type="button" @@click="displayDanishLinks = !displayDanishLinks" :aria-expanded="displayDanishLinks">
+                                {{$t('danish')}}
+                            </button>
+                            <div v-if="displayDanishLinks" class="dropdown-menu show p-2">
+                                <a href="#" class="dropdown-item" @@click.prevent="showStep(25)">{{$t('danish_link_1')}}</a>
+                                <a href="#" class="dropdown-item" @@click.prevent="showStep(26)">{{$t('danish_link_2')}}</a>
+                            </div>
+
+                            <!-- Other Dropdown -->
+                            <button class="btn btn-secondary flex-fill" type="button" @@click="displayOtherLinks = !displayOtherLinks" :aria-expanded="displayOtherLinks">
+                                {{$t('other')}}
+                            </button>
+                            <div v-if="displayOtherLinks" class="dropdown-menu show p-2">
+                                <a href="#" class="dropdown-item" @@click.prevent="showStep(27)">{{$t('other_link_1')}}</a>
+                                <a href="#" class="dropdown-item" @@click.prevent="showStep(28)">{{$t('other_link_2')}}</a>
+                            </div>
                         </div>
                     </div>
-                    
+
                     <div class="card-footer">
                         <div class="text-center mt-2">
                             <a @@click="showStep(1)" class="btn btn-link">{{$t('home')}}</a>
@@ -258,6 +249,7 @@
                     </div>
                 </div>
             </div>
+
 
 
 
