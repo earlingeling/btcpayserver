@@ -215,11 +215,12 @@
                         <p class="card-text">{{$t('pmnt_guide_content')}}</p>
                         <p class="card-text">{{$t('pmnt_guide_content_two')}}</p>
                         <p class="card-text">{{$t('pmnt_guide_content_three')}}</p>
+                        <p class="card-text">{{$t('pmnt_guide_content_four')}}</p>
 
                         <!-- Button Group with Dropdowns for Each Country Section -->
                         <div class="btn-group btn-group-sm d-flex w-100 flex-wrap mt-3">
                             <!-- Norway Dropdown -->
-                            <button class="btn btn-primary flex-fill" type="button" 
+                            <button class="btn btn-secondary flex-fill" type="button" 
                                     @@click="toggleDropdown('Norway')" 
                                     :aria-expanded="openDropdown === 'Norway'">
                                 <!-- Add a flag icon as button text -->
@@ -242,7 +243,7 @@
                             </div>
 
                             <!-- Danish Dropdown -->
-                            <button class="btn btn-primary flex-fill" type="button" 
+                            <button class="btn btn-secondary flex-fill" type="button" 
                                     @@click="toggleDropdown('Danish')" 
                                     :aria-expanded="openDropdown === 'Danish'">
                                 <span class="flag-icon flag-icon-dk"></span>
