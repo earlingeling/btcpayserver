@@ -50,7 +50,7 @@
             user-select: none;
         }
         .disclaimer-text {
-            animation: fadeIn 1.5s ease-in-out;
+            animation: fadeIn 5s ease-in-out;
         }
 
         .card-text {
@@ -199,19 +199,29 @@
                         <p class="card-text">{{$t('pmnt_guide_content')}}</p>
                         <p class="card-text">{{$t('pmnt_guide_content_two')}}</p>
                         <p class="card-text">{{$t('pmnt_guide_content_three')}}</p>
-                    </div>
-                    <div class="card">
-                        <img class="card-img-top" src="https://via.placeholder.com/150" alt="Card image cap">
-                        <h4 class="card-header">Vendor name</h4>
-                        <div class="card-body">
-                            <p class="card-text">Some text about the vendor</p>
+                        
+                        <!-- Dropdown Button for Collapsible Content -->
+                        <div class="dropdown mt-3">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{$t('additional_info_button')}}
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li>
+                                    <a class="dropdown-item" data-bs-toggle="collapse" href="#collapseContent" role="button" aria-expanded="false" aria-controls="collapseContent">
+                                        {{$t('view_more')}}
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="card-footer">
-                            <div class="btn-group btn-group-sm">
-                                <button class="btn btn-primary" onclick="showStep(300)">Open instructions</button>
+
+                        <!-- Collapsible Content -->
+                        <div class="collapse mt-2" id="collapseContent">
+                            <div class="card card-body">
+                                {{$t('pmnt_collapsible_content')}}
                             </div>
                         </div>
                     </div>
+                    
                     <div class="card-footer">
                         <div class="text-center mt-2">
                             <a onclick="showStep(1)" class="btn btn-link">{{$t('home')}}</a>
@@ -219,6 +229,7 @@
                     </div>
                 </div>
             </div>
+
 
             <div id="step200" hidden>
                 <div class="card">
@@ -262,6 +273,20 @@
                 </div>
             </div>
 
+            <div id="step1000" hidden>
+                <div class="card">
+                    <img class="card-img-top" src="https://via.placeholder.com/150" alt="Card image cap">
+                    <h4 class="card-header">Vendor name</h4>
+                    <div class="card-body">
+                        <p class="card-text">Some text about the vendor</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-primary" onclick="showStep(300)">Open instructions</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Add more steps as needed -->
         </div>
         <!-- Payment Wizard End -->
@@ -452,20 +477,6 @@ function toggleInstructions(button) {
     </noscript>
 <script type="text/x-template" id="payment-details">
     <div>
-        <!-- Disclaimer placed before dl -->
-        <div class="disclaimer-text mt-1 mb-1" style="font-size: 0.85rem; color: #d9534f; background-color: #fff3cd; border: 1px solid #d9534f; padding: 10px; border-radius: 4px; text-align: center;">
-            <div style="font-size: 1rem; font-weight: bold; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
-                <i class="fas fa-exclamation-circle" style="margin-right: 5px;"></i>
-                <strong v-t="'amount_important'"></strong>
-            </div>
-            <p class="mb-2 mt-2" style="font-size: 0.7rem;">
-                <span v-t="'amount_disclaimer'"></span>
-            </p>
-            <p class="mb-2 mt-2" style="font-weight: bold; font-size: 0.7rem;">
-                <i class="fas fa-info-circle" style="margin-right: 5px;"></i>
-                <span v-t="'copy_information'"></span>
-            </p>
-        </div>
         <dl>
             <div v-if="srvModel.orderId" id="PaymentDetails-OrderId" key="OrderId">
                 <dt v-t="'order_id'"></dt>
@@ -510,6 +521,20 @@ function toggleInstructions(button) {
                 <dd :data-clipboard="asNumber(srvModel.feeRate)" data-clipboard-hover="start" v-t="{ path: 'fee_rate', args: { feeRate: srvModel.feeRate } }"></dd>
             </div>
         </dl>
+        <!-- Disclaimer placed after dl -->
+        <div class="disclaimer-text mt-2 mb-1" style="font-size: 0.85rem; color: #d9534f; background-color: #fff3cd; border: 1px solid #d9534f; padding: 10px; border-radius: 4px; text-align: center;">
+            <div style="font-size: 1rem; font-weight: bold; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+                <i class="fas fa-exclamation-circle" style="margin-right: 5px;"></i>
+                <strong v-t="'amount_important'"></strong>
+            </div>
+            <p class="mb-2 mt-2" style="font-size: 0.7rem;">
+                <span v-t="'amount_disclaimer'"></span>
+            </p>
+            <p class="mb-2 mt-2" style="font-weight: bold; font-size: 0.7rem;">
+                <i class="fas fa-info-circle" style="margin-right: 5px;"></i>
+                <span v-t="'copy_information'"></span>
+            </p>
+        </div>
     </div>
 </script>
 
