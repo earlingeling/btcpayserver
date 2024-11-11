@@ -114,6 +114,8 @@ function initApp() {
                     permissionGranted: false,
                     readerAbortController: null
                 },
+                // Track the current open dropdown
+                openDropdown: null,
                 // collapsible states:
                 displayNorwayLinks: false,
                 displaySwedenLinks: false,
