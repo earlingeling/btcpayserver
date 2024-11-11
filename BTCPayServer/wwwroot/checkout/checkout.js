@@ -93,7 +93,7 @@ function initApp() {
             return {
                 srvModel,
                 audioContext: new AudioContext(),
-                displayPaymentDetails: false,
+                displayPaymentDetails: true,
                 remainingSeconds: srvModel.expirationSeconds,
                 emailAddressInput: "",
                 emailAddressInputDirty: false,
@@ -113,7 +113,12 @@ function initApp() {
                     warningMessage: null,
                     permissionGranted: false,
                     readerAbortController: null
-                }
+                },
+                // collapsible states:
+                displayNorwayLinks: false,
+                displaySwedenLinks: false,
+                displayDanishLinks: false,
+                displayOtherLinks: false
             }
         },
         computed: {

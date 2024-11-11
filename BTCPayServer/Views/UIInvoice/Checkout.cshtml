@@ -202,78 +202,63 @@
                         <p class="card-text">{{$t('pmnt_guide_content_two')}}</p>
                         <p class="card-text">{{$t('pmnt_guide_content_three')}}</p>
                         
-                        <!-- Dropdown Button for Multiple Collapsible Content -->
-                        <div class="dropdown mt-3">
-                            <button
-                                class="btn btn-primary dropdown-toggle"
-                                type="button"
-                                id="dropdownMenuButton"
-                                v-bind:data-bs-toggle="'dropdown'"
-                                aria-expanded="false">
-                                {{$t('additional_info_button')}}
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <li>
-                                    <a
-                                        class="dropdown-item"
-                                        v-bind:data-bs-toggle="'collapse'"
-                                        href="#collapseContent1"
-                                        role="button"
-                                        aria-expanded="false"
-                                        aria-controls="collapseContent1">
-                                        {{$t('view_more_1')}}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        class="dropdown-item"
-                                        v-bind:data-bs-toggle="'collapse'"
-                                        href="#collapseContent2"
-                                        role="button"
-                                        aria-expanded="false"
-                                        aria-controls="collapseContent2">
-                                        {{$t('view_more_2')}}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        class="dropdown-item"
-                                        v-bind:data-bs-toggle="'collapse'"
-                                        href="#collapseContent3"
-                                        role="button"
-                                        aria-expanded="false"
-                                        aria-controls="collapseContent3">
-                                        {{$t('view_more_3')}}
-                                    </a>
-                                </li>
-                            </ul>
+                        <!-- Norway Links Section -->
+                        <button id="NorwayLinksToggle" class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button"
+                                :aria-expanded="displayNorwayLinks ? 'true' : 'false'"
+                                @@click="displayNorwayLinks = !displayNorwayLinks">
+                            <span class="fw-semibold">{{$t('view_more_norway')}}</span>
+                            <vc:icon symbol="caret-down" />
+                        </button>
+                        <div v-if="displayNorwayLinks" class="btn-group btn-group-sm d-flex w-90 mt-2">
+                            <button class="btn btn-primary flex-fill" @@click="showStep(21)">{{$t('norway_link_1')}}</button>
+                            <button class="btn btn-secondary flex-fill" @@click="showStep(22)">{{$t('norway_link_2')}}</button>
                         </div>
 
-                        <!-- Multiple Collapsible Content Sections -->
-                        <div class="collapse mt-2" id="collapseContent1">
-                            <div class="card card-body">
-                                {{$t('pmnt_collapsible_content_1')}}
-                            </div>
+                        <!-- Sweden Links Section -->
+                        <button id="SwedenLinksToggle" class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button"
+                                :aria-expanded="displaySwedenLinks ? 'true' : 'false'"
+                                @@click="displaySwedenLinks = !displaySwedenLinks">
+                            <span class="fw-semibold">{{$t('view_more_sweden')}}</span>
+                            <vc:icon symbol="caret-down" />
+                        </button>
+                        <div v-if="displaySwedenLinks" class="btn-group btn-group-sm d-flex w-90 mt-2">
+                            <button class="btn btn-primary flex-fill" @@click="showStep(23)">{{$t('sweden_link_1')}}</button>
+                            <button class="btn btn-secondary flex-fill" @@click="showStep(24)">{{$t('sweden_link_2')}}</button>
                         </div>
-                        <div class="collapse mt-2" id="collapseContent2">
-                            <div class="card card-body">
-                                {{$t('pmnt_collapsible_content_2')}}
-                            </div>
+
+                        <!-- Danish Links Section -->
+                        <button id="DanishLinksToggle" class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button"
+                                :aria-expanded="displayDanishLinks ? 'true' : 'false'"
+                                @@click="displayDanishLinks = !displayDanishLinks">
+                            <span class="fw-semibold">{{$t('view_more_danish')}}</span>
+                            <vc:icon symbol="caret-down" />
+                        </button>
+                        <div v-if="displayDanishLinks" class="btn-group btn-group-sm d-flex w-90 mt-2">
+                            <button class="btn btn-primary flex-fill" @@click="showStep(25)">{{$t('danish_link_1')}}</button>
+                            <button class="btn btn-secondary flex-fill" @@click="showStep(26)">{{$t('danish_link_2')}}</button>
                         </div>
-                        <div class="collapse mt-2" id="collapseContent3">
-                            <div class="card card-body">
-                                {{$t('pmnt_collapsible_content_3')}}
-                            </div>
+
+                        <!-- Other Links Section -->
+                        <button id="OtherLinksToggle" class="d-flex align-items-center gap-1 btn btn-link payment-details-button mb-2" type="button"
+                                :aria-expanded="displayOtherLinks ? 'true' : 'false'"
+                                @@click="displayOtherLinks = !displayOtherLinks">
+                            <span class="fw-semibold">{{$t('view_more_other')}}</span>
+                            <vc:icon symbol="caret-down" />
+                        </button>
+                        <div v-if="displayOtherLinks" class="btn-group btn-group-sm d-flex w-90 mt-2">
+                            <button class="btn btn-primary flex-fill" @@click="showStep(27)">{{$t('other_link_1')}}</button>
+                            <button class="btn btn-secondary flex-fill" @@click="showStep(28)">{{$t('other_link_2')}}</button>
                         </div>
                     </div>
                     
                     <div class="card-footer">
                         <div class="text-center mt-2">
-                            <a onclick="showStep(1)" class="btn btn-link">{{$t('home')}}</a>
+                            <a @@click="showStep(1)" class="btn btn-link">{{$t('home')}}</a>
                         </div>
                     </div>
                 </div>
             </div>
+
 
 
             <div id="step200" hidden>
