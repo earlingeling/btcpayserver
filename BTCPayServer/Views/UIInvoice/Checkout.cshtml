@@ -64,6 +64,14 @@
             border: none;
         }
 
+        .custom-dropdown {
+            position: absolute;
+            top: 100%; /* Positions the dropdown directly below the button */
+            left: 0;
+            z-index: 1000;
+            margin-top: 0.5rem; /* Adds space between button and dropdown */
+        }
+
         @@keyframes fadeIn {
             0% { opacity: 0; }
             100% { opacity: 1; }
@@ -208,16 +216,16 @@
                             <button class="btn btn-primary flex-fill" type="button" @@click="displayNorwayLinks = !displayNorwayLinks" :aria-expanded="displayNorwayLinks">
                                 {{$t('norway')}}
                             </button>
-                            <div v-if="displayNorwayLinks" class="dropdown-menu show p-2">
-                                <a href="#" class="dropdown-item" @@click.prevent="showStep(1)">{{$t('norway_link_1')}}</a>
-                                <a href="#" class="dropdown-item" @@click.prevent="showStep(1)">{{$t('norway_link_2')}}</a>
+                            <div v-if="displayNorwayLinks" class="dropdown-menu show custom-dropdown p-2">
+                                <a href="#" class="dropdown-item" @@click.prevent="showStep(21)">{{$t('norway_link_1')}}</a>
+                                <a href="#" class="dropdown-item" @@click.prevent="showStep(22)">{{$t('norway_link_2')}}</a>
                             </div>
 
                             <!-- Sweden Dropdown -->
                             <button class="btn btn-secondary flex-fill" type="button" @@click="displaySwedenLinks = !displaySwedenLinks" :aria-expanded="displaySwedenLinks">
                                 {{$t('sweden')}}
                             </button>
-                            <div v-if="displaySwedenLinks" class="dropdown-menu show p-2">
+                            <div v-if="displaySwedenLinks" class="dropdown-menu show custom-dropdown p-2">
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(23)">{{$t('sweden_link_1')}}</a>
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(24)">{{$t('sweden_link_2')}}</a>
                             </div>
@@ -226,7 +234,7 @@
                             <button class="btn btn-primary flex-fill" type="button" @@click="displayDanishLinks = !displayDanishLinks" :aria-expanded="displayDanishLinks">
                                 {{$t('danish')}}
                             </button>
-                            <div v-if="displayDanishLinks" class="dropdown-menu show p-2">
+                            <div v-if="displayDanishLinks" class="dropdown-menu show custom-dropdown p-2">
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(25)">{{$t('danish_link_1')}}</a>
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(26)">{{$t('danish_link_2')}}</a>
                             </div>
@@ -235,7 +243,7 @@
                             <button class="btn btn-secondary flex-fill" type="button" @@click="displayOtherLinks = !displayOtherLinks" :aria-expanded="displayOtherLinks">
                                 {{$t('other')}}
                             </button>
-                            <div v-if="displayOtherLinks" class="dropdown-menu show p-2">
+                            <div v-if="displayOtherLinks" class="dropdown-menu show custom-dropdown p-2">
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(27)">{{$t('other_link_1')}}</a>
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(28)">{{$t('other_link_2')}}</a>
                             </div>
