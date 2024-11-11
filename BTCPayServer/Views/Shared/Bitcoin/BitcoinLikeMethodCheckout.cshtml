@@ -15,9 +15,10 @@
 
 <template id="@BitcoinCheckoutModelExtension.CheckoutBodyComponentName">
     @await Component.InvokeAsync("UiExtensionPoint", new {location = "checkout-bitcoin-pre-content", model = Model})
-<!-- removed 
+
 
     <div class="payment-box">
+        <!-- removed 
         <div v-if="model.due" class="input-group mt-3">
             <div class="form-floating unselectable">
                 <vc:truncate-center 
