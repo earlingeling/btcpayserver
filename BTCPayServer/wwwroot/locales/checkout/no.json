@@ -45,7 +45,7 @@
   "invoice_expired_body": "En faktura er kun gyldig i {{minutes}} minutter. Gå tilbake til {{storeName}} hvis du vil sende inn en ny betaling.",
 
   "your_invoice": "Faktura:",
-  "view_details": "Åpne din faktura",
+  "view_details": "Betalingsinformasjon:",
   "amount_important": "Viktig!",
   "amount_disclaimer": "Vennligst les betalingsveiledningen nedenfor nøye. Enkelte betalingsleverandører krever at du betaler et høyere beløp enn det som oppgitt her for å dekke gebyrer. Dersom din betalingsleverandør er en av disse, får du riktig beløp i instruksjonene under.",
   "copy_information": "Trykk på adresse- og beløpsfeltene over for å kopiere.",
