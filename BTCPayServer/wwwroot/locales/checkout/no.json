@@ -53,6 +53,7 @@
   "back": "Tilbake",
   "next": "Neste",
   "home": "Tilbake til forsiden",
+  "other_country": "Andre land",
 
   "pmnt_button_instructions": "Betalingsveiledning",
   "pmnt_button_crypto": "Kryptovaluta",
@@ -72,5 +73,13 @@
   "pmnt_kyc_content": "KYC er en forkortelse for \"Know Your Customer\", og er påkrevd for finansinstitusjoner i en rekke land for å behandle tradisjonell valuta.",
   "pmnt_kyc_content_two": "KYC-prosessen er enkel og ufarlig, og krever at du oppgir personlig informasjon, og i enkelte tilfeller bilde av fysisk legitimasjon og svare på hvor pengene du veksler kommer fra til vekslingstjenesten du bruker for å kjøpe kryptovaluta. I enkelte tilfeller kan du også bli bedt om å oppgi informasjon om hva du skal bruke kryptovalutaen til, noe de gjør for å forhindre at pengene går til svindlere eller til ulovlige formål.",
   "pmnt_kyc_content_three": "Man kan svare hva man vil på disse spørsmålene, ettersom man uansett ikke kan se hvem som eier adressene du sender til, og således kan man ikke se hva pengene brukes til. Dette er en av de store fordelene med kryptovaluta.",
-  "pmnt_kyc_content_four": "Nå kan du nok om kryptovaluta og KYC til å gå videre til betalingsinstruksjonene. Ta gjerne kontakt om du har noen spørsmål. Trykk på knappen under for å komme i gang."
+  "pmnt_kyc_content_four": "Nå kan du nok om kryptovaluta og KYC til å gå videre til betalingsinstruksjonene. Ta gjerne kontakt om du har noen spørsmål. Trykk på knappen under for å komme i gang.",
+
+  "pmnt_guide_title": "Betalingsinstruksjoner",
+  "pmnt_guide_content": "Først og fremst, dersom du har kjennskap til kryptovaluta og har en lommebok, og er klar over hva slags gebyrer din lommebokleverandør tar kan du bruke betalingsinformasjonen over til å betale.",
+  "pmnt_guide_content_two": "Dersom du aldri har brukt kryptovaluta, er stegene relativt enkle å forholde seg til. Det første man skal gjøre er å åpne en kryptolommebok eller \"konto\" hos en av de anbefalte leverandørene som du finner under. Etter dette er gjort, setter du inn kryptovaluta til din egen lommebok, før du i siste steg overfører kryptovaluta ved å bruke fakturadetaljene over til oss.",
+  "pmnt_guide_content_three": "Enkelte leverandører gir deg mulighet til å hoppe over kontoopprettelse. Det vil se at de tar beløpet du skal bruke, og adressen du skal sende til, før du mottar en konto etter at første transaksjon er gjennomført.",
+  "pmnt_guide_content_four": "For å komme i gang, trykk på en av de anbefalte leverandørene i listen under for stegvis veiledning. Listen er sortert etter hvilken leverandør vi til enhver tid anbefaler. Velg først hvilket land du bor i, slik at vi kan anbefale leverandører som er spesifikt tilgjengelige i det landet du bor i."
+
+
 }

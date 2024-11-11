@@ -208,6 +208,9 @@
             <div id="step20" hidden>
                 <div class="card">
                     <h4 class="card-header">{{$t('pmnt_guide_title')}}</h4>
+                    <div class="text-center mt-2">
+                        <a @@click="showStep(1)" class="btn btn-link">{{$t('home')}}</a>
+                    </div>
                     <div class="card-body">
                         <p class="card-text">{{$t('pmnt_guide_content')}}</p>
                         <p class="card-text">{{$t('pmnt_guide_content_two')}}</p>
@@ -219,7 +222,8 @@
                             <button class="btn btn-primary flex-fill" type="button" 
                                     @@click="toggleDropdown('Norway')" 
                                     :aria-expanded="openDropdown === 'Norway'">
-                                {{$t('norway')}}
+                                <!-- Add a flag icon as button text -->
+                                <span class="flag-icon flag-icon-no"></span>
                             </button>
                             <div v-if="openDropdown === 'Norway'" class="dropdown-menu show custom-dropdown p-2">
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(21)">{{$t('norway_link_1')}}</a>
@@ -230,7 +234,7 @@
                             <button class="btn btn-secondary flex-fill" type="button" 
                                     @@click="toggleDropdown('Sweden')" 
                                     :aria-expanded="openDropdown === 'Sweden'">
-                                {{$t('sweden')}}
+                                <span class="flag-icon flag-icon-se"></span>
                             </button>
                             <div v-if="openDropdown === 'Sweden'" class="dropdown-menu show custom-dropdown p-2">
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(23)">{{$t('sweden_link_1')}}</a>
@@ -241,7 +245,7 @@
                             <button class="btn btn-primary flex-fill" type="button" 
                                     @@click="toggleDropdown('Danish')" 
                                     :aria-expanded="openDropdown === 'Danish'">
-                                {{$t('danish')}}
+                                <span class="flag-icon flag-icon-dk"></span>
                             </button>
                             <div v-if="openDropdown === 'Danish'" class="dropdown-menu show custom-dropdown p-2">
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(25)">{{$t('danish_link_1')}}</a>
@@ -252,7 +256,7 @@
                             <button class="btn btn-secondary flex-fill" type="button" 
                                     @@click="toggleDropdown('Other')" 
                                     :aria-expanded="openDropdown === 'Other'">
-                                {{$t('other')}}
+                                {{$t('other_country')}}
                             </button>
                             <div v-if="openDropdown === 'Other'" class="dropdown-menu show custom-dropdown p-2">
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(27)">{{$t('other_link_1')}}</a>
