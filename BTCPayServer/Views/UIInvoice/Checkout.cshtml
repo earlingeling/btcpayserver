@@ -214,7 +214,7 @@
                         <p class="card-text">{{$t('pmnt_guide_content_three')}}</p>
 
                         <!-- Button Group with Dropdowns for Each Country Section -->
-                        <div class="btn-group btn-group-sm d-flex w-90 mt-3">
+                        <div class="btn-group btn-group-sm d-flex w-100 flex-wrap mt-3">
                             <!-- Norway Dropdown -->
                             <button class="btn btn-primary flex-fill" type="button" 
                                     @@click="toggleDropdown('Norway')" 
@@ -350,9 +350,21 @@ function toggleInstructions(button) {
         var currentStep = document.getElementById('step' + stepNumber);
         if (currentStep) {
             currentStep.hidden = false;
+        } else {
+            // Log an error if the step element doesn't exist
+            console.error(`Element with ID "step${stepNumber}" not found. Defaulting to "step1".`);
+            
+            // Fallback to "step1" if the specified step is missing
+            var fallbackStep = document.getElementById('step1');
+            if (fallbackStep) {
+                fallbackStep.hidden = false;
+            } else {
+                console.error('Fallback element "step1" not found.');
+            }
         }
     }
 </script>
+
 
 
 				<component v-if="paymentMethodComponent" :is="paymentMethodComponent"
