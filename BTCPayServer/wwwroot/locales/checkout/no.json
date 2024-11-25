@@ -79,7 +79,25 @@
   "pmnt_guide_content": "Først og fremst, dersom du har kjennskap til kryptovaluta og har en lommebok, og er klar over hva slags gebyrer din lommebokleverandør tar kan du bruke betalingsinformasjonen over til å betale.",
   "pmnt_guide_content_two": "Dersom du aldri har brukt kryptovaluta, er stegene relativt enkle å forholde seg til. Det første man skal gjøre er å åpne en kryptolommebok eller \"konto\" hos en av de anbefalte leverandørene som du finner under. Etter dette er gjort, setter du inn kryptovaluta til din egen lommebok, før du i siste steg overfører kryptovaluta ved å bruke fakturadetaljene over til oss.",
   "pmnt_guide_content_three": "Enkelte leverandører gir deg mulighet til å hoppe over kontoopprettelse. Det vil se at de tar beløpet du skal bruke, og adressen du skal sende til, før du mottar en konto etter at første transaksjon er gjennomført.",
-  "pmnt_guide_content_four": "For å komme i gang, trykk på en av de anbefalte leverandørene i listen under for stegvis veiledning. Listen er sortert etter hvilken leverandør vi til enhver tid anbefaler. Velg først hvilket land du bor i, slik at vi kan anbefale leverandører som er spesifikt tilgjengelige i det landet du bor i."
+  "pmnt_guide_content_four": "For å komme i gang, trykk på en av de anbefalte leverandørene i listen under for stegvis veiledning. Listen er sortert etter hvilken leverandør vi til enhver tid anbefaler. Velg først hvilket land du bor i, slik at vi kan anbefale leverandører som er spesifikt tilgjengelige i det landet du bor i.",
 
+  "do_payment": "For å gjennomføre betalingen, fullfør betalingsstegene under",
+
+  "what_now": "Hva nå?", 
+
+  "coinbase_intro": "Coinbase er en amerikansk kryptobørs som er den mest rimelige av alternativene på siden her. Som hos alle banker, må man legitimere seg før man får åpnet konto og overført penger. Dette er normal praksis, og husk at ingen kan spore hva du faktisk bruker pengene på. Bitcoin er har en offentlig, men samtidig 100% anonym måte og betale på. Det vil si at selve transaksjonen kan man finne, men man kan umulig identifisere nøyaktig hva og hvem pengene overføres til. For å utføre betalingen, følg instruksjonene under.",
+  "coinbase_step1": "Last ned appen Coinbase til din telefon",
+  "coinbase_step2": "Åpne appen, og følg instruksjonene for å opprette en konto",
+  "coinbase_step3": "På hjemskjermen i appen, tryukk knappen \"Buy\". Du blir i de neste stegene bedt om å legitimere deg med førerkort/pass dersom du er ny bruker av Coinbase.",
+  "coinbase_step4": "Velg Bitcoin (BTC) i listen",
+  "coinbase_step5": "Trykk \"Add payment method\" og legg til betalingskortet ditt. Dersom du har brukt Coinbase før, kan du enkelt nok velge bankkortet ditt i listen",
+  "coinbase_step6": "Registrer ditt bankkort",
+  "coinbase_step7": "Når du skal angi beløp, skriv inn beløpet angitt i Bitcoin. Dersom appen står i Euro, bruk bytte-ikonet like under beløpsfeltet for å bytte til Bitcoin",
+  "coinbase_step8": "Skriv inn beløpet angitt i Bitcoin. Skyldig beløp finner du helt på toppen av denne siden. Du kan også velge å investere i Bitcoin ved å skrive inn et høyere beløp enn det som skyldes",
+  "coinbase_step9": "Trykk \"Review order\" og bekreft kjøpet. Her trekkes du mellom 3-8% i gebyr, som er en del av prisen for å bruke Coinbase",
+  "coinbase_step10": "Når du har kjøpt Bitcoin, gå tilbake til hjemskjermen i appen og trykk \"Send\"",
+  "coinbase_step12": "I \"To\"-feltet øverst, fyll inn adressen angitt på toppen av denne siden.",
+  "coinbase_step13": "Trykk neste, og fyll inn beløpet angitt på toppen av denne siden",
+  "coinbase_step14": "Trykk send, og du er ferdig!"
 
 }

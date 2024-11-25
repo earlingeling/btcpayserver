@@ -227,7 +227,7 @@
                                 <span class="flag-icon flag-icon-no"></span>
                             </button>
                             <div v-if="openDropdown === 'Norway'" class="dropdown-menu show custom-dropdown p-2">
-                                <a href="#" class="dropdown-item" @@click.prevent="showStep(21)">{{$t('norway_link_1')}}</a>
+                                <a href="#" class="dropdown-item" @@click.prevent="showStep(21)"><span class="flag-icon flag-icon-no"></span> Coinbase</a>
                                 <a href="#" class="dropdown-item" @@click.prevent="showStep(22)">{{$t('norway_link_2')}}</a>
                             </div>
 
@@ -282,34 +282,33 @@
                     <div class="card-body">
                         <!-- Introduction -->
                         <p class="card-text">{{$t('coinbase_intro')}}</p>
+                        <p class="card-text"><strong>{{$t('do_payment')}}:</strong></p>
 
-                        <!-- Step 1 -->
-                        <div class="mb-4">
-                            <h5 class="card-subtitle mb-2">{{$t('coinbase_step1_title')}}</h5>
-                            <p class="card-text">{{$t('coinbase_step1_content')}}</p>
-                        </div>
 
-                        <!-- Step 2 -->
-                        <div class="mb-4">
-                            <h5 class="card-subtitle mb-2">{{$t('coinbase_step2_title')}}</h5>
-                            <p class="card-text">{{$t('coinbase_step2_content')}}</p>
-                        </div>
-
-                        <!-- Step 3 -->
-                        <div class="mb-4">
-                            <h5 class="card-subtitle mb-2">{{$t('coinbase_step3_title')}}</h5>
-                            <p class="card-text">{{$t('coinbase_step3_content')}}</p>
-                        </div>
-
-                        <!-- Placeholder for additional steps -->
-                        <!-- Add as many steps as needed, following the same structure -->
+                        <ul class="list-group list-group-flush list-group-numbered">
+                            <li class="list-group-item">{{$t('coinbase_step1')}}: <a href="https://apps.apple.com/us/app/coinbase-buy-bitcoin-ether/id886427730" target="_blank"><u>iOS</u></a> / <a href="https://play.google.com/store/apps/details?id=com.coinbase.android&hl=en&gl=US" target="_blank"><u>Android</u></a></li>
+                            <li class="list-group-item">{{$t('coinbase_step2')}}</li>
+                            <li class="list-group-item">{{$t('coinbase_step3')}}</li>
+                            <li class="list-group-item">{{$t('coinbase_step4')}}</li>
+                            <li class="list-group-item">{{$t('coinbase_step5')}}</li>
+                            <li class="list-group-item">{{$t('coinbase_step6')}}</li>
+                            <li class="list-group-item">{{$t('coinbase_step7')}}</li>
+                            <li class="list-group-item">{{$t('coinbase_step8')}}</li>
+                            <li class="list-group-item">{{$t('coinbase_step9')}}</li>
+                            <li class="list-group-item">{{$t('coinbase_step10')}}</li>
+                            <li class="list-group-item">{{$t('coinbase_step4')}}</li>
+                            <li class="list-group-item">{{$t('coinbase_step12')}}</li>
+                            <li class="list-group-item">{{$t('coinbase_step13')}}</li>
+                            <li class="list-group-item">{{$t('coinbase_step14')}}</li>
+                        </ul>
+                        
                     </div>
 
                     <!-- Navigation Buttons -->
                     <div class="card-footer">
                         <div class="d-flex justify-content-between">
                             <button class="btn btn-secondary" onclick="showStep(20)">{{$t('back')}}</button>
-                            <button class="btn btn-primary" onclick="showStep(22)">{{$t('next')}}</button>
+                            <button class="btn btn-primary" onclick="showStep(600)">{{$t('what_now')}}</button>
                         </div>
                         <div class="text-center mt-2">
                             <a onclick="showStep(1)" class="btn btn-link">{{$t('home')}}</a>
