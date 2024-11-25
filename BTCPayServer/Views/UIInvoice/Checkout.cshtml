@@ -275,6 +275,48 @@
             </div>
 
 
+            <!-- Coinbase  -->
+            <div id="step21" hidden>
+                <div class="card">
+                    <h4 class="card-header">Coinbase</h4>
+                    <div class="card-body">
+                        <!-- Introduction -->
+                        <p class="card-text">{{$t('coinbase_intro')}}</p>
+
+                        <!-- Step 1 -->
+                        <div class="mb-4">
+                            <h5 class="card-subtitle mb-2">{{$t('coinbase_step1_title')}}</h5>
+                            <p class="card-text">{{$t('coinbase_step1_content')}}</p>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="mb-4">
+                            <h5 class="card-subtitle mb-2">{{$t('coinbase_step2_title')}}</h5>
+                            <p class="card-text">{{$t('coinbase_step2_content')}}</p>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="mb-4">
+                            <h5 class="card-subtitle mb-2">{{$t('coinbase_step3_title')}}</h5>
+                            <p class="card-text">{{$t('coinbase_step3_content')}}</p>
+                        </div>
+
+                        <!-- Placeholder for additional steps -->
+                        <!-- Add as many steps as needed, following the same structure -->
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-secondary" onclick="showStep(20)">{{$t('back')}}</button>
+                            <button class="btn btn-primary" onclick="showStep(22)">{{$t('next')}}</button>
+                        </div>
+                        <div class="text-center mt-2">
+                            <a onclick="showStep(1)" class="btn btn-link">{{$t('home')}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
             <div id="step200" hidden>
