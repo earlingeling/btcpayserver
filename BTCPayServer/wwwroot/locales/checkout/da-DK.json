@@ -89,6 +89,14 @@
   "coinbase_step13": "Tryk næste, og udfyld det beløb, der er angivet øverst på denne side",
   "coinbase_step14": "Tryk send, og du er færdig!",
   
+  "guide_quick_payment": "Erfaren bruger?",
   "guide_quick_payment_desc": "Hvis du allerede har kryptovaluta og ved, hvordan du betaler, kan du bruge betalingsinformationen ovenfor.",
-  "guide_country_selection": "Vælg dit land"
+  "guide_country_selection": "Vælg dit land",
+  "guide_country_selection_desc": "Vælg det land, du bor i, for at se anbefalede betalingsudbydere",
+  "guide_provider_selection": "Vælg betalingsudbyder",
+  "guide_provider_selection_desc": "Vælg en betalingsudbyder, der passer til dig",
+  "guide_norway_providers": "Anbefalede betalingsudbydere for Norge",
+  "guide_sweden_providers": "Anbefalede betalingsudbydere for Sverige",
+  "guide_denmark_providers": "Anbefalede betalingsudbydere for Danmark",
+  "guide_international_providers": "Internationale betalingsudbydere"
 }

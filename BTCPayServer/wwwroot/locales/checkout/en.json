@@ -89,6 +89,14 @@
   "coinbase_step13": "Press next, and fill in the amount specified at the top of this page",
   "coinbase_step14": "Press send, and you're done!",
   
+  "guide_quick_payment": "Experienced user?",
   "guide_quick_payment_desc": "If you already have cryptocurrency and know how to pay, you can use the payment information above.",
-  "guide_country_selection": "Choose your country"
+  "guide_country_selection": "Choose your country",
+  "guide_country_selection_desc": "Choose the country you live in to see recommended payment providers",
+  "guide_provider_selection": "Choose payment provider",
+  "guide_provider_selection_desc": "Choose a payment provider that suits you",
+  "guide_norway_providers": "Recommended payment providers for Norway",
+  "guide_sweden_providers": "Recommended payment providers for Sweden",
+  "guide_denmark_providers": "Recommended payment providers for Denmark",
+  "guide_international_providers": "International payment providers"
 }
