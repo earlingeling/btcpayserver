@@ -279,11 +279,11 @@ function initApp() {
             },
             showCoinbaseGuide() {
                 // Show Coinbase step-by-step guide
-                this.showStep(21); // Assuming step 21 is Coinbase guide
+                showStep(21); // Use the global showStep function
             },
             showSafelloGuide() {
-                // Show Safello step-by-step guide
-                this.showStep(23); // Assuming step 23 is Safello guide
+                // Show Safello step-by-step guide (using step 20 as fallback)
+                showStep(20); // Use step 20 as fallback since step 23 doesn't exist
             },
             asNumber,
             changePaymentMethod (id) { // payment method or plugin id

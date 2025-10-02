@@ -218,134 +218,59 @@
                         <p class="card-text"><strong>{{$t('pmnt_guide_content_four')}}</strong></p>
                         <p class="card-text">{{$t('pmnt_guide_content_five')}}</p>
 
-                        <!-- Improved Payment Guide Section -->
-                        <div class="payment-guide-section mt-4">
-                            <div class="guide-header text-center mb-4">
-                                <h5 class="guide-title">{{$t('pmnt_intro_title')}}</h5>
-                                <p class="guide-subtitle text-muted">{{$t('pmnt_intro_content')}}</p>
+                        <!-- Minimalistic Payment Guide -->
+                        <div class="mt-3 mb-2">
+                            <h6 class="text-center mb-3">{{$t('pmnt_intro_title')}}</h6>
+                            
+                            <!-- Quick Start for Experienced Users -->
+                            <div class="text-center mb-3">
+                                <button class="btn btn-outline-primary btn-sm" @@click="showPaymentDetails = !showPaymentDetails">
+                                    <i class="fab fa-bitcoin me-1"></i>{{$t('pmnt_button_crypto')}}
+                                </button>
+                                <small class="text-muted d-block mt-1">{{$t('guide_quick_payment_desc')}}</small>
                             </div>
 
-                            <!-- Quick Start for Experienced Users -->
-                            <div class="quick-payment-section mb-4">
-                                <h6 class="text-center mb-3">{{$t('guide_quick_payment')}}</h6>
-                                <div class="payment-methods-grid">
-                                    <button class="payment-method-card" @@click="showPaymentDetails = !showPaymentDetails">
-                                        <div class="method-icon">
-                                            <i class="fab fa-bitcoin"></i>
-                                        </div>
-                                        <div class="method-info">
-                                            <h6>{{$t('pmnt_button_crypto')}}</h6>
-                                            <p class="text-muted small">{{$t('guide_quick_payment_desc')}}</p>
-                                        </div>
+                            <!-- Country Selection -->
+                            <div class="text-center mb-3">
+                                <small class="text-muted d-block mb-2">{{$t('guide_country_selection')}}</small>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn btn-outline-secondary" @@click="selectCountry('Norway')" :class="{ active: selectedCountry === 'Norway' }">
+                                        <span class="flag-icon flag-icon-no me-1"></span>Norge
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary" @@click="selectCountry('Sweden')" :class="{ active: selectedCountry === 'Sweden' }">
+                                        <span class="flag-icon flag-icon-se me-1"></span>Sverige
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary" @@click="selectCountry('Denmark')" :class="{ active: selectedCountry === 'Denmark' }">
+                                        <span class="flag-icon flag-icon-dk me-1"></span>Danmark
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary" @@click="selectCountry('Other')" :class="{ active: selectedCountry === 'Other' }">
+                                        <i class="fas fa-globe me-1"></i>{{$t('other_country')}}
                                     </button>
                                 </div>
                             </div>
 
-                            <!-- Country Selection for Beginners -->
-                            <div class="country-selection-section">
-                                <h6 class="text-center mb-3">{{$t('guide_country_selection')}}</h6>
-                                <div class="country-cards">
-                                    <div class="country-card" @@click="selectCountry('Norway')" :class="{ active: selectedCountry === 'Norway' }">
-                                        <div class="country-flag">
-                                            <span class="flag-icon flag-icon-no"></span>
-                                        </div>
-                                        <div class="country-info">
-                                            <h6>Norge</h6>
-                                            <p class="text-muted small">{{$t('guide_norway_providers')}}</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="country-card" @@click="selectCountry('Sweden')" :class="{ active: selectedCountry === 'Sweden' }">
-                                        <div class="country-flag">
-                                            <span class="flag-icon flag-icon-se"></span>
-                                        </div>
-                                        <div class="country-info">
-                                            <h6>Sverige</h6>
-                                            <p class="text-muted small">{{$t('guide_sweden_providers')}}</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="country-card" @@click="selectCountry('Denmark')" :class="{ active: selectedCountry === 'Denmark' }">
-                                        <div class="country-flag">
-                                            <span class="flag-icon flag-icon-dk"></span>
-                                        </div>
-                                        <div class="country-info">
-                                            <h6>Danmark</h6>
-                                            <p class="text-muted small">{{$t('guide_denmark_providers')}}</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="country-card" @@click="selectCountry('Other')" :class="{ active: selectedCountry === 'Other' }">
-                                        <div class="country-flag">
-                                            <i class="fas fa-globe"></i>
-                                        </div>
-                                        <div class="country-info">
-                                            <h6>{{$t('other_country')}}</h6>
-                                            <p class="text-muted small">{{$t('guide_international_providers')}}</p>
-                                        </div>
-                                    </div>
+                            <!-- Provider Selection -->
+                            <div v-if="selectedCountry" class="text-center">
+                                <small class="text-muted d-block mb-2">{{$t('guide_provider_selection')}}</small>
+                                <div v-if="selectedCountry === 'Norway'" class="d-grid gap-2">
+                                    <button class="btn btn-success btn-sm" @@click="showCoinbaseGuide">
+                                        <i class="fas fa-coins me-1"></i>Coinbase - {{$t('badge_recommended')}} (3-8% avgift)
+                                    </button>
                                 </div>
-                            </div>
-
-                            <!-- Payment Provider Selection -->
-                            <div v-if="selectedCountry" class="provider-selection-section mt-4">
-                                <h6 class="text-center mb-3">{{$t('guide_provider_selection')}}</h6>
-                                <div class="provider-cards">
-                                    <div v-if="selectedCountry === 'Norway'" class="provider-card" @@click="showCoinbaseGuide">
-                                        <div class="provider-logo">
-                                            <i class="fas fa-coins"></i>
-                                        </div>
-                                        <div class="provider-info">
-                                            <h6>Coinbase</h6>
-                                            <p class="text-muted small">{{$t('provider_coinbase_desc')}}</p>
-                                            <div class="provider-badges">
-                                                <span class="badge bg-success">{{$t('badge_recommended')}}</span>
-                                                <span class="badge bg-info">{{$t('fee_3_8_percent')}}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div v-if="selectedCountry === 'Sweden'" class="provider-card" @@click="showSafelloGuide">
-                                        <div class="provider-logo">
-                                            <i class="fas fa-university"></i>
-                                        </div>
-                                        <div class="provider-info">
-                                            <h6>Safello</h6>
-                                            <p class="text-muted small">{{$t('provider_safello_desc')}}</p>
-                                            <div class="provider-badges">
-                                                <span class="badge bg-primary">{{$t('badge_swedish')}}</span>
-                                                <span class="badge bg-info">{{$t('fee_7_8_percent')}}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div v-if="selectedCountry === 'Denmark'" class="provider-card" @@click="showCoinbaseGuide">
-                                        <div class="provider-logo">
-                                            <i class="fas fa-coins"></i>
-                                        </div>
-                                        <div class="provider-info">
-                                            <h6>Coinbase</h6>
-                                            <p class="text-muted small">{{$t('provider_coinbase_dk_desc')}}</p>
-                                            <div class="provider-badges">
-                                                <span class="badge bg-success">{{$t('badge_recommended')}}</span>
-                                                <span class="badge bg-info">{{$t('fee_3_8_percent')}}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div v-if="selectedCountry === 'Other'" class="provider-card" @@click="showCoinbaseGuide">
-                                        <div class="provider-logo">
-                                            <i class="fas fa-coins"></i>
-                                        </div>
-                                        <div class="provider-info">
-                                            <h6>Coinbase</h6>
-                                            <p class="text-muted small">{{$t('provider_coinbase_intl_desc')}}</p>
-                                            <div class="provider-badges">
-                                                <span class="badge bg-success">{{$t('badge_recommended')}}</span>
-                                                <span class="badge bg-info">{{$t('fee_3_8_percent')}}</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div v-if="selectedCountry === 'Sweden'" class="d-grid gap-2">
+                                    <button class="btn btn-primary btn-sm" @@click="showSafelloGuide">
+                                        <i class="fas fa-university me-1"></i>Safello - Svensk (7-8% avgift)
+                                    </button>
+                                </div>
+                                <div v-if="selectedCountry === 'Denmark'" class="d-grid gap-2">
+                                    <button class="btn btn-success btn-sm" @@click="showCoinbaseGuide">
+                                        <i class="fas fa-coins me-1"></i>Coinbase - {{$t('badge_recommended')}} (3-8% avgift)
+                                    </button>
+                                </div>
+                                <div v-if="selectedCountry === 'Other'" class="d-grid gap-2">
+                                    <button class="btn btn-success btn-sm" @@click="showCoinbaseGuide">
+                                        <i class="fas fa-coins me-1"></i>Coinbase - {{$t('badge_recommended')}} (3-8% avgift)
+                                    </button>
                                 </div>
                             </div>
                         </div>
