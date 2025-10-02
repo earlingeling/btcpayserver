@@ -82,7 +82,7 @@ const PaymentDetails = {
 }
 
 function initApp() {
-    return new Vue({
+    const app = new Vue({
         i18n,
         el: '#Checkout',
         components: {
@@ -284,6 +284,10 @@ function initApp() {
             showSafelloGuide() {
                 // Show Safello step-by-step guide (using step 20 as fallback)
                 showStep(20); // Use step 20 as fallback since step 23 doesn't exist
+            },
+            resetCountrySelection() {
+                // Reset country selection when going back to homepage
+                this.selectedCountry = null;
             },
             asNumber,
             changePaymentMethod (id) { // payment method or plugin id
@@ -491,6 +495,10 @@ function initApp() {
             }
         }
     });
+    
+    // Make Vue app globally accessible for showStep function
+    window.vueApp = app;
+    return app;
 }
 
 i18next

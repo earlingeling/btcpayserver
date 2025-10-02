@@ -220,8 +220,6 @@
 
                         <!-- Minimalistic Payment Guide -->
                         <div class="mt-3 mb-2">
-                            <h6 class="text-center mb-3">{{$t('pmnt_intro_title')}}</h6>
-                            
                             <!-- Quick Start for Experienced Users -->
                             <div class="text-center mb-3">
                                 <button class="btn btn-outline-primary btn-sm" @@click="showPaymentDetails = !showPaymentDetails">
@@ -462,6 +460,11 @@ function toggleInstructions(button) {
             } else {
                 console.error('Fallback element "step1" not found.');
             }
+        }
+        
+        // Reset country selection when going back to step 1 (homepage)
+        if (stepNumber === 1 && window.vueApp) {
+            window.vueApp.resetCountrySelection();
         }
     }
 </script>
