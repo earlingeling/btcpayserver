@@ -120,7 +120,10 @@ function initApp() {
                 displayNorwayLinks: false,
                 displaySwedenLinks: false,
                 displayDanishLinks: false,
-                displayOtherLinks: false
+                displayOtherLinks: false,
+                // New UI state
+                selectedCountry: null,
+                showPaymentGuide: false
             }
         },
         computed: {
@@ -269,6 +272,18 @@ function initApp() {
                     // Otherwise, open the clicked section and close others
                     this.openDropdown = section;
                 }
+            },
+            selectCountry(country) {
+                this.selectedCountry = country;
+                this.openDropdown = null; // Close any open dropdowns
+            },
+            showCoinbaseGuide() {
+                // Show Coinbase step-by-step guide
+                this.showStep(21); // Assuming step 21 is Coinbase guide
+            },
+            showSafelloGuide() {
+                // Show Safello step-by-step guide
+                this.showStep(23); // Assuming step 23 is Safello guide
             },
             asNumber,
             changePaymentMethod (id) { // payment method or plugin id

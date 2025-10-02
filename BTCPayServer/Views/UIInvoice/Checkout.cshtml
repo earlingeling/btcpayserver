@@ -218,51 +218,135 @@
                         <p class="card-text"><strong>{{$t('pmnt_guide_content_four')}}</strong></p>
                         <p class="card-text">{{$t('pmnt_guide_content_five')}}</p>
 
-                        <!-- Button Group with Dropdowns for Each Country Section -->
-                        <div class="btn-group btn-group-sm d-flex w-100 flex-wrap mt-3">
-                            <!-- Norway Dropdown -->
-                            <button class="btn btn-secondary flex-fill" type="button" 
-                                    @@click="toggleDropdown('Norway')" 
-                                    :aria-expanded="openDropdown === 'Norway'">
-                                <!-- Add a flag icon as button text -->
-                                <span class="flag-icon flag-icon-no"></span>
-                            </button>
-                            <div v-if="openDropdown === 'Norway'" class="dropdown-menu show custom-dropdown p-2">
-                                <a href="#" class="dropdown-item" @@click.prevent="showStep(21)"><span class="flag-icon flag-icon-no"></span> Coinbase</a>
-                                <a href="#" class="dropdown-item" @@click.prevent="showStep(22)">{{$t('norway_link_2')}}</a>
+                        <!-- Improved Payment Guide Section -->
+                        <div class="payment-guide-section mt-4">
+                            <div class="guide-header text-center mb-4">
+                                <h5 class="guide-title">{{$t('pmnt_intro_title')}}</h5>
+                                <p class="guide-subtitle text-muted">{{$t('pmnt_intro_content')}}</p>
                             </div>
 
-                            <!-- Sweden Dropdown -->
-                            <button class="btn btn-secondary flex-fill" type="button" 
-                                    @@click="toggleDropdown('Sweden')" 
-                                    :aria-expanded="openDropdown === 'Sweden'">
-                                <span class="flag-icon flag-icon-se"></span>
-                            </button>
-                            <div v-if="openDropdown === 'Sweden'" class="dropdown-menu show custom-dropdown p-2">
-                                <a href="#" class="dropdown-item" @@click.prevent="showStep(23)">{{$t('sweden_link_1')}}</a>
-                                <a href="#" class="dropdown-item" @@click.prevent="showStep(24)">{{$t('sweden_link_2')}}</a>
+                            <!-- Quick Start for Experienced Users -->
+                            <div class="quick-payment-section mb-4">
+                                <h6 class="text-center mb-3">{{$t('guide_quick_payment')}}</h6>
+                                <div class="payment-methods-grid">
+                                    <button class="payment-method-card" @@click="showPaymentDetails = !showPaymentDetails">
+                                        <div class="method-icon">
+                                            <i class="fab fa-bitcoin"></i>
+                                        </div>
+                                        <div class="method-info">
+                                            <h6>{{$t('pmnt_button_crypto')}}</h6>
+                                            <p class="text-muted small">{{$t('guide_quick_payment_desc')}}</p>
+                                        </div>
+                                    </button>
+                                </div>
                             </div>
 
-                            <!-- Danish Dropdown -->
-                            <button class="btn btn-secondary flex-fill" type="button" 
-                                    @@click="toggleDropdown('Danish')" 
-                                    :aria-expanded="openDropdown === 'Danish'">
-                                <span class="flag-icon flag-icon-dk"></span>
-                            </button>
-                            <div v-if="openDropdown === 'Danish'" class="dropdown-menu show custom-dropdown p-2">
-                                <a href="#" class="dropdown-item" @@click.prevent="showStep(25)">{{$t('danish_link_1')}}</a>
-                                <a href="#" class="dropdown-item" @@click.prevent="showStep(26)">{{$t('danish_link_2')}}</a>
+                            <!-- Country Selection for Beginners -->
+                            <div class="country-selection-section">
+                                <h6 class="text-center mb-3">{{$t('guide_country_selection')}}</h6>
+                                <div class="country-cards">
+                                    <div class="country-card" @@click="selectCountry('Norway')" :class="{ active: selectedCountry === 'Norway' }">
+                                        <div class="country-flag">
+                                            <span class="flag-icon flag-icon-no"></span>
+                                        </div>
+                                        <div class="country-info">
+                                            <h6>Norge</h6>
+                                            <p class="text-muted small">{{$t('guide_norway_providers')}}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="country-card" @@click="selectCountry('Sweden')" :class="{ active: selectedCountry === 'Sweden' }">
+                                        <div class="country-flag">
+                                            <span class="flag-icon flag-icon-se"></span>
+                                        </div>
+                                        <div class="country-info">
+                                            <h6>Sverige</h6>
+                                            <p class="text-muted small">{{$t('guide_sweden_providers')}}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="country-card" @@click="selectCountry('Denmark')" :class="{ active: selectedCountry === 'Denmark' }">
+                                        <div class="country-flag">
+                                            <span class="flag-icon flag-icon-dk"></span>
+                                        </div>
+                                        <div class="country-info">
+                                            <h6>Danmark</h6>
+                                            <p class="text-muted small">{{$t('guide_denmark_providers')}}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="country-card" @@click="selectCountry('Other')" :class="{ active: selectedCountry === 'Other' }">
+                                        <div class="country-flag">
+                                            <i class="fas fa-globe"></i>
+                                        </div>
+                                        <div class="country-info">
+                                            <h6>{{$t('other_country')}}</h6>
+                                            <p class="text-muted small">{{$t('guide_international_providers')}}</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <!-- Other Dropdown -->
-                            <button class="btn btn-secondary flex-fill" type="button" 
-                                    @@click="toggleDropdown('Other')" 
-                                    :aria-expanded="openDropdown === 'Other'">
-                                {{$t('other_country')}}
-                            </button>
-                            <div v-if="openDropdown === 'Other'" class="dropdown-menu show custom-dropdown p-2">
-                                <a href="#" class="dropdown-item" @@click.prevent="showStep(27)">{{$t('other_link_1')}}</a>
-                                <a href="#" class="dropdown-item" @@click.prevent="showStep(28)">{{$t('other_link_2')}}</a>
+                            <!-- Payment Provider Selection -->
+                            <div v-if="selectedCountry" class="provider-selection-section mt-4">
+                                <h6 class="text-center mb-3">{{$t('guide_provider_selection')}}</h6>
+                                <div class="provider-cards">
+                                    <div v-if="selectedCountry === 'Norway'" class="provider-card" @@click="showCoinbaseGuide">
+                                        <div class="provider-logo">
+                                            <i class="fas fa-coins"></i>
+                                        </div>
+                                        <div class="provider-info">
+                                            <h6>Coinbase</h6>
+                                            <p class="text-muted small">{{$t('provider_coinbase_desc')}}</p>
+                                            <div class="provider-badges">
+                                                <span class="badge bg-success">{{$t('badge_recommended')}}</span>
+                                                <span class="badge bg-info">{{$t('fee_3_8_percent')}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div v-if="selectedCountry === 'Sweden'" class="provider-card" @@click="showSafelloGuide">
+                                        <div class="provider-logo">
+                                            <i class="fas fa-university"></i>
+                                        </div>
+                                        <div class="provider-info">
+                                            <h6>Safello</h6>
+                                            <p class="text-muted small">{{$t('provider_safello_desc')}}</p>
+                                            <div class="provider-badges">
+                                                <span class="badge bg-primary">{{$t('badge_swedish')}}</span>
+                                                <span class="badge bg-info">{{$t('fee_7_8_percent')}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div v-if="selectedCountry === 'Denmark'" class="provider-card" @@click="showCoinbaseGuide">
+                                        <div class="provider-logo">
+                                            <i class="fas fa-coins"></i>
+                                        </div>
+                                        <div class="provider-info">
+                                            <h6>Coinbase</h6>
+                                            <p class="text-muted small">{{$t('provider_coinbase_dk_desc')}}</p>
+                                            <div class="provider-badges">
+                                                <span class="badge bg-success">{{$t('badge_recommended')}}</span>
+                                                <span class="badge bg-info">{{$t('fee_3_8_percent')}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div v-if="selectedCountry === 'Other'" class="provider-card" @@click="showCoinbaseGuide">
+                                        <div class="provider-logo">
+                                            <i class="fas fa-coins"></i>
+                                        </div>
+                                        <div class="provider-info">
+                                            <h6>Coinbase</h6>
+                                            <p class="text-muted small">{{$t('provider_coinbase_intl_desc')}}</p>
+                                            <div class="provider-badges">
+                                                <span class="badge bg-success">{{$t('badge_recommended')}}</span>
+                                                <span class="badge bg-info">{{$t('fee_3_8_percent')}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

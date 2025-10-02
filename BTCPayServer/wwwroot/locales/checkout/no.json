@@ -99,6 +99,28 @@
   "coinbase_step10": "Når du har kjøpt Bitcoin, gå tilbake til hjemskjermen i appen og trykk \"Send\"",
   "coinbase_step12": "I \"To\"-feltet øverst, fyll inn adressen angitt på toppen av denne siden.",
   "coinbase_step13": "Trykk neste, og fyll inn beløpet angitt på toppen av denne siden",
-  "coinbase_step14": "Trykk send, og du er ferdig!"
+  "coinbase_step14": "Trykk send, og du er ferdig!",
+  
+  "guide_quick_payment": "Erfaren bruker?",
+  "guide_quick_payment_desc": "Hvis du allerede har kryptovaluta og vet hvordan du betaler, kan du bruke betalingsinformasjonen over.",
+  "guide_country_selection": "Velg ditt land",
+  "guide_country_selection_desc": "Velg landet du bor i for å se anbefalte betalingsleverandører",
+  "guide_provider_selection": "Velg betalingsleverandør",
+  "guide_provider_selection_desc": "Velg en betalingsleverandør som passer for deg",
+  "guide_norway_providers": "Anbefalte betalingsleverandører for Norge",
+  "guide_sweden_providers": "Anbefalte betalingsleverandører for Sverige", 
+  "guide_denmark_providers": "Anbefalte betalingsleverandører for Danmark",
+  "guide_international_providers": "Internasjonale betalingsleverandører",
+  "provider_coinbase_desc": "Anbefalt for Norge - Billigste og sikreste",
+  "provider_safello_desc": "Svensk leverandør med BankID",
+  "provider_coinbase_dk_desc": "Anbefalt for Danmark",
+  "provider_coinbase_intl_desc": "Internasjonal leverandør",
+  "badge_recommended": "Anbefalt",
+  "badge_norwegian": "Norsk",
+  "badge_swedish": "Svensk",
+  "badge_danish": "Dansk",
+  "badge_international": "Internasjonal",
+  "fee_3_8_percent": "3-8% avgift",
+  "fee_7_8_percent": "7-8% avgift"
 
 }
