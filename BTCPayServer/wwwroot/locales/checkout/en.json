@@ -87,5 +87,8 @@
   "coinbase_step10": "When you have bought Bitcoin, go back to the home screen in the app and press \"Send\"",
   "coinbase_step12": "In the \"To\" field at the top, fill in the address specified at the top of this page.",
   "coinbase_step13": "Press next, and fill in the amount specified at the top of this page",
-  "coinbase_step14": "Press send, and you're done!"
+  "coinbase_step14": "Press send, and you're done!",
+  
+  "guide_quick_payment_desc": "If you already have cryptocurrency and know how to pay, you can use the payment information above.",
+  "guide_country_selection": "Choose your country"
 }

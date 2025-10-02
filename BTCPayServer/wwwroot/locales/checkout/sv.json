@@ -181,5 +181,8 @@
   "coinbase_step10": "När du har köpt Bitcoin, gå tillbaka till startsidan i appen och tryck på \"Skicka\"",
   "coinbase_step12": "I \"Till\"-fältet högst upp, fyll i adressen angiven högst upp på denna sida.",
   "coinbase_step13": "Tryck nästa, och fyll i beloppet angivet högst upp på denna sida",
-  "coinbase_step14": "Tryck skicka, och du är klar!"
+  "coinbase_step14": "Tryck skicka, och du är klar!",
+  
+  "guide_quick_payment_desc": "Om du redan har kryptovaluta och vet hur du betalar kan du använda betalningsinformationen ovan.",
+  "guide_country_selection": "Välj ditt land"
 }

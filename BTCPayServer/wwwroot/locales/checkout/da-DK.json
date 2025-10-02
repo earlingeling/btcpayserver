@@ -87,5 +87,8 @@
   "coinbase_step10": "Når du har købt Bitcoin, gå tilbage til startsiden i appen og tryk på \"Send\"",
   "coinbase_step12": "I \"Til\"-feltet øverst, udfyld adressen angivet øverst på denne side.",
   "coinbase_step13": "Tryk næste, og udfyld det beløb, der er angivet øverst på denne side",
-  "coinbase_step14": "Tryk send, og du er færdig!"
+  "coinbase_step14": "Tryk send, og du er færdig!",
+  
+  "guide_quick_payment_desc": "Hvis du allerede har kryptovaluta og ved, hvordan du betaler, kan du bruge betalingsinformationen ovenfor.",
+  "guide_country_selection": "Vælg dit land"
 }
