@@ -233,7 +233,8 @@
                             <!-- Country Selection -->
                             <div class="text-center mb-3">
                                 <small class="text-muted d-block mb-2">{{$t('guide_country_selection')}}</small>
-                                <div class="btn-group btn-group-sm" role="group">
+                                <!-- Scandinavian countries row -->
+                                <div class="btn-group btn-group-sm mb-2" role="group">
                                     <button type="button" class="btn btn-outline-secondary" @@click="selectCountry('Norway')" :class="{ active: selectedCountry === 'Norway' }">
                                         <span class="flag-icon flag-icon-no me-1"></span>Norge
                                     </button>
@@ -243,8 +244,11 @@
                                     <button type="button" class="btn btn-outline-secondary" @@click="selectCountry('Denmark')" :class="{ active: selectedCountry === 'Denmark' }">
                                         <span class="flag-icon flag-icon-dk me-1"></span>Danmark
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary" @@click="selectCountry('Other')" :class="{ active: selectedCountry === 'Other' }">
-                                        <i class="fas fa-globe me-1"></i>{{$t('other_country')}}
+                                </div>
+                                <!-- Other country row -->
+                                <div class="d-flex justify-content-center">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" @@click="selectCountry('Other')" :class="{ active: selectedCountry === 'Other' }">
+                                        {{$t('other_country')}}
                                     </button>
                                 </div>
                             </div>
