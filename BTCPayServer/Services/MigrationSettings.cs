@@ -11,11 +11,6 @@ namespace BTCPayServer.Services
         public bool TransitionToStoreBlobAdditionalData { get; set; }
         public bool TransitionInternalNodeConnectionString { get; set; }
 
-        public override string ToString()
-        {
-            return string.Empty;
-        }
-
         // Done in DbMigrationsHostedService
         public int? MigratedInvoiceTextSearchPages { get; set; }
         public int? MigratedTransactionLabels { get; set; }
@@ -32,6 +27,7 @@ namespace BTCPayServer.Services
         public bool MigrateAppYmlToJson { get; set; }
         public bool MigrateToStoreConfig { get; set; }
         public bool MigrateBlockExplorerLinks { get; set; }
-        public bool MigrateStoreExcludedPaymentMethods { get; internal set; }
+        public bool MigrateStoreExcludedPaymentMethods { get; set; }
+        public bool MigrateOldDerivationSchemes { get; set; }
     }
 }

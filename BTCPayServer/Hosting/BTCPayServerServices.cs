@@ -20,6 +20,7 @@ using BTCPayServer.Lightning;
 using BTCPayServer.Lightning.Charge;
 using BTCPayServer.Lightning.CLightning;
 using BTCPayServer.Lightning.Eclair;
+using BTCPayServer.Lightning.Phoenixd;
 using BTCPayServer.Lightning.LNbank;
 using BTCPayServer.Lightning.LND;
 using BTCPayServer.Lightning.LNDhub;
@@ -86,11 +87,13 @@ namespace BTCPayServer.Hosting
         }
         public static IServiceCollection AddBTCPayServer(this IServiceCollection services, IConfiguration configuration, Logs logs)
         {
+            services.TryAddSingleton<CallbackGenerator>();
             services.TryAddSingleton<IStringLocalizerFactory, LocalizerFactory>();
             services.TryAddSingleton<IHtmlLocalizerFactory, LocalizerFactory>();
             services.TryAddSingleton<LocalizerService>();
             services.TryAddSingleton<ViewLocalizer>();
             services.TryAddSingleton<IStringLocalizer>(o => o.GetRequiredService<IStringLocalizerFactory>().Create("",""));
+            services.TryAddSingleton<DelayedTaskScheduler>();
 
             services.AddSingleton<MvcNewtonsoftJsonOptions>(o => o.GetRequiredService<IOptions<MvcNewtonsoftJsonOptions>>().Value);
             services.AddSingleton<JsonSerializerSettings>(o => o.GetRequiredService<IOptions<MvcNewtonsoftJsonOptions>>().Value.SerializerSettings);
@@ -136,6 +139,8 @@ namespace BTCPayServer.Hosting
             services.AddSingleton<Func<HttpClient, ILightningConnectionStringHandler>>(client =>
                 new EclairConnectionStringHandler(client));
             services.AddSingleton<Func<HttpClient, ILightningConnectionStringHandler>>(client =>
+                new PhoenixdConnectionStringHandler(client));
+            services.AddSingleton<Func<HttpClient, ILightningConnectionStringHandler>>(client =>
                 new LndConnectionStringHandler(client));
             services.AddSingleton<Func<HttpClient, ILightningConnectionStringHandler>>(client =>
                 new LndHubConnectionStringHandler(client));
@@ -158,7 +163,7 @@ namespace BTCPayServer.Hosting
             //
 
             AddOnchainWalletParsers(services);
-            
+
 
             services.AddStartupTask<BlockExplorerLinkStartupTask>();
             services.AddStartupTask<LoadCurrencyNameTableStartupTask>();
@@ -252,6 +257,8 @@ namespace BTCPayServer.Hosting
                                                               $"If you have an eclair server: 'type=eclair;server=http://eclair.com:4570;password=eclairpassword;bitcoin-host=bitcoind:37393;bitcoin-auth=bitcoinrpcuser:bitcoinrpcpassword" +
                                                               Environment.NewLine +
                                                               $"               eclair server: 'type=eclair;server=http://eclair.com:4570;password=eclairpassword;bitcoin-host=bitcoind:37393" +
+                                                              Environment.NewLine +
+                                                              $"If you have a phoenixd server: 'type=phoenixd;server=http://phoenixd:9740/;password=phoenixdpassword'" +
                                                               Environment.NewLine +
                                                               $"Error: {error}" + Environment.NewLine +
                                                               "This service will not be exposed through BTCPay Server");
@@ -352,6 +359,9 @@ namespace BTCPayServer.Hosting
             services.TryAddSingleton<StoreRepository>();
             services.TryAddSingleton<PaymentRequestRepository>();
             services.TryAddSingleton<BTCPayWalletProvider>();
+            services.AddSingleton<PendingTransactionService>();
+            services.AddScheduledTask<PendingTransactionService>(TimeSpan.FromMinutes(10));
+            // PendingTransactionWebhookProvider webhooks registered in WebhookExtensions
             services.TryAddSingleton<WalletReceiveService>();
             services.AddSingleton<IHostedService>(provider => provider.GetService<WalletReceiveService>());
 
@@ -383,7 +393,7 @@ namespace BTCPayServer.Hosting
             services.AddReportProvider<OnChainWalletReportProvider>();
             services.AddReportProvider<ProductsReportProvider>();
             services.AddReportProvider<PayoutsReportProvider>();
-            services.AddReportProvider<LegacyInvoiceExportReportProvider>();
+            services.AddReportProvider<InvoicesReportProvider>();
             services.AddReportProvider<RefundsReportProvider>();
             services.AddWebhooks();
 
@@ -425,9 +435,11 @@ o.GetRequiredService<IEnumerable<IPaymentLinkExtension>>().ToDictionary(o => o.P
             services.AddSingleton<IHostedService, AppHubStreamer>();
             services.AddSingleton<IHostedService, AppInventoryUpdaterHostedService>();
             services.AddSingleton<IHostedService, TransactionLabelMarkerHostedService>();
+            services.AddSingleton<IHostedService, OnChainRateTrackerHostedService>();
             services.AddSingleton<IHostedService, UserEventHostedService>();
             services.AddSingleton<IHostedService, DynamicDnsHostedService>();
-            services.AddSingleton<IHostedService, PaymentRequestStreamer>();
+            services.AddSingleton<PaymentRequestStreamer>();
+            services.AddSingleton<IHostedService>(s => s.GetRequiredService<PaymentRequestStreamer>());
             services.AddSingleton<IBackgroundJobClient, BackgroundJobClient>();
             services.AddScoped<IAuthorizationHandler, CookieAuthorizationHandler>();
             services.AddScoped<IAuthorizationHandler, BitpayAuthorizationHandler>();
@@ -523,6 +535,7 @@ o.GetRequiredService<IEnumerable<IPaymentLinkExtension>>().ToDictionary(o => o.P
             {
                 { "EUR", "kraken" },
                 { "USD", "kraken" },
+                { "CAD", "kraken" },
                 { "GBP", "kraken" },
                 { "CHF", "kraken" },
                 { "GTQ", "bitpay" },
@@ -532,7 +545,9 @@ o.GetRequiredService<IEnumerable<IPaymentLinkExtension>>().ToDictionary(o => o.P
                 { "TRY", "btcturk" },
                 { "UGX", "yadio"},
                 { "RSD", "bitpay"},
-                { "NGN", "bitnob"}
+                { "NGN", "bitnob"},
+                { "NOK", "barebitcoin"},
+                { "CZK", "coinmate"},
             })
             {
                 var r = new DefaultRules.Recommendation(rule.Key, rule.Value);
@@ -587,6 +602,9 @@ o.GetRequiredService<IEnumerable<IPaymentLinkExtension>>().ToDictionary(o => o.P
             services.AddRateProvider<YadioRateProvider>();
             services.AddRateProvider<BtcTurkRateProvider>();
             services.AddRateProvider<FreeCurrencyRatesRateProvider>();
+            services.AddRateProvider<BitmyntRateProvider>();
+            services.AddRateProvider<BareBitcoinRateProvider>();
+            services.AddRateProvider<CoinmateRateProvider>();
 
             services.AddSingleton<InvoiceBlobMigratorHostedService>();
             services.AddSingleton<IHostedService, InvoiceBlobMigratorHostedService>(o => o.GetRequiredService<InvoiceBlobMigratorHostedService>());
@@ -636,6 +654,9 @@ o.GetRequiredService<IEnumerable<IPaymentLinkExtension>>().ToDictionary(o => o.P
                 services.AddSingleton<IPaymentMethodBitpayAPIExtension>(provider =>
 (IPaymentMethodBitpayAPIExtension)ActivatorUtilities.CreateInstance(provider, typeof(BitcoinPaymentMethodBitpayAPIExtension), new object[] { pmi }));
 
+                services.AddSingleton<ICheckoutCheatModeExtension>(provider =>
+(ICheckoutCheatModeExtension)ActivatorUtilities.CreateInstance(provider, typeof(BitcoinCheckoutCheatModeExtension), new object[] { network }));
+
                 if (!network.ReadonlyWallet && network.WalletSupported)
                 {
                     var payoutMethodId = PayoutTypes.CHAIN.GetPayoutMethodId(network.CryptoCode);
@@ -663,6 +684,8 @@ o.GetRequiredService<IEnumerable<IPaymentLinkExtension>>().ToDictionary(o => o.P
                     var payoutMethodId = PayoutTypes.LN.GetPayoutMethodId(network.CryptoCode);
                     services.AddSingleton<IPayoutHandler>(provider =>
     (IPayoutHandler)ActivatorUtilities.CreateInstance(provider, typeof(LightningLikePayoutHandler), new object[] { payoutMethodId, network }));
+                    services.AddSingleton<ICheckoutCheatModeExtension>(provider =>
+(ICheckoutCheatModeExtension)ActivatorUtilities.CreateInstance(provider, typeof(LightningCheckoutCheatModeExtension), new object[] { network }));
                 }
                 // LNURL
                 {

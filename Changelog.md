@@ -1,5 +1,343 @@
 # Changelog
 
+## 2.2.1
+
+### Bug fixes
+
+* Fix: Updating store settings would silently fail where there was a validation issue @NicolasDorier
+* Fix: Ensure unlisted installed plugins appear as updatable (#6896 #6893) @thgO-O
+* Fix: Icon spacing issues in multiple UI components (#6886 #6880) @bc1cindy
+* Fix: In Wallet Send page, coin selection would unexpectedly also clear labels (#6885 #6883 #6676) @thgO-O
+* Fix: Periodic tasks would sometimes stop firing (#6898) @NicolasDorier
+* Fix: Date column header isn't aligned properly (#6914) @NicolasDorier
+
+## 2.2.0
+
+We recommend updating NBXplorer to version `2.5.28` to take full advantage of the features in this release.
+
+**Breaking change:** This release renames and reorders the columns of the `Legacy Invoice Export`, now called `Invoice Export`. While we encourage you to utilize the updated report, we recognize this may disrupt workflows that rely on the old format.
+
+If you need to restore the `Legacy Invoice Export`, install the `Legacy Invoice Export` plugin.
+
+As a server administrator, go to `Manage Plugins`, search for `[LegacyInvoiceExport]`, install it, and restart your server.
+
+### Features
+
+* Renamed and reordered columns in the Invoice report (#6835) @NicolasDorier
+* Export all invoice metadata in the Invoice report (#6835) @NicolasDorier
+* Added wallet policy/miniscript support (#6765) @NicolasDorier
+* Added transaction fee and fee rate information in the wallet transaction list and the wallet report (#6857) @NicolasDorier
+* Added Tracking of exchange rate when a new transaction is detected in the wallet (#6841) @NicolasDorier
+* Included rate information in the wallet transaction list, wallet report, and invoice report (#6841) @NicolasDorier
+* Added ability to track additional rates via `Additional rates to track` in store settings (#6841) @NicolasDorier
+* Fix crowdfund number formatting for non-English locales (#6865) @bc1cindy
+* API: Added endpoint to retrieve invoice refund trigger data (#6818) @IzyPro
+* API: Enabled fallback exchange rate via API (#6839) @Abhijay007
+* Asking for confirmation to display QR code if user is store owner (#6878) @rockstardev
+* Automatic installation of plugin dependencies (#6858 #6873) @NicolasDorier @thgO-O
+
+### Bug Fixes
+
+* Fixed line break rendering in dropdowns using html-translate (#6820) @bhola-dev58
+* Fixed timezone mismatch in receipts (#6832 #6756) @thgO-O
+* Fix: A plugin could not use types provided by another plugin. (#6851) @NicolasDorier
+* Fix time icon spacing in wallet transactions header (#6877) @bc1cindy
+
+### Improvements
+
+* Improved responsiveness and UX of the Reporting page (#6846) @NicolasDorier
+* Added a "Reporting" button for easier access to reports from the invoice and wallet transactions lists (#6841 #6835) @NicolasDorier
+
+## 2.1.6
+
+### Features
+
+* Wallet: Ability to browse the addresses generated through the Receive tab (#6796) @thgO-O
+* Allowed updating payment requests as settled (#6825 #6792) @Abhijay007
+
+### Bug fixes
+
+* Fix: After connection string replacement, lightning payment would not be detected for 1 min (#6822) @NicolasDorier
+* Fix: In Email Rules show "Send the email to the buyer" checkbox only if trigger supports it (#6653 #6815) @AdamWroblewski
+* Fix: Failure to sign with Vault when a PSBT size exceeds 32KB (#6809) @NicolasDorier
+* Do not prevent the processing of other pending payouts if a store's lightning server is unresponsive @NicolasDorier
+
+## 2.1.5
+
+### Features
+
+* Wallet: Enhance manual Coin Selection with advanced filters and improved UX (#6755 #6685) @thgO-O
+* Added "Clear All" filter to Invoices (#6776 #5156) @Abhijay007
+
+### Bug fixes
+
+* Fix connection failure with phoenixd on mainnet (https://github.com/btcpayserver/BTCPayServer.Lightning/pull/170) @armelinw
+* PoS: Attempting to pay via Custom Amount in Product List mode would returns error 404. (#6786) @NicolasDorier
+* PoS: When using the Keypad (with cart), the button to proceed to checkout wasn't enabled if all selected items in the cart were free. (#6785) @NicolasDorier
+* PoS: When paying an item via Print View, the tax were not applied and receipt wasn't showing the item purchased. (#6788) @NicolasDorier
+* PoS: When paying an item via Print View, the custom amount option wasn't working. (#6788) @NicolasDorier
+
+## 2.1.4
+
+### Bug fixes
+
+* Fix keypad crash introduced by 2.1.3
+
+## 2.1.3
+
+### Bug fixes
+
+* Free items in the PoS were generating top-up invoices rather than settled invoices (#6780) @NicolasDorier
+* When a POS has a form, the amount adjusts incorrectly (#6782) @Kukks
+
+## 2.1.2
+
+### New features
+
+* POS: Apply tax rates to items, show in checkout/receipts (#6724 #6712) @NicolasDorier
+* POS: Improved total breakdown in receipts and cart (#6739) @NicolasDorier
+* POS Report: Add tip and subtotal (#6749) @NicolasDorier
+* New webhooks: InvoiceExpiredPaidPartial, InvoicePaidAfterExpiration (#5936 #6723) @rockstardev
+* Added Coinmate rate provider, recommended for CZK (#6707 #6725) @d4rp4t
+* Can RBF sweeping transactions (#6748) @NicolasDorier
+* Admin can change default store templates (#6704) @NicolasDorier
+* Store owners can configure fallback rate source (#6705) @NicolasDorier
+* Greenfield: Include `amountPaid` on greenfield invoices (#6747 #2525) @TChukwuleta
+* Phoenixd support (https://github.com/btcpayserver/BTCPayServer.Lightning/pull/169 https://github.com/btcpayserver/btcpayserver-docker/pull/987) @pm47 @armelinw
+
+### Bug fixes
+
+* Yadio rate lookup failure (#6743 #6729) @Abhijay007
+* RBF label inconsistency on replacement txs (#6748) @NicolasDorier
+* Crash when fee rate below minimum during RBF (#6748) @NicolasDorier
+
+### Improvements
+
+* Switched to textarea for full lightning connection string (#6706) @rockstardev
+* POS Keypad: shows amount being input rather than total (#6739 #6768) @NicolasDorier
+
+## 2.1.1
+
+Note: If you installed the XPub Extractor plugin, you will need to update it.
+
+### New features
+
+* Add support for a subset of wallet policy output descriptors (BIP388, BIP389) @NicolasDorier
+* Add support for hardware wallet taproot signing (BIP86) (#6678) @NicolasDorier
+* Enables linking payment requests to external invoices (e.g., QuickBooks, Xero) via a `Reference Id`. (#6642) @rockstardev
+* Allows searching Payment Requests `Reference Id`. (#6642) @rockstardev
+* Introduces a webhook triggered when a Payment Request is fully paid, useful for automating emails or other actions. (#6642) @rockstardev
+
+### Bug fixes
+
+* In the Send dialog, scanning a QR code leaves the 'bitcoin:' prefix in the destination field. (#6693 #6665) @dennisreimann @sapakus
+* In the Send dialog, the camera doesn't stop scanning after reading a QR code. (#6693) @dennisreimann
+* In the Multisig Server setup, choosing the PSBT signing option unexpectedly returns to the transaction list. (#6668 #6690) @NicolasDorier
+* Recreating an aborted TX in MultiSig on Server setup crashes (#6682 #6669) @NicolasDorier
+* Managers could not manage payouts in the UI (#6679) @NicolasDorier
+* Signing with seed with multisig wallet would not always recognize the seed (#6674 #6670) @NicolasDorier
+* Remove potential 'Invalid chains' error at startup. @NicolasDorier
+* Payment requests were uneditable after an invoice is received. (#6664) @NicolasDorier
+* `{PaymentRequest.Amount}` in email template would not be properly replaced by its value. (#6666) @rockstardev
+* In the Multisig Server setup, two simultaneous pending transaction could end up invalidating one another by spending the same UTXO. (#6699) @NicolasDorier
+
+### Improvements
+
+* Allow translation of the UI text in the hardware wallet pairing page (#6678) @NicolasDorier
+* Remove the Confirm Addresses page during hardware wallet import, but force verification on device during the pairing process (#6678) @NicolasDorier
+* After hardware wallet import, set the Label to the name of the model of the wallet. (#6678) @NicolasDorier
+* Attempt to automatically detect if the hardware needs `Default Include NonWitness Utxo`. (#6678) @NicolasDorier
+* When using multisig, include xpubs in the PSBT so wallets like Coldcard works without requiring prior xpub registration. (#6696) @NicolasDorier
+* Do not ask passphrase to Trezor One if passphrase protection isn't enabled on it. (#6678) @NicolasDorier
+* Add a confirmation prompt for the deletion of an Email Rule (#6675 #6662) @wbalbo
+* Adds a convenient button to copy the public URL of a Payment Request. (#6642) @rockstardev
+* Mobile devices now display a numeric keypad for number input on the Point of Sale page. (#6673) @iBobik
+
+## 2.1.0
+
+Breaking change: If you are using Monero or ZCash, you will need to install [their respective plugins](https://blog.btcpayserver.org./btcpay-server-2-1-0/#pluginizing-zcash-and-monero) after this update.
+Note that if you aren't using the docker deployment, you will need to remove `--chains xmr` or `--chains zec` (or corresponding `BTCPAY_CHAINS`) from BTCPay Server configuration.
+
+Please read [our blog post](https://blog.btcpayserver.org./btcpay-server-2-1-0/) for more details.
+
+### New features
+
+* Add better MultiSig flow when all users are using BTCPay Server @rockstardev
+* Remove ZCash and Monero from core code (#6535) @NicolasDorier
+* Disable cold wallet creation by default (#6626) @NicolasDorier
+* Adding support for RBF and improve UX for CPFP (#6581) @NicolasDorier
+* Greenfield: added `refundBOLT11Expiration` to Get/Update store endpoint (#6644) @NicolasDorier
+* Greenfield: Added `invitationLink` and `disabled` properties to user APIs (#6649) @dennisreimann
+
+### Bug fixes
+
+* Translatable text with accents were improperly rendered (#6622 #6623) @dennisreimann
+* Fix: Refunds through API were ignoring BOLT11 expiration at store level (#6644) @NicolasDorier
+* Fix: PaymentRequests created via API never expires (#6657) @NicolasDorier
+
+### Improvements
+
+* Improve UX for store email rules triggers (#6629) @rockstardev
+* Store users: Ensure the last owner cannot be downgraded (#6654) @dennisreimann
+
+## 2.0.8
+
+### Bug fixes
+
+* Fix potential migration crash when upgrading from pre 2.0 @NicolasDorier
+
+## 2.0.7
+
+### New features
+
+* Display fiat amount previews in Transaction Details page (#6610) @rockstardev
+* Greenfield: Adding endpoint to set server email settings (#6601) @rockstardev
+
+### Bug fixes
+
+* JS-Modal is missing contact us link at end of invoice (#6614 #6615) @dennisreimann
+* Forms: Properly support checkbox type (#6596 #6592) @dennisreimann
+* Forms: Remove unsupported input types @dennisreimann
+* Lightning Address: Display validation messages on failed creation (#6597 #6590) @dennisreimann
+* Fix: Display unconfirmed transactions with lower opacity (#6600) @dennisreimann
+* Greenfield: Wallet's transaction had null blockhash on greenfield @NicolasDorier
+* Invalid currency pair (FARTCOIN_USDC) may show in the logs when using kraken rate provider (#6577) @NicolasDorier
+
+### Improvements
+
+* Fix: Archived invoices shouldn't be browsable by non authenticated users  (#6588) @ThiagoOyo
+* UI: Fix spacing of Lightning Address info on invoice details page @dennisreimann
+* Dashboard: Remove store name headline (#6598) @dennisreimann
+* If an On-Chain payment get replaced, log it in invoice logs rather than console (#6595) @NicolasDorier
+* Remove LNURL description hash check (#6580) @reneaaron
+
+## 2.0.6
+
+This release contains a security fix for merchants using refunds/pull payments On-Chain with automated payout processors. Please update as soon as possible.
+We could not reproduce the reported issue on our own instances, but the reporting merchant confirmed the issue was resolved.
+
+### New features
+
+* SEO: Add ability to customize HTML meta tags and HTML lang attribute for crowdfund and PoS (#6229) @Nisaba
+* Add the ability for merchants to manually transition a payout from the `InProgress` state to `AwaitingPayment`. (#6564) @NicolasDorier
+
+### Bug fixes
+
+* **Security fix**: Critical fix to prevent duplicate payouts in certain On-Chain configurations. (#6540 #6564) @NicolasDorier
+* Store: Allow resetting custom email server (#6547 #6546) @dennisreimann
+* UI: Fix store's custom CSS URL (#6555 #6554) @dennisreimann
+* Fix: Sidemenu unscrollable on Firefox for Android (#6548 #6552) @dennisreimann
+* Fix: Migration bug from V1 to V2 which can happen on very old instances (#6551) @NicolasDorier
+* Fix: Migration bug from V1 to V2 for users which used the old ETH integration (#6539) @NicolasDorier
+* Fix: The route `GET v1/stores/{storeId}/payment-methods/{paymentMethod}` was returning a wrong `enabled` property if `onlyEnabled` query parameter was passed. (#6570) @NicolasDorier
+* Fix: The route `PUT v1/stores/{storeId}/payment-methods/{paymentMethod}` for on-chain payment method was not supporting the documented config payload. (#6570) @NicolasDorier
+* Dashboard: Fix Lightning balance display for tiny amounts (#6573) @dennisreimann
+
+### Improvements
+
+* Add a warning about our Shopify integration being [deprecated by Shopify](https://changelog.shopify.com/posts/shopify-scripts-deprecation). Add link to our new plugin for it. (#6559) @TChukwuleta
+* Relaxing some payjoin related rules in accordance with changes to the BIP78 spec (#6561) @NicolasDorier
+* Add kraken as default rate provider for CAD @NicolasDorier
+* Add tooltip and link to pull-payment tags in wallet's transaction list (#6562) @NicolasDorier
+* Make Checkout Cheat Mode extensible by plugins (#6543) @NicolasDorier
+* Allow receipt to be shown in iframe (#6574) @dennisreimann
+* if the checkout page is shown within an iframe and hides the back to store link (#6574) @dennisreimann
+
+## 2.0.5
+
+### Bug fixes
+
+* Invoices: Allow admin to see users' invoices (#6517) @dennisreimann
+* UI: Fix inconsistent responsiveness of labels (#6508, #6501) @dennisreimann
+* Greenfield: Receipt options from the GetInvoice route were not reflecting the store's settings (#6483) @dennisreimann
+* Checkout: Fix regression affecting the UI of the SideShift, FixedFloat, and Trocador plugins (#6481) @dennisreimann
+* Fix several incorrectly generated links when `BTCPAY_ROOTPATH` is used (#6506)
+
+### Improvements
+
+* Checkout: Add support link to footer (#6511, #6495) @dennisreimann
+* Pull Payment: Add "Copy Link" button to the action column (#6516, #6515) @dennisreimann
+* Greenfield: Remove authorization requirement for PoS data (#6499) @dennisreimann
+* Greenfield: Resolve store user's image URL @dennisreimann
+
+### Feature removed
+
+* Remove the Lightning Balance histogram from the dashboard (too slow on large instances).
+
+## 2.0.4
+
+### New features
+
+* Add QR Code with link to invitation email (#6438) @dennisreimann
+* Add rate providers for Norwegian exchanges (Bitmynt and Bare Bitcoin) (#6452) @schjonhaug
+* Greenfield: Improve store users API (#6427) @dennisreimann
+  * Adds an endpoint to update store users (before they had to be removed and re-added)
+  * Checks for the existence of a user and responds with 404 in that case (fixes #6423)
+  * Allows retrieval of user by user id or email for add and update (consistent with the other endpoints)
+  * Improves the API docs for the store users endpoint
+  * Adds details to store user data
+
+### Bug fixes
+
+* Fix: correct `  <` plugin dependency implementation (#6420) @jackstar12
+* Fix: Point of Sale as PWA on iOS no longer working in Lockdown mode (#6422 #6424) @leesalminen
+* Greenfield: Users API fixes (#6425) @dennisreimann
+  * Do not crash when creating users without a password
+  * More precise error message for user approval toggling
+* App: Sales stats should only include paid invoices (#6444) @dennisreimann
+* Fix: Combination of status filters on invoices page causes 500 fatal server error (#6437) @NicolasDorier
+* Fix: Payment Requests should show payments of invalid invoices (#6412) @NicolasDorier
+* Bugfix: Providing updated PSBT with QR Code was not possible (#6459 #6460) @Orcinus21
+
+### Improvements
+
+* UI: Move App's invoices link to the top (#6429) @dennisreimann
+* Account: Sign in users after accepting an invitation or resetting a password (#6442) @dennisreimann
+* Improve display for the PoS editor (#6441 #6436) @dennisreimann
+* Fix: Truncate center CSS for icons (#6465) @jackstar12
+* Do not throttle authenticated users on a PoS application (#6415) @Kukks
+* Plugin: Add `IGlobalCheckoutModelExtension` to allow a plugin to customize checkout experience regardless of the payment method (#6470) @NicolasDorier
+* Plugin: Add `IExtendedLightningClient` to allow a plugin to better validate a lightning connection string, and customize display stringss. (#6467) @NicolasDorier
+
+## 2.0.3
+
+If you are using Boltcards, we advise you to update to this release.
+
+### New features
+
+* Greenfield: Histograms: Add Lightning data and API endpoints (#6217) @dennisreimann
+* Greenfield: Add image upload for app items (#6226 #6075) @dennisreimann
+
+### Bug fixes
+
+* Fix: Getting notifications via API would crash @NicolasDorier
+* Boltcard would get bricked during reset from the balance view with wrong card (#6400) @NicolasDorier
+* UI: Fix escaped HTML tags in UTXO rescan message (#6399 #6398) @dennisreimann
+* UI: Allow text break in labels to avoid horizontal scrolling (#6366) @dennisreimann
+* UI: Fix missing navigation links for store managers (#6368) @dennisreimann
+* Fix: Incorrect calculation for crowdfund and payment request status (#6381 #6371) @NicolasDorier
+* Fix: Pay button shouldn't throw exception if currency isn't specific (#6324 #6395) @NicolasDorier
+* UI: Do not escape apostrophe in custom server name (#6391 #6352) @dennisreimann
+* UI: Fix close icon in create store wizard @dennisreimann
+* Fix: Pull payment could get stuck in Pending mode (#6259 #6394) @NicolasDorier
+* Fix: Activating the automated payout processor in the UI would crash @NicolasDorier
+* Fix: Newline during import of multisig xpub results in different addresses for wallet (#6328 #6386) @NicolasDorier
+* Fix: WalletCamera for Address scanning doesn't work (#6373 #6370) @dennisreimann
+* Fix: InvoiceCurrencyAmount and Rate columns in reports displays 0.00 (#6385 #6364 #6384) @NicolasDorier
+* Fix: center qr code (#6362 #6361) @jackstar12
+* Fix: Do not automatically retry of payouts if they are non interactive (Boltcard) (#6382 #6377) @NicolasDorier
+* Fix: The lightning symbol was missing in the payment stats (#6376) @NicolasDorier
+* Store: Fix missing invitation email when adding new user (#6372 #6369) @dennisreimann
+
+### Improvements
+
+* Greenfield: Create payoutMethods is now optional for creating a pull payment (#6396 #6147) @NicolasDorier
+* POS: Update button icons (#6390) @dennisreimann
+* Improve error messages for on-chain related greenfield operations (#6393 #6261 #6248) @NicolasDorier
+* Docs: Improve invoice paymentTolerance API docs (#6383 #6378) @dennisreimann
+* Add an additional Lightning implementation-specific error message if a payout payment fails due to no route found @NicolasDorier
+* UI: Improve brand color adjustment (#6351) @dennisreimann
+
 ## 2.0.2
 
 If you are using the Nostr or Blink plugin, consider this release **security-critical**.
@@ -115,6 +453,17 @@ Please refer to our blog post before upgrading — here are the most noteworthy 
 * Remove period concept from PullPayment (#5963) @NicolasDorier
 * Remove the Altcoins build (#6177) @NicolasDorier
 * Dashboard: Remove View All link for Top Items (#6072) @dennisreimann
+
+## 1.13.7
+
+If you are using Boltcards, we advise you to update to this release.
+
+### Bug fixes
+
+* Boltcard would get bricked during reset from the balance view with wrong card (#6400) @NicolasDorier
+* Fix: Newline during import of multisig xpub results in different addresses for wallet (#6328 #6386) @NicolasDorier
+* Fix: Pay button shouldn't throw exception if currency isn't specific (#6324 #6395) @NicolasDorier
+* UI: Allow text break in labels to avoid horizontal scrolling (#6366) @dennisreimann
 
 ## 1.13.6
 

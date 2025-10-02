@@ -19,7 +19,6 @@ using BTCPayServer.HostedServices;
 using BTCPayServer.Logging;
 using BTCPayServer.Models.ServerViewModels;
 using BTCPayServer.Models.StoreViewModels;
-using BTCPayServer.Payments;
 using BTCPayServer.Services;
 using BTCPayServer.Services.Apps;
 using BTCPayServer.Services.Mails;
@@ -44,7 +43,7 @@ using AuthenticationSchemes = BTCPayServer.Abstractions.Constants.Authentication
 
 namespace BTCPayServer.Controllers
 {
-    [Authorize(Policy = BTCPayServer.Client.Policies.CanModifyServerSettings,
+    [Authorize(Policy = Client.Policies.CanModifyServerSettings,
                AuthenticationSchemes = AuthenticationSchemes.Cookie)]
     public partial class UIServerController : Controller
     {
@@ -65,7 +64,7 @@ namespace BTCPayServer.Controllers
         private readonly StoredFileRepository _StoredFileRepository;
         private readonly IFileService _fileService;
         private readonly IEnumerable<IStorageProviderService> _StorageProviderServices;
-        private readonly LinkGenerator _linkGenerator;
+        private readonly CallbackGenerator _callbackGenerator;
         private readonly UriResolver _uriResolver;
         private readonly EmailSenderFactory _emailSenderFactory;
         private readonly TransactionLinkProviders _transactionLinkProviders;
@@ -91,7 +90,7 @@ namespace BTCPayServer.Controllers
             EventAggregator eventAggregator,
             IOptions<ExternalServicesOptions> externalServiceOptions,
             Logs logs,
-            LinkGenerator linkGenerator,
+            CallbackGenerator callbackGenerator,
             UriResolver uriResolver,
             EmailSenderFactory emailSenderFactory,
             IHostApplicationLifetime applicationLifetime,
@@ -120,7 +119,7 @@ namespace BTCPayServer.Controllers
             _eventAggregator = eventAggregator;
             _externalServiceOptions = externalServiceOptions;
             Logs = logs;
-            _linkGenerator = linkGenerator;
+            _callbackGenerator = callbackGenerator;
             _uriResolver = uriResolver;
             _emailSenderFactory = emailSenderFactory;
             ApplicationLifetime = applicationLifetime;
@@ -179,7 +178,7 @@ namespace BTCPayServer.Controllers
             }
             if (!ModelState.IsValid)
                 return View(vm);
-            
+
             if (command == "changedomain")
             {
                 if (string.IsNullOrWhiteSpace(vm.DNSDomain))
@@ -352,6 +351,34 @@ namespace BTCPayServer.Controllers
         {
             await UpdateViewBag();
 
+            if (command == "ResetTemplate")
+            {
+                ModelState.Clear();
+                await _StoreRepository.SetDefaultStoreTemplate(null);
+                this.TempData.SetStatusSuccess(StringLocalizer["Store template successfully unset"]);
+                return RedirectToAction(nameof(Policies));
+            }
+
+            if (command == "SetTemplate")
+            {
+                ModelState.Clear();
+                var storeId = this.HttpContext.GetStoreData()?.Id;
+                if (storeId is null)
+                {
+                    this.TempData.SetStatusMessageModel(new()
+                    {
+                        Severity = StatusMessageModel.StatusSeverity.Error,
+                        Message = StringLocalizer["You need to select a store first"]
+                    });
+                }
+                else
+                {
+                    await _StoreRepository.SetDefaultStoreTemplate(storeId, GetUserId());
+                    this.TempData.SetStatusSuccess(StringLocalizer["Store template created from store '{0}'. New stores will inherit these settings.", HttpContext.GetStoreData().StoreName]);
+                }
+                return RedirectToAction(nameof(Policies));
+            }
+
             if (command == "add-domain")
             {
                 ModelState.Clear();
@@ -399,7 +426,7 @@ namespace BTCPayServer.Controllers
                     domainToAppMappingItem.AppType = apps[domainToAppMappingItem.AppId];
                 }
             }
-            
+
 
             await _SettingsRepository.UpdateSetting(settings);
             _ = _transactionLinkProviders.RefreshTransactionLinkTemplates();
@@ -698,7 +725,7 @@ namespace BTCPayServer.Controllers
                 var lnConfig = _LnConfigProvider.GetConfig(configKey);
                 if (lnConfig != null)
                 {
-                    model.QRCodeLink = Request.GetAbsoluteUri(Url.Action(nameof(GetLNDConfig), new { configKey = configKey }));
+                    model.QRCodeLink = Url.ActionAbsolute(Request, nameof(GetLNDConfig), new { configKey }).ToString();
                     model.QRCode = $"config={model.QRCodeLink}";
                 }
             }
@@ -1045,7 +1072,7 @@ namespace BTCPayServer.Controllers
         {
             var server = await _SettingsRepository.GetSettingAsync<ServerSettings>() ?? new ServerSettings();
             var theme = await _SettingsRepository.GetSettingAsync<ThemeSettings>() ?? new ThemeSettings();
-            
+
             var vm = new BrandingViewModel
             {
                 ServerName = server.ServerName,
@@ -1074,13 +1101,13 @@ namespace BTCPayServer.Controllers
 
             vm.LogoUrl = await _uriResolver.Resolve(this.Request.GetAbsoluteRootUri(), theme.LogoUrl);
             vm.CustomThemeCssUrl = await _uriResolver.Resolve(this.Request.GetAbsoluteRootUri(), theme.CustomThemeCssUrl);
-            
+
             if (server.ServerName != vm.ServerName)
             {
                 server.ServerName = vm.ServerName;
                 settingsChanged = true;
             }
-            
+
             if (server.ContactUrl != vm.ContactUrl)
             {
                 server.ContactUrl = !string.IsNullOrWhiteSpace(vm.ContactUrl)
@@ -1088,7 +1115,7 @@ namespace BTCPayServer.Controllers
                     : null;
                 settingsChanged = true;
             }
-            
+
             if (settingsChanged)
             {
                 await _SettingsRepository.UpdateSetting(server);
@@ -1200,7 +1227,7 @@ namespace BTCPayServer.Controllers
         [HttpGet("server/emails")]
         public async Task<IActionResult> Emails()
         {
-            var email = await _SettingsRepository.GetSettingAsync<EmailSettings>() ?? new EmailSettings();
+            var email = await _emailSenderFactory.GetSettings() ?? new EmailSettings();
             var vm = new ServerEmailsViewModel(email)
             {
                 EnableStoresToUseServerEmailSettings = !_policiesSettings.DisableStoresToUseServerEmailSettings
@@ -1217,7 +1244,7 @@ namespace BTCPayServer.Controllers
                 {
                     if (model.PasswordSet)
                     {
-                        var settings = await _SettingsRepository.GetSettingAsync<EmailSettings>() ?? new EmailSettings();
+                        var settings = await _emailSenderFactory.GetSettings() ?? new EmailSettings();
                         model.Settings.Password = settings.Password;
                     }
                     model.Settings.Validate("Settings.", ModelState);
@@ -1256,19 +1283,17 @@ namespace BTCPayServer.Controllers
                 TempData[WellKnownTempData.SuccessMessage] = StringLocalizer["Email server password reset"].Value;
                 return RedirectToAction(nameof(Emails));
             }
-            
-            // save
+
+            // save if user provided valid email; this will also clear settings if no model.Settings.From
             if (model.Settings.From is not null && !MailboxAddressValidator.IsMailboxAddress(model.Settings.From))
             {
                 ModelState.AddModelError("Settings.From", StringLocalizer["Invalid email"]);
                 return View(model);
             }
-            var oldSettings = await _SettingsRepository.GetSettingAsync<EmailSettings>() ?? new EmailSettings();
-            if (new ServerEmailsViewModel(oldSettings).PasswordSet)
-            {
+            var oldSettings = await _emailSenderFactory.GetSettings() ?? new EmailSettings();
+            if (!string.IsNullOrEmpty(oldSettings.Password))
                 model.Settings.Password = oldSettings.Password;
-            }
-            
+
             await _SettingsRepository.UpdateSetting(model.Settings);
             TempData[WellKnownTempData.SuccessMessage] = StringLocalizer["Email settings saved"].Value;
             return RedirectToAction(nameof(Emails));

@@ -119,7 +119,7 @@ namespace BTCPayServer.Controllers.Greenfield
         [HttpGet("~/api/v1/stores/{storeId}/payment-methods/{paymentMethodId}/wallet/histogram")]
         public async Task<IActionResult> GetOnChainWalletHistogram(string storeId, string paymentMethodId, [FromQuery] string? type = null)
         {
-            if (IsInvalidWalletRequest(paymentMethodId, out var network, out var derivationScheme, out var actionResult))
+            if (IsInvalidWalletRequest(paymentMethodId, out var network, out _, out var actionResult))
                 return actionResult;
 
             var walletId = new WalletId(storeId, network.CryptoCode);
@@ -135,7 +135,7 @@ namespace BTCPayServer.Controllers.Greenfield
                 Labels = data.Labels
             });
         }
-        
+
         [Authorize(Policy = Policies.CanViewStoreSettings, AuthenticationSchemes = AuthenticationSchemes.Greenfield)]
         [HttpGet("~/api/v1/stores/{storeId}/payment-methods/{paymentMethodId}/wallet/feerate")]
         public async Task<IActionResult> GetOnChainFeeRate(string storeId, string paymentMethodId, int? blockTarget = null)
@@ -171,9 +171,9 @@ namespace BTCPayServer.Controllers.Greenfield
             var allowedPayjoin = derivationScheme.IsHotWallet && Store.GetStoreBlob().PayJoinEnabled;
             if (allowedPayjoin)
             {
-                bip21.QueryParams.Add(PayjoinClient.BIP21EndpointKey,
-                    Request.GetAbsoluteUri(Url.Action(nameof(PayJoinEndpointController.Submit), "PayJoinEndpoint",
-                        new { network.CryptoCode })));
+                var endpoint = Url.ActionAbsolute(Request, nameof(PayJoinEndpointController.Submit), "PayJoinEndpoint",
+                        new { network.CryptoCode }).ToString();
+                bip21.QueryParams.Add(PayjoinClient.BIP21EndpointKey, endpoint);
             }
 
             return Ok(new OnChainWalletAddressData()
@@ -360,9 +360,7 @@ namespace BTCPayServer.Controllers.Greenfield
                         Timestamp = coin.Timestamp,
                         KeyPath = coin.KeyPath,
                         Confirmations = coin.Confirmations,
-                        Address = network.NBXplorerNetwork
-                            .CreateAddress(derivationScheme.AccountDerivation, coin.KeyPath, coin.ScriptPubKey)
-                            .ToString()
+                        Address = coin.Address.ToString()
                     };
                 }).ToList()
             );
@@ -379,11 +377,11 @@ namespace BTCPayServer.Controllers.Greenfield
             if (network.ReadonlyWallet)
             {
                 return this.CreateAPIError(503, "not-available",
-                    $"{network.CryptoCode} sending services are not currently available");
+                    $"This network only support read-only features");
             }
 
             //This API is only meant for hot wallet usage for now. We can expand later when we allow PSBT manipulation.
-            if (!(await CanUseHotWallet()).HotWallet)
+            if (!(await CanUseHotWallet()).CanCreateHotWallet)
             {
                 return this.CreateAPIError(503, "not-available",
                     $"You need to allow non-admins to use hotwallets for their stores (in /server/policies)");
@@ -535,12 +533,12 @@ namespace BTCPayServer.Controllers.Greenfield
             CreatePSBTResponse psbt;
             try
             {
-                psbt = await _walletsController.CreatePSBT(network, derivationScheme,
+                psbt = await _walletsController.CreatePSBT(storeId, network, derivationScheme,
                     new WalletSendModel()
                     {
                         SelectedInputs = request.SelectedInputs?.Select(point => point.ToString()),
                         Outputs = outputs,
-                        AlwaysIncludeNonWitnessUTXO = true,
+                        AlwaysIncludeNonWitnessUTXO = derivationScheme.DefaultIncludeNonWitnessUtxo,
                         InputSelection = request.SelectedInputs?.Any() is true,
                         FeeSatoshiPerByte = request.FeeRate?.SatoshiPerByte,
                         NoChange = request.NoChange
@@ -573,15 +571,22 @@ namespace BTCPayServer.Controllers.Greenfield
                     WellknownMetadataKeys.MasterHDKey);
             if (!derivationScheme.IsHotWallet || signingKeyStr is null)
             {
-                return this.CreateAPIError(503, "not-available",
-                    $"{network.CryptoCode} sending services are not currently available");
+                var reason = !derivationScheme.IsHotWallet ?
+                    "You cannot send from a cold wallet" :
+                    "NBXplorer doesn't have the seed of the wallet";
+
+                return this.CreateAPIError(503, "not-available", reason);
             }
 
             var signingKey = ExtKey.Parse(signingKeyStr, network.NBitcoinNetwork);
 
-            var signingKeySettings = derivationScheme.GetSigningAccountKeySettings();
-            signingKeySettings.RootFingerprint ??= signingKey.GetPublicKey().GetHDFingerPrint();
-            RootedKeyPath rootedKeyPath = signingKeySettings.GetRootedKeyPath();
+            var signingKeySettings = derivationScheme.GetAccountKeySettingsFromRoot(signingKey);
+            var rootedKeyPath = signingKeySettings?.GetRootedKeyPath();
+            if (rootedKeyPath is null || signingKeySettings is null)
+            {
+                return this.CreateAPIError(503, "not-available",
+                    "The private key saved for this wallet doesn't match the derivation scheme");
+            }
             psbt.PSBT.RebaseKeyPaths(signingKeySettings.AccountKey, rootedKeyPath);
             var accountKey = signingKey.Derive(rootedKeyPath.KeyPath);
 
@@ -787,19 +792,19 @@ namespace BTCPayServer.Controllers.Greenfield
             };
         }
 
-        private OnChainWalletObjectData.OnChainWalletObjectLink ToModel((string type, string id, string linkdata, string objectdata) data)
+        private OnChainWalletObjectData.OnChainWalletObjectLink ToModel((string type, string id, JObject? linkdata, JObject? objectdata) data)
         {
             return new OnChainWalletObjectData.OnChainWalletObjectLink()
             {
-                LinkData = string.IsNullOrEmpty(data.linkdata) ? null : JObject.Parse(data.linkdata),
-                ObjectData = string.IsNullOrEmpty(data.objectdata) ? null : JObject.Parse(data.objectdata),
+                LinkData = data.linkdata,
+                ObjectData = data.objectdata,
                 Type = data.type,
                 Id = data.id,
             };
         }
 
 
-        private async Task<(bool HotWallet, bool RPCImport)> CanUseHotWallet()
+        private async Task<WalletCreationPermissions> CanUseHotWallet()
         {
             return await _authorizationService.CanUseHotWallet(PoliciesSettings, User);
         }

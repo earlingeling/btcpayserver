@@ -178,7 +178,7 @@ public class BitcoinLikePayoutHandler : IPayoutHandler, IHasNetwork
             await UpdatePayoutsAwaitingForPayment(newTransaction, addressTrackedSource);
         }
 
-        if ((o is NewBlockEvent nbe && nbe.PaymentMethodId == PaymentMethodId) || 
+        if ((o is NewBlockEvent nbe && nbe.PaymentMethodId == PaymentMethodId) ||
             (o is NewOnChainTransactionEvent nct && nct.PaymentMethodId == PaymentMethodId))
         {
             await UpdatePayoutsInProgress();
@@ -339,61 +339,22 @@ public class BitcoinLikePayoutHandler : IPayoutHandler, IHasNetwork
             {
                 var proof = ParseProof(payout) as PayoutTransactionOnChainBlob;
                 var payoutBlob = payout.GetBlob(this._jsonSerializerSettings);
-                if (proof is null || proof.Accounted is false)
-                {
+                if (proof?.Accounted is not true)
                     continue;
-                }
                 foreach (var txid in proof.Candidates.ToList())
                 {
                     var explorer = _explorerClientProvider.GetExplorerClient(Network.CryptoCode);
                     var tx = await explorer.GetTransactionAsync(txid);
                     if (tx is null)
-                    {
-                        proof.Candidates.Remove(txid);
-                    }
-                    else if (tx.Confirmations >= payoutBlob.MinimumConfirmation)
+                        continue;
+                    if (tx.Confirmations >= payoutBlob.MinimumConfirmation)
                     {
                         payout.State = PayoutState.Completed;
                         proof.TransactionId = tx.TransactionHash;
                         updatedPayouts.Add(payout);
                         break;
                     }
-                    else
-                    {
-                        var rebroadcasted = await explorer.BroadcastAsync(tx.Transaction);
-                        if (rebroadcasted.RPCCode == RPCErrorCode.RPC_TRANSACTION_ERROR ||
-                            rebroadcasted.RPCCode == RPCErrorCode.RPC_TRANSACTION_REJECTED)
-                        {
-                            proof.Candidates.Remove(txid);
-                        }
-                        else
-                        {
-                            payout.State = PayoutState.InProgress;
-                            proof.TransactionId = tx.TransactionHash;
-                            updatedPayouts.Add(payout);
-                            continue;
-                        }
-                    }
                 }
-
-                if (proof.TransactionId is not null && !proof.Candidates.Contains(proof.TransactionId))
-                {
-                    proof.TransactionId = null;
-                }
-
-                if (proof.Candidates.Count == 0)
-                {
-                    if (payout.State != PayoutState.AwaitingPayment)
-                    {
-                        updatedPayouts.Add(payout);
-                    }
-                    payout.State = PayoutState.AwaitingPayment;
-                }
-                else if (proof.TransactionId is null)
-                {
-                    proof.TransactionId = proof.Candidates.First();
-                }
-
                 if (payout.State == PayoutState.Completed)
                     proof.Candidates = null;
                 SetProofBlob(payout, proof);
@@ -402,7 +363,7 @@ public class BitcoinLikePayoutHandler : IPayoutHandler, IHasNetwork
             await ctx.SaveChangesAsync();
             foreach (PayoutData payoutData in updatedPayouts)
             {
-                _eventAggregator.Publish(new PayoutEvent(PayoutEvent.PayoutEventType.Updated,payoutData));
+                _eventAggregator.Publish(new PayoutEvent(PayoutEvent.PayoutEventType.Updated, payoutData));
             }
         }
         catch (Exception ex)
@@ -419,7 +380,7 @@ public class BitcoinLikePayoutHandler : IPayoutHandler, IHasNetwork
             var destinationSum =
                 newTransaction.NewTransactionEvent.Outputs.Sum(output => output.Value.GetValue(Network));
             var destination = addressTrackedSource.Address.ToString();
-            
+
 
             await using var ctx = _dbContextFactory.CreateContext();
             var payout = await ctx.Payouts
@@ -434,7 +395,6 @@ public class BitcoinLikePayoutHandler : IPayoutHandler, IHasNetwork
 
             if (payout is null)
                 return;
-            var payoutBlob = payout.GetBlob(_jsonSerializerSettings);
             if (payout.Amount is null ||
                 // The round up here is not strictly necessary, this is temporary to fix existing payout before we
                 // were properly roundup the crypto amount

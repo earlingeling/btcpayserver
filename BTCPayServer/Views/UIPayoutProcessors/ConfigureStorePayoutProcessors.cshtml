@@ -8,7 +8,7 @@
     ViewData.SetActivePage(StoreNavPages.PayoutProcessors, StringLocalizer["Payout Processors"], storeId);
 }
 <div class="sticky-header">
-	<h2 class="my-1" text-translate="true">@ViewData["Title"]</h2>
+	<h2 class="my-1">@ViewData["Title"]</h2>
 </div>
 
 <partial name="_StatusMessage" />
@@ -39,11 +39,11 @@
                             <td class="actions-col" permission="@Policies.CanModifyStoreSettings">
                                 @if (conf.Value is null)
                                 {
-                                    <a href="@processorsView.Factory.ConfigureLink(storeId, conf.Key, Context.Request)" text-translate="true">Configure</a>
+                                    <a id="Configure-@conf.Key" href="@processorsView.Factory.ConfigureLink(storeId, conf.Key, Context.Request)" text-translate="true">Configure</a>
                                 }
                                 else
                                 {
-                                    <a href="@processorsView.Factory.ConfigureLink(storeId, conf.Key, Context.Request)" text-translate="true">Modify</a>
+                                    <a id="Configure-@conf.Key" href="@processorsView.Factory.ConfigureLink(storeId, conf.Key, Context.Request)" text-translate="true">Modify</a>
                                     
                                     @if (await processorsView.Factory.CanRemove())
                                     {

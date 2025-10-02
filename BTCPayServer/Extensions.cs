@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.WebSockets;
 using System.Reflection;
@@ -20,6 +21,7 @@ using BTCPayServer.BIP78.Sender;
 using BTCPayServer.Configuration;
 using BTCPayServer.Data;
 using BTCPayServer.HostedServices;
+using BTCPayServer.Hwi;
 using BTCPayServer.Lightning;
 using BTCPayServer.Models;
 using BTCPayServer.Models.StoreViewModels;
@@ -33,6 +35,7 @@ using BTCPayServer.Services;
 using BTCPayServer.Services.Invoices;
 using BTCPayServer.Services.Reporting;
 using BTCPayServer.Services.Wallets;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
@@ -40,15 +43,50 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NBitcoin;
 using NBitcoin.Payment;
+using NBitcoin.RPC;
 using NBXplorer.DerivationStrategy;
 using NBXplorer.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using InvoiceCryptoInfo = BTCPayServer.Services.Invoices.InvoiceCryptoInfo;
 
 namespace BTCPayServer
 {
     public static class Extensions
     {
+        public static string GetNiceModelName(this HwiDeviceClient device)
+        => device.Model switch
+        {
+            "trezor_1" => "Trezor Model One",
+            "trezor_t" => "Trezor Model T",
+            "trezor_r" => "Trezor Model R",
+            "coldcard" => "Coldcard",
+            "coldcard_simulator" => "Coldcard (Simulator)",
+            "trezor_safe 3" => "Trezor Safe 3",
+            "trezor_safe 5" => "Trezor Safe 5",
+            "ledger_nano_s" => "Ledger Nano S",
+            "ledger_nano_x" => "Ledger Nano X",
+            "ledger_stax" => "Ledger Stax",
+            "ledger_flex" => "Ledger Flex",
+            "keepkey" => "KeepKey",
+            "digitalbitbox_01" or "digitalbitbox" => "Digital Bitbox",
+            "digitalbitbox_01_simulator" => "Digital Bitbox (Simulator)",
+            "bitbox02_multi" => "BitBox02 Multi",
+            "bitbox02_btconly" => "BitBox02 Bitcoin Only",
+            "ledger_nano_s_plus" => "Ledger Nano S Plus",
+            "jade" => "Jade",
+            _ => device.Model
+        };
+        public static string ProtectString(this IDataProtector protector,string str)
+        {
+            return Convert.ToBase64String(protector.Protect(Encoding.UTF8.GetBytes(str)));
+        }
+        public static string UnprotectString(this IDataProtector protector, string str)
+        {
+            return Encoding.UTF8.GetString(protector.Unprotect(Convert.FromBase64String(str)));
+        }
+
+
         /// <summary>
         /// Outputs a serializer which will serialize default and null members.
         /// This is useful for discovering the API.
@@ -103,18 +141,10 @@ namespace BTCPayServer
         {
             if (!electrum)
             {
-                var isOD = Regex.Match(xpub, @"\(.*?\)").Success;
+                var isOD = DerivationSchemeParser.MaybeOD(xpub);
                 try
                 {
-                    var result = derivationSchemeParser.ParseOutputDescriptor(xpub);
-                    derivationSchemeSettings.AccountOriginal = xpub.Trim();
-                    derivationSchemeSettings.AccountDerivation = result.Item1;
-                    derivationSchemeSettings.AccountKeySettings = result.Item2.Select((path, i) => new AccountKeySettings()
-                    {
-                        RootFingerprint = path?.MasterFingerprint,
-                        AccountKeyPath = path?.KeyPath,
-                        AccountKey = result.Item1.GetExtPubKeys().ElementAt(i).GetWif(derivationSchemeParser.Network)
-                    }).ToArray();
+                    derivationSchemeSettings = derivationSchemeParser.ParseOD(xpub);
                     return true;
                 }
                 catch (Exception)
@@ -216,17 +246,25 @@ namespace BTCPayServer
             return endpoint != null;
         }
 
-        public static Uri GetServerUri(this ILightningClient client)
+        [Obsolete("Use GetServerUri(this ILightningClient client, string connectionString) instead")]
+        public static Uri GetServerUri(this ILightningClient client) => GetServerUri(client, client.ToString());
+        public static Uri GetServerUri(this ILightningClient client, string connectionString)
         {
-            var kv = LightningConnectionStringHelper.ExtractValues(client.ToString(), out _);
-            
+            if (client is IExtendedLightningClient { ServerUri: { } uri })
+                return uri;
+            var kv = client.ExtractValues(connectionString);
             return !kv.TryGetValue("server", out var server) ? null : new Uri(server, UriKind.Absolute);
         }
 
-        public static string GetDisplayName(this ILightningClient client)
+        [Obsolete("Use GetDisplayName(this ILightningClient client, string connectionString) instead")]
+        public static string GetDisplayName(this ILightningClient client) => GetDisplayName(client, client.ToString());
+        public static string GetDisplayName(this ILightningClient client, string connectionString)
         {
-            LightningConnectionStringHelper.ExtractValues(client.ToString(), out var type);
-
+            if (client is IExtendedLightningClient { DisplayName: { } displayName })
+                    return displayName;
+            var kv = client.ExtractValues(connectionString);
+            if (!kv.TryGetValue("type", out var type))
+                return "???";
             var lncType = typeof(LightningConnectionType);
             var fields = lncType.GetFields(BindingFlags.Public | BindingFlags.Static);
             var field = fields.FirstOrDefault(f => f.GetValue(lncType)?.ToString() == type);
@@ -235,9 +273,96 @@ namespace BTCPayServer
             return attr?.Name ?? type;
         }
 
-        public static bool IsSafe(this ILightningClient client)
+        private static bool TryParseLegacy(string str, out Dictionary<string, string> connectionString)
         {
-            var kv = LightningConnectionStringHelper.ExtractValues(client.ToString(), out _);
+            if (str.StartsWith("/"))
+            {
+                str = "unix:" + str;
+            }
+
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            connectionString = null;
+            if (!Uri.TryCreate(str, UriKind.Absolute, out Uri result))
+            {
+                return false;
+            }
+
+            if (!new string[4] { "unix", "tcp", "http", "https" }.Contains(result.Scheme))
+            {
+                return false;
+            }
+
+            if (result.Scheme == "unix")
+            {
+                str = result.AbsoluteUri.Substring("unix:".Length);
+                while (str.Length >= 1 && str[0] == '/')
+                {
+                    str = str.Substring(1);
+                }
+
+                result = new Uri("unix://" + str, UriKind.Absolute);
+                dictionary.Add("type", "clightning");
+            }
+
+            if (result.Scheme == "tcp")
+            {
+                dictionary.Add("type", "clightning");
+            }
+
+            if (result.Scheme == "http" || result.Scheme == "https")
+            {
+                string[] array = result.UserInfo.Split(':');
+                if (string.IsNullOrEmpty(result.UserInfo) || array.Length != 2)
+                {
+                    return false;
+                }
+
+                dictionary.Add("type", "charge");
+                dictionary.Add("username", array[0]);
+                dictionary.Add("password", array[1]);
+                if (result.Scheme == "http")
+                {
+                    dictionary.Add("allowinsecure", "true");
+                }
+            }
+            else if (!string.IsNullOrEmpty(result.UserInfo))
+            {
+                return false;
+            }
+
+            dictionary.Add("server", new UriBuilder(result)
+            {
+                UserName = "",
+                Password = ""
+            }.Uri.ToString());
+            connectionString = dictionary;
+            return true;
+        }
+
+        static Dictionary<string, string> ExtractValues(this ILightningClient client, string connectionString)
+        {
+            ArgumentNullException.ThrowIfNull(connectionString);
+            if (TryParseLegacy(connectionString, out var legacy))
+                return legacy;
+            string[] source = connectionString.Split(new char[1] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            var kv = new Dictionary<string, string>();
+            foreach (string item in source.Select((string p) => p.Trim()))
+            {
+                int num = item.IndexOf('=');
+                if (num == -1)
+                    continue;
+                string text = item.Substring(0, num).Trim().ToLowerInvariant();
+                string value = item.Substring(num + 1).Trim();
+                kv.TryAdd(text, value);
+            }
+            return kv;
+        }
+
+        [Obsolete("Use IsSafe(this ILightningClient client, string connectionString) instead")]
+        public static bool IsSafe(this ILightningClient client) => IsSafe(client, client.ToString());
+        public static bool IsSafe(this ILightningClient client, string connectionString)
+        {
+            var kv = client.ExtractValues(connectionString);
             if (kv.TryGetValue("cookiefilepath", out _)  ||
                 kv.TryGetValue("macaroondirectorypath", out _)  ||
                 kv.TryGetValue("macaroonfilepath", out _) )
@@ -346,6 +471,66 @@ namespace BTCPayServer
             finally { try { webSocket.Dispose(); } catch { } }
         }
 
+        public static async Task<GetMempoolInfoResponse> GetMempoolInfo(this RPCClient rpc, CancellationToken cancellationToken)
+        {
+            var mempoolInfo = await rpc.SendCommandAsync(new RPCRequest("getmempoolinfo", [])
+            {
+                ThrowIfRPCError = false,
+            }, cancellationToken);
+            if (mempoolInfo is null || mempoolInfo.Error is not null)
+                return null;
+            var result = new GetMempoolInfoResponse();
+            var incrementalRelayFee = mempoolInfo.Result["incrementalrelayfee"]?.Value<decimal>();
+            if (incrementalRelayFee is not null)
+            {
+                result.IncrementalRelayFeeRate = new FeeRate(Money.Coins(incrementalRelayFee.Value), 1000);
+            }
+
+            var mempoolminfee = mempoolInfo.Result["mempoolminfee"]?.Value<decimal>();
+            if (mempoolminfee is not null)
+            {
+                result.MempoolMinfeeRate = new FeeRate(Money.Coins(mempoolminfee.Value), 1000);
+            }
+            result.FullRBF = mempoolInfo.Result["fullrbf"]?.Value<bool>();
+            return result;
+        }
+
+        public static async Task<Dictionary<uint256, MempoolEntry>> FetchMempoolEntries(this RPCClient rpc, IEnumerable<uint256> txHashes, CancellationToken cancellationToken)
+        {
+            var batch = rpc.PrepareBatch();
+            var tasks = new List<(uint256 Id, Task<MempoolEntry> MempoolEntry)>();
+            var metadatas = new Dictionary<uint256, MempoolEntry>();
+            foreach (var id in txHashes)
+            {
+                tasks.Add((id, batch.GetMempoolEntryAsync(id, false, cancellationToken)));
+            }
+            if (tasks.Count == 0)
+                return metadatas;
+            try
+            {
+                await batch.SendBatchAsync(cancellationToken);
+                foreach (var t in tasks)
+                {
+                    try
+                    {
+                        var entry = await t.MempoolEntry;
+                        if (entry is null)
+                            continue;
+                        metadatas.TryAdd(t.Id, entry);
+                    }
+                    catch
+                    {
+                        break;
+                    }
+                }
+            }
+            // If it fails, that's OK, we don't care about the mempool entry information that much
+            catch
+            {
+            }
+            return metadatas;
+        }
+
         public static IEnumerable<BitcoinLikePaymentData> GetAllBitcoinPaymentData(this InvoiceEntity invoice, BitcoinLikePaymentHandler handler, bool accountedOnly)
         {
             return invoice.GetPayments(accountedOnly)
@@ -369,7 +554,8 @@ namespace BTCPayServer
             {
                 PSBT = psbt,
                 DerivationScheme = derivationSchemeSettings.AccountDerivation,
-                AlwaysIncludeNonWitnessUTXO = true
+                AlwaysIncludeNonWitnessUTXO = true,
+                IncludeGlobalXPub = derivationSchemeSettings.IsMultiSigOnServer
             });
             if (result == null)
                 return null;
@@ -453,7 +639,7 @@ namespace BTCPayServer
             var h = (BitcoinLikePaymentHandler)handlers[pmi];
             return h;
         }
-        public static BTCPayNetwork? TryGetNetwork<TId, THandler>(this HandlersDictionary<TId, THandler> handlers, TId id) 
+        public static BTCPayNetwork? TryGetNetwork<TId, THandler>(this HandlersDictionary<TId, THandler> handlers, TId id)
                                                                            where THandler : IHandler<TId>
                                                                            where TId : notnull
         {
@@ -625,6 +811,23 @@ namespace BTCPayServer
             return supportedChains.Contains(cryptoCode.ToUpperInvariant());
         }
 
+        class ParameterReplacer : ExpressionVisitor
+        {
+            private Dictionary<string, ParameterExpression> _Parameters;
+
+            protected override Expression VisitLambda<T>(Expression<T> node)
+            {
+                _Parameters = node.Parameters.ToDictionary(p => p.Name);
+                return base.VisitLambda(node);
+            }
+            protected override Expression VisitParameter(ParameterExpression node)
+            {
+                return _Parameters[node.Name];
+            }
+        }
+        public static TExpr ReplaceParameterRef<TExpr>(this TExpr expression) where TExpr : Expression
+        => (TExpr)new ParameterReplacer().Visit(expression);
+
         public static IActionResult RedirectToRecoverySeedBackup(this Controller controller, RecoverySeedBackupViewModel vm)
         {
             var redirectVm = new PostRedirectViewModel
@@ -643,6 +846,9 @@ namespace BTCPayServer
             };
             return controller.View("PostRedirect", redirectVm);
         }
+
+        public static string RemoveUserInfo(this Uri uri)
+        => string.IsNullOrEmpty(uri.UserInfo) ? uri.ToString() : uri.ToString().Replace(uri.UserInfo, "***");
 
         public static DataDirectories Configure(this DataDirectories dataDirectories, IConfiguration configuration)
         {

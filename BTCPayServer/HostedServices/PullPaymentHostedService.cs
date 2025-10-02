@@ -20,6 +20,7 @@ using BTCPayServer.Services.Notifications;
 using BTCPayServer.Services.Notifications.Blobs;
 using BTCPayServer.Services.Rates;
 using Dapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NBitcoin;
@@ -33,20 +34,6 @@ using PullPaymentData = BTCPayServer.Data.PullPaymentData;
 
 namespace BTCPayServer.HostedServices
 {
-    public class CreatePullPayment
-    {
-        public DateTimeOffset? ExpiresAt { get; set; }
-        public DateTimeOffset? StartsAt { get; set; }
-        public string StoreId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public decimal Amount { get; set; }
-        public string Currency { get; set; }
-        public PayoutMethodId[] PayoutMethods { get; set; }
-        public bool AutoApproveClaims { get; set; }
-        public TimeSpan? BOLT11Expiration { get; set; }
-    }
-
     public class PullPaymentHostedService : BaseAsyncService
     {
         private readonly string[] _lnurlSupportedCurrencies = { "BTC", "SATS" };
@@ -110,24 +97,14 @@ namespace BTCPayServer.HostedServices
                 }
             }
         }
-        public Task<string> CreatePullPayment(string storeId, CreatePullPaymentRequest request)
+        public async Task<string> CreatePullPayment(Data.StoreData store, CreatePullPaymentRequest create)
         {
-            return CreatePullPayment(new CreatePullPayment()
-            {
-                StartsAt = request.StartsAt,
-                ExpiresAt = request.ExpiresAt,
-                BOLT11Expiration = request.BOLT11Expiration,
-                Name = request.Name,
-                Description = request.Description,
-                Amount = request.Amount,
-                Currency = request.Currency,
-                StoreId = storeId,
-                PayoutMethods = request.PayoutMethods.Select(p => PayoutMethodId.Parse(p)).ToArray(),
-                AutoApproveClaims = request.AutoApproveClaims
-            });
-        }
-        public async Task<string> CreatePullPayment(CreatePullPayment create)
-        {
+            var supported = this._handlers.GetSupportedPayoutMethods(store);
+            create.PayoutMethods ??= supported.Select(s => s.ToString()).ToArray();
+            create.PayoutMethods = create.PayoutMethods.Where(pm => _handlers.Support(PayoutMethodId.Parse(pm))).ToArray();
+            if (create.PayoutMethods.Length == 0)
+                throw new InvalidOperationException("request.PayoutMethods should have at least one payout method");
+
             ArgumentNullException.ThrowIfNull(create);
             if (create.Amount <= 0.0m)
                 throw new ArgumentException("Amount out of bound", nameof(create));
@@ -138,7 +115,7 @@ namespace BTCPayServer.HostedServices
                 : DateTimeOffset.UtcNow - TimeSpan.FromSeconds(1.0);
             o.EndDate = create.ExpiresAt is DateTimeOffset date2 ? new DateTimeOffset?(date2) : null;
             o.Id = Encoders.Base58.EncodeData(RandomUtils.GetBytes(20));
-            o.StoreId = create.StoreId;
+            o.StoreId = store.Id;
             o.Currency = create.Currency;
             o.Limit = create.Amount;
 
@@ -146,7 +123,7 @@ namespace BTCPayServer.HostedServices
             {
                 Name = create.Name ?? string.Empty,
                 Description = create.Description ?? string.Empty,
-                SupportedPayoutMethods = create.PayoutMethods,
+                SupportedPayoutMethods = create.PayoutMethods.Select(p => PayoutMethodId.Parse(p)).ToArray(),
                 AutoApproveClaims = create.AutoApproveClaims,
                 View = new PullPaymentBlob.PullPaymentView
                 {
@@ -154,7 +131,7 @@ namespace BTCPayServer.HostedServices
                     Description = create.Description ?? string.Empty,
                     Email = null
                 },
-                BOLT11Expiration = create.BOLT11Expiration ?? TimeSpan.FromDays(30.0)
+                BOLT11Expiration = create.BOLT11Expiration ?? store.GetStoreBlob().RefundBOLT11Expiration
             });
             ctx.PullPayments.Add(o);
             await ctx.SaveChangesAsync();
@@ -466,19 +443,19 @@ namespace BTCPayServer.HostedServices
             var cryptoCode = _handlers.TryGetNetwork(payoutPaymentMethod)?.NBXplorerNetwork.CryptoCode;
             var currencyPair = new Rating.CurrencyPair(cryptoCode,
                 payout.PullPaymentData?.Currency ?? cryptoCode);
-            Rating.RateRule rule = null;
+            Rating.RateRuleCollection rule = null;
             try
             {
                 if (explicitRateRule is null)
                 {
                     var storeBlob = payout.StoreData.GetStoreBlob();
                     var rules = storeBlob.GetRateRules(_defaultRules);
-                    rules.Spread = 0.0m;
+                    storeBlob.Spread = 0.0m;
                     rule = rules.GetRuleFor(currencyPair);
                 }
                 else
                 {
-                    rule = Rating.RateRule.CreateFromExpression(explicitRateRule, currencyPair);
+                    rule = new RateRuleCollection(Rating.RateRule.CreateFromExpression(explicitRateRule, currencyPair), null);
                 }
             }
             catch (Exception)
@@ -709,11 +686,12 @@ namespace BTCPayServer.HostedServices
                     DedupId = req.ClaimRequest.Destination.Id,
                     StoreDataId = req.ClaimRequest.StoreId ?? pp?.StoreId,
                     Currency = payoutHandler.Currency,
-                    OriginalCurrency = pp?.Currency ?? payoutHandler.Currency
+                    OriginalCurrency = pp?.Currency ?? payoutHandler.Currency,
                 };
                 var payoutBlob = new PayoutBlob()
                 {
                     Destination = req.ClaimRequest.Destination.ToString(),
+                    NonInteractiveOnly = req.ClaimRequest.NonInteractiveOnly,
                     Metadata = req.ClaimRequest.Metadata ?? new JObject(),
                 };
                 payout.OriginalAmount = claimed;
@@ -978,13 +956,13 @@ namespace BTCPayServer.HostedServices
             public record Error(string Message) : ClaimedAmountResult;
             public record Success(decimal? Amount) : ClaimedAmountResult;
         }
-        
-        
+
+
         public static ClaimedAmountResult GetClaimedAmount(IClaimDestination destination, decimal? amount, string payoutCurrency, string ppCurrency)
         {
             var amountsComparable = false;
             var destinationAmount = destination.Amount;
-            if (destinationAmount is not null && 
+            if (destinationAmount is not null &&
                 payoutCurrency == "BTC" &&
                 ppCurrency == "SATS")
             {
@@ -1005,7 +983,7 @@ namespace BTCPayServer.HostedServices
                 ({ } a, { } b) when amountsComparable && a == b => new ClaimedAmountResult.Success(a),
                 ({ } a, { } b) when amountsComparable && a > b => new ClaimedAmountResult.Error($"The destination's amount ({a} {ppCurrency}) is more than the claimed amount ({b} {ppCurrency})."),
                 ({ } a, { } b) when amountsComparable && a < b => new ClaimedAmountResult.Success(a),
-                ({ } a, { } b) when !amountsComparable => new ClaimedAmountResult.Success(b),
+                (not null, { } b) when !amountsComparable => new ClaimedAmountResult.Success(b),
                 _ => new ClaimedAmountResult.Success(amount)
             };
         }
@@ -1067,6 +1045,7 @@ namespace BTCPayServer.HostedServices
         public IClaimDestination Destination { get; set; }
         public string StoreId { get; set; }
         public bool? PreApprove { get; set; }
+        public bool NonInteractiveOnly { get; set; }
         public JObject Metadata { get; set; }
     }
 

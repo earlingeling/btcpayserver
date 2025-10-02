@@ -58,7 +58,7 @@ namespace BTCPayServer.Services.Invoices
                 Id = Encoders.Base58.EncodeData(RandomUtils.GetBytes(16)),
                 StoreId = storeId,
                 Version = InvoiceEntity.Lastest_Version,
-                // Truncating was an unintended side effect of previous code. Might want to remove that one day 
+                // Truncating was an unintended side effect of previous code. Might want to remove that one day
                 InvoiceTime = DateTimeOffset.UtcNow.TruncateMilliSeconds(),
                 Metadata = new InvoiceMetadata(),
 #pragma warning disable CS0618
@@ -70,13 +70,13 @@ namespace BTCPayServer.Services.Invoices
         public async Task<InvoiceEntity> GetInvoiceFromAddress(PaymentMethodId paymentMethodId, string address)
         {
             using var db = _applicationDbContextFactory.CreateContext();
-			var row = (await db.AddressInvoices
-			.Include(a => a.InvoiceData.Payments)
-				.Where(a => a.Address == address && a.PaymentMethodId == paymentMethodId.ToString())
-				.Select(a => a.InvoiceData)
-			.FirstOrDefaultAsync());
-			return row is null ? null : ToEntity(row);
-		}
+            var row = (await db.AddressInvoices
+            .Include(a => a.InvoiceData.Payments)
+                .Where(a => a.Address == address && a.PaymentMethodId == paymentMethodId.ToString())
+                .Select(a => a.InvoiceData)
+            .FirstOrDefaultAsync());
+            return row is null ? null : ToEntity(row);
+        }
 
         /// <summary>
         /// Returns all invoices which either:
@@ -151,7 +151,11 @@ namespace BTCPayServer.Services.Invoices
                     var paymentData = jobj.ToObject<PaymentData>();
                     invoiceData.Payments.Add(paymentData);
                 }
-                invoices.Add(ToEntity(invoiceData));
+                var entity = ToEntity(invoiceData);
+                // Disable accounting, as we don't have all the payments...
+                // only those related to this paymentMethodId
+                entity.DisableAccounting = true;
+                invoices.Add(entity);
             }
             return invoices.ToArray();
         }
@@ -165,6 +169,27 @@ namespace BTCPayServer.Services.Invoices
                 .Select(s => s.Delivery)
                 .OrderByDescending(s => s.Timestamp)
                 .ToListAsync();
+        }
+
+        public async Task<Dictionary<string, RateBook>> GetRatesOfInvoices(HashSet<string> invoiceIds)
+        {
+            if (invoiceIds.Count == 0)
+                return new();
+            var res = new Dictionary<string, RateBook>();
+            using var ctx = _applicationDbContextFactory.CreateContext();
+            var conn = ctx.Database.GetDbConnection();
+            var result = await conn.QueryAsync<(string Id, string Rate, string Currency)>(
+                """
+                SELECT "Id", "Blob2"->'rates' AS "Rate", "Currency" FROM unnest(@invoices) AS searched_invoices("Id")
+                JOIN "Invoices" USING ("Id")
+                WHERE "Blob2"->'rates' IS NOT NULL;
+                """, new { invoices = invoiceIds.ToArray() });
+            foreach (var inv in result)
+            {
+                var rates = RateBook.Parse(inv.Rate, inv.Currency);
+                res.Add(inv.Id, rates);
+            }
+            return res;
         }
 
         public async Task<AppData[]> GetAppsTaggingStore(string storeId)
@@ -340,7 +365,6 @@ retry:
                 if (invoice == null)
                     return;
                 var invoiceEntity = invoice.GetBlob();
-                var newDetails = prompt.Details;
                 var existing = invoiceEntity.GetPaymentPrompt(prompt.PaymentMethodId);
                 if (existing.Destination != prompt.Destination && prompt.Activated && prompt.Destination is not null)
                 {
@@ -710,14 +734,15 @@ retry:
                 {
                     exceptionStatusExpression = i => exceptionStatusSet.Contains(i.ExceptionStatus);
                 }
-                (Expression predicate, ParameterExpression parameter) = (statusExpression, exceptionStatusExpression) switch
+                var predicate = (statusExpression, exceptionStatusExpression) switch
                 {
-                    ({ } a, { } b) => ((Expression)Expression.Or(a.Body, b.Body), a.Parameters[0]),
-                    ({ } a, null) => (a.Body, a.Parameters[0]),
-                    (null, { } b) => (b.Body, b.Parameters[0]),
+                    ({ } a, { } b) => (Expression)Expression.Or(a.Body, b.Body),
+                    ({ } a, null) => a.Body,
+                    (null, { } b) => b.Body,
                     _ => throw new NotSupportedException()
                 };
-                var expression = Expression.Lambda<Func<InvoiceData, bool>>(predicate, parameter);
+                var expression = Expression.Lambda<Func<InvoiceData, bool>>(predicate, Expression.Parameter(typeof(InvoiceData), "i"));
+                expression = expression.ReplaceParameterRef();
                 query = query.Where(expression);
             }
 
@@ -820,6 +845,8 @@ retry:
 
         public InvoiceStatistics GetContributionsByPaymentMethodId(string currency, InvoiceEntity[] invoices, bool softcap)
         {
+            decimal totalSettledCurrency = 0.0m;
+            decimal totalProcessingCurrency = 0.0m;
             var contributions = invoices
                 .Where(p => p.Currency.Equals(currency, StringComparison.OrdinalIgnoreCase))
                 .SelectMany(p =>
@@ -828,30 +855,42 @@ retry:
                     {
                         GroupKey = p.Currency,
                         Currency = p.Currency,
-                        CurrencyValue = p.Price,
-                        Settled = p.GetInvoiceState().IsSettled()
+                        CurrencyValue = p.Price
                     };
                     contribution.Value = contribution.CurrencyValue;
 
                     // For hardcap, we count newly created invoices as part of the contributions
                     if (!softcap && p.Status == InvoiceStatus.New)
+                    {
+                        totalProcessingCurrency += contribution.CurrencyValue;
                         return new[] { contribution };
+                    }
 
+                    var markedSettled = p is
+                    {
+                        Status: InvoiceStatus.Settled,
+                        ExceptionStatus: InvoiceExceptionStatus.Marked
+                    };
                     // If the user get a donation via other mean, he can register an invoice manually for such amount
                     // then mark the invoice as complete
                     var payments = p.GetPayments(true);
-                    if (payments.Count == 0 &&
-                        p.ExceptionStatus == InvoiceExceptionStatus.Marked &&
-                        p.Status == InvoiceStatus.Settled)
+                    if (payments.Count == 0 && markedSettled)
+                    {
+                        totalSettledCurrency += contribution.CurrencyValue;
                         return new[] { contribution };
-
-                    contribution.CurrencyValue = 0m;
-                    contribution.Value = 0m;
+                    }
 
                     // If an invoice has been marked invalid, remove the contribution
-                    if (p.ExceptionStatus == InvoiceExceptionStatus.Marked &&
-                        p.Status == InvoiceStatus.Invalid)
+                    if (p is
+                        {
+                            Status: InvoiceStatus.Invalid,
+                            ExceptionStatus: InvoiceExceptionStatus.Marked
+                        })
+                    {
+                        contribution.CurrencyValue = 0m;
+                        contribution.Value = 0m;
                         return new[] { contribution };
+                    }
 
                     // Else, we just sum the payments
                     return payments
@@ -863,9 +902,22 @@ retry:
                                      Currency = pay.Currency,
                                      CurrencyValue = pay.InvoicePaidAmount.Net,
                                      Value = pay.PaidAmount.Net,
-                                     Divisibility = pay.Divisibility,
-                                     Settled = p.GetInvoiceState().IsSettled()
+                                     Divisibility = pay.Divisibility
                                  };
+
+                                 // If paid before expiration or marked settled, account the payments...
+                                 if (pay.ReceivedTime <= p.ExpirationTime || markedSettled)
+                                 {
+                                     if (pay.Status is PaymentStatus.Settled)
+                                         totalSettledCurrency += pay.InvoicePaidAmount.Net;
+                                     else if (pay.Status is PaymentStatus.Processing)
+                                         totalProcessingCurrency += pay.InvoicePaidAmount.Net;
+                                 }
+                                 else
+                                 {
+                                     paymentMethodContribution.CurrencyValue = 0m;
+                                     paymentMethodContribution.Value = 0m;
+                                 }
                                  return paymentMethodContribution;
                              })
                              .ToArray();
@@ -873,13 +925,17 @@ retry:
                 .GroupBy(p => p.GroupKey)
                 .ToDictionary(p => p.Key, p => new InvoiceStatistics.Contribution
                 {
-                    Currency = p.Key,
-                    Settled = p.All(v => v.Settled),
+                    Currency = p.Select(p => p.Currency).First(),
                     Divisibility = p.Max(p => p.Divisibility),
                     Value = p.Select(v => v.Value).Sum(),
                     CurrencyValue = p.Select(v => v.CurrencyValue).Sum()
                 });
-            return new InvoiceStatistics(contributions);
+            return new InvoiceStatistics(contributions)
+            {
+                TotalSettled = totalSettledCurrency,
+                TotalProcessing = totalProcessingCurrency,
+                Total = totalSettledCurrency + totalProcessingCurrency
+            };
         }
 
         private string GetGroupKey(PaymentEntity pay)
@@ -967,15 +1023,18 @@ retry:
     {
         public InvoiceStatistics(IEnumerable<KeyValuePair<string, Contribution>> collection) : base(collection)
         {
-            TotalCurrency = Values.Select(v => v.CurrencyValue).Sum();
         }
-        public decimal TotalCurrency { get; }
+        public decimal TotalSettled { get; set; }
+        public decimal TotalProcessing { get; set; }
+        /// <summary>
+        /// <see cref="TotalSettled"/> + <see cref="TotalProcessing"/>
+        /// </summary>
+        public decimal Total { get; set; }
 
         public class Contribution
         {
             public string Currency { get; set; }
             public int Divisibility { get; set; }
-            public bool Settled { get; set; }
             public decimal Value { get; set; }
             public decimal CurrencyValue { get; set; }
             public string GroupKey { get; set; }

@@ -13,6 +13,7 @@
 	Csp.UnsafeEval();
     var checkoutFormOptions = await FormDataService.GetSelect(Model.StoreId, Model.FormId);
     var posPath = Url.Action("ViewPointOfSale", "UIPointOfSale", new { appId = Model.Id });
+    var posUrl = Url.ActionAbsolute(this.Context.Request, "ViewPointOfSale", "UIPointOfSale", new { appId = Model.Id }).AbsoluteUri;
 }
 
 @section PageHeadContent {
@@ -29,9 +30,10 @@
 
 <form method="post" permissioned="@Policies.CanModifyStoreSettings">
     <div class="sticky-header">
-        <h2 text-translate="true">@ViewData["Title"]</h2>
+        <h2>@ViewData["Title"]</h2>
         <div>
-			<button id="page-primary" type="submit" class="btn btn-primary order-sm-1">Save</button>
+            <button id="page-primary" type="submit" class="btn btn-primary order-sm-1">Save</button>
+            <a class="btn btn-secondary" asp-action="ListInvoices" asp-controller="UIInvoice" asp-route-storeId="@Model.StoreId" asp-route-searchterm="@Model.SearchTerm" text-translate="true">Invoices</a>
             @if (Model.Archived)
             {
                 <button type="submit" class="btn btn-outline-secondary" name="Archived" value="False" text-translate="true">Unarchive</button>
@@ -57,47 +59,44 @@
     {
         <div asp-validation-summary="All" class="@(ViewContext.ModelState.ErrorCount.Equals(1) ? "no-marker" : "")"></div>
     }
-    <div class="row">
-        <div class="col-sm-10 col-md-9 col-xl-7 col-xxl-6">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label asp-for="AppName" class="form-label" data-required></label>
-                        <input asp-for="AppName" class="form-control" required />
-                        <span asp-validation-for="AppName" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label asp-for="Title" class="form-label" data-required></label>
-                        <input asp-for="Title" class="form-control" required />
-                        <span asp-validation-for="Title" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
+    <div class="row" style="max-width:540px;">
+        <div class="col-sm-6">
             <div class="form-group">
-                <label asp-for="DefaultView" class="form-label" data-required text-translate="true">Choose Point of Sale Style</label>
-                <div class="btcpay-list-select">
-                    @foreach (var type in Enum.GetValues<PosViewType>())
-                    {
-                        <input type="radio" asp-for="DefaultView" value="@type" id="DefaultView_@type">
-                        <label for="DefaultView_@type" class="btcpay-list-select-item">
-                            <vc:icon symbol="pos-@type.ToString().ToLowerInvariant()" />
-                            @typeof(PosViewType).DisplayName(type.ToString())
-                        </label>
-                    }
-                </div>
-            </div>
-            <div class="form-group mb-0">
-                <label asp-for="Currency" class="form-label"></label>
-                <input asp-for="Currency" class="form-control w-auto" currency-selection />
-                <div class="form-text">@StringLocalizer["Uses the store's default currency ({0}) if empty.", Model.StoreDefaultCurrency]</div>
-                <span asp-validation-for="Currency" class="text-danger"></span>
+                <label asp-for="AppName" class="form-label" data-required></label>
+                <input asp-for="AppName" class="form-control" required />
+                <span asp-validation-for="AppName" class="text-danger"></span>
             </div>
         </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label asp-for="Title" class="form-label" data-required></label>
+                <input asp-for="Title" class="form-control" required />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="DefaultView" class="form-label" data-required text-translate="true">Choose Point of Sale Style</label>
+            <div class="btcpay-list-select">
+                @foreach (var type in Enum.GetValues<PosViewType>())
+                {
+                    <input type="radio" asp-for="DefaultView" value="@type" id="DefaultView_@type">
+                    <label for="DefaultView_@type" class="btcpay-list-select-item">
+                        <vc:icon symbol="pos-@type.ToString().ToLowerInvariant()" />
+                        @typeof(PosViewType).DisplayName(type.ToString())
+                    </label>
+                }
+            </div>
+        </div>
+        <div class="form-group mb-0">
+            <label asp-for="Currency" class="form-label"></label>
+            <input asp-for="Currency" class="form-control w-auto" currency-selection />
+            <div class="form-text">@StringLocalizer["Uses the store's default currency ({0}) if empty.", Model.StoreDefaultCurrency]</div>
+            <span asp-validation-for="Currency" class="text-danger"></span>
+        </div>
     </div>
+
     <div id="description" class="row mt-4">
-        <div class="col-xl-10 col-xxl-constrain">
+        <div class="col-xxl-constrain">
             <div class="form-group mb-0">
                 <label asp-for="Description" class="form-label"></label>
                 <textarea asp-for="Description" rows="10" cols="40" class="form-control richtext"></textarea>
@@ -166,6 +165,20 @@
                     </div>
                 </div>
             </fieldset>
+
+            <fieldset id="taxes" class="mt-2">
+                <legend class="h5 mb-3 fw-semibold" text-translate="true">Taxes</legend>
+                <div class="form-group">
+                    <label asp-for="DefaultTaxRate" class="form-label"></label>
+                    <div class="input-group">
+                        <input inputmode="decimal" asp-for="DefaultTaxRate" class="form-control" />
+                        <span class="input-group-text">%</span>
+                    </div>
+                    <div class="form-text" text-translate="true">This rate can also be overridden per item.</div>
+                    <span asp-validation-for="DefaultTaxRate" class="text-danger"></span>
+                </div>
+            </fieldset>
+
             <fieldset id="discounts" class="mt-2">
                 <legend class="h5 mb-3 fw-semibold" text-translate="true">Discounts</legend>
                 <div class="form-group d-flex align-items-center">
@@ -199,6 +212,35 @@
             <h3 class="mb-2">Additional Options</h3>
             <div class="form-group">
                 <div class="accordion" id="additional">
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="additional-htmlheader-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#additional-htmlheader" aria-expanded="false" aria-controls="additional-htmlheader">
+                                <span text-translate="true">HTML Headers</span>
+                                <vc:icon symbol="caret-down" />
+                            </button>
+                        </h2>
+                        <div id="additional-htmlheader" class="accordion-collapse collapse" aria-labelledby="additional-htmlheader-header">
+                            <div class="accordion-body">
+                                <div class="form-group">
+                                    <label asp-for="HtmlLang" class="form-label"></label>
+                                    <input asp-for="HtmlLang" class="form-control"/>
+                                    <span asp-validation-for="HtmlLang" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="HtmlMetaTags" class="form-label"></label>
+                                    <textarea asp-for="HtmlMetaTags" rows="5" cols="40" class="form-control"
+                                              placeholder='<meta name="description" content="Your description">
+<meta name="keywords" content="keyword1, keyword2, keyword3">
+<meta name="author" content="John Doe">
+Please insert valid HTML here. Only meta tags accepted.'>
+                                    </textarea>
+                                    <span asp-validation-for="HtmlMetaTags" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="additional-embed-payment-button-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#additional-embed-payment-button" aria-expanded="false" aria-controls="additional-embed-payment-button">
@@ -293,7 +335,6 @@
 </form>
 
 <div class="d-grid d-sm-flex flex-wrap gap-3 mt-3">
-    <a class="btn btn-secondary" asp-action="ListInvoices" asp-controller="UIInvoice" asp-route-storeId="@Model.StoreId" asp-route-searchterm="@Model.SearchTerm" text-translate="true">Invoices</a>
     <form method="post" asp-controller="UIApps" asp-action="ToggleArchive" asp-route-appId="@Model.Id">
         <button type="submit" class="w-100 btn btn-outline-secondary" id="btn-archive-toggle" permission="@Policies.CanModifyStoreSettings">
             @if (Model.Archived)
@@ -321,7 +362,10 @@
                 </button>
             </div>
             <div class="modal-body pt-0">
-                <component type="typeof(BTCPayServer.Blazor.PosLoginCode)" render-mode="ServerPrerendered" param-Users="@Model.StoreUsers" param-PosPath="@posPath" />
+                <component type="typeof(BTCPayServer.Blazor.PosLoginCode)" render-mode="ServerPrerendered"
+                           param-Users="@Model.StoreUsers"
+                           param-PosPath="@posPath"
+                           param-PosUrl="@posUrl"/>
             </div>
         </div>
     </div>

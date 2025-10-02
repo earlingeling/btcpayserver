@@ -19,7 +19,7 @@
         }
     </style>
 }
-<h2 class="mb-2 mb-lg-3" text-translate="true">@ViewData["Title"]</h2>
+<h2 class="mb-2 mb-lg-3">@ViewData["Title"]</h2>
 <partial name="_StatusMessage" />
 <div class="row">
     <div class="col-xxl-constrain col-xl-8">
@@ -27,7 +27,7 @@
             
         @if (!ViewContext.ModelState.IsValid)
         {
-            <div asp-validation-summary="All"></div>
+            <div asp-validation-summary="All" class="@(ViewContext.ModelState.ErrorCount.Equals(1) ? "no-marker" : "")"></div>
         }
 
         <form method="post" class="d-flex flex-wrap align-items-center gap-3" permission="@Policies.CanModifyStoreSettings">

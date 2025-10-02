@@ -33,7 +33,6 @@ namespace BTCPayServer
 
         public DerivationSchemeSettings()
         {
-
         }
 
         public DerivationSchemeSettings(DerivationStrategyBase derivationStrategy, BTCPayNetwork network)
@@ -48,47 +47,57 @@ namespace BTCPayServer
         }
 
 
-        BitcoinExtPubKey _SigningKey;
+        [JsonIgnore]
+        [Obsolete("Use AccountKeySettings[0].AccountKey instead")]
         public BitcoinExtPubKey SigningKey
         {
             get
             {
-                return _SigningKey ?? AccountKeySettings?.Select(k => k.AccountKey).FirstOrDefault();
+                // There should always be at least one account key
+                return AccountKeySettings[0].AccountKey;
             }
             set
             {
-                _SigningKey = value;
+                // Ignored, this is legacy stuff that should disappear
             }
         }
+
         public string Source { get; set; }
 
         public bool IsHotWallet { get; set; }
 
-        [Obsolete("Use GetSigningAccountKeySettings().AccountKeyPath instead")]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public KeyPath AccountKeyPath { get; set; }
-
         public DerivationStrategyBase AccountDerivation { get; set; }
         public string AccountOriginal { get; set; }
 
-        [Obsolete("Use GetSigningAccountKeySettings().RootFingerprint instead")]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public HDFingerprint? RootFingerprint { get; set; }
-
-        [Obsolete("Use GetSigningAccountKeySettings().AccountKey instead")]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public BitcoinExtPubKey ExplicitAccountKey { get; set; }
-
+#nullable enable
+        [Obsolete("Use GetFirstAccountKeySettings isntead")]
         public AccountKeySettings GetSigningAccountKeySettings()
-        {
-            return AccountKeySettings.Single(a => a.AccountKey == SigningKey);
-        }
+            // There should always be at least one account key
+        => (AccountKeySettings ?? []).First();
 
-        public AccountKeySettings[] AccountKeySettings
-        {
-            get;
-            set;
-        }
+        public AccountKeySettings GetFirstAccountKeySettings()
+            // There should always be at least one account key
+            => (AccountKeySettings ?? []).First();
+
+        public AccountKeySettings? GetAccountKeySettingsFromRoot(IHDKey rootKey)
+            => GetAccountKeySettingsFromRoot(rootKey.GetPublicKey().GetHDFingerPrint());
+
+        public AccountKeySettings? GetAccountKeySettingsFromRoot(HDFingerprint rootFingerprint)
+            => (AccountKeySettings ?? []).FirstOrDefault(a => a.RootFingerprint == rootFingerprint);
+
+        [Obsolete("Use GetAccountKeySettingsFromRoot instead")]
+        public AccountKeySettings? GetSigningAccountKeySettings(IHDKey rootKey)
+        => GetAccountKeySettingsFromRoot(rootKey.GetPublicKey().GetHDFingerPrint());
+
+        [Obsolete("Use GetAccountKeySettingsFromRoot instead")]
+        public AccountKeySettings? GetSigningAccountKeySettings(HDFingerprint rootFingerprint)
+            => GetAccountKeySettingsFromRoot(rootFingerprint);
+
+        [Obsolete("Use AccountKeySettings[0] instead")]
+        // There should always be at least one account key
+        public AccountKeySettings? GetSigningAccountKeySettingsOrDefault() => this.AccountKeySettings[0];
+#nullable restore
+        public AccountKeySettings[] AccountKeySettings { get; set; }
 
         public IEnumerable<NBXplorer.Models.PSBTRebaseKeyRules> GetPSBTRebaseKeyRules()
         {
@@ -107,6 +116,14 @@ namespace BTCPayServer
 
         public string Label { get; set; }
 
+        #region MultiSig related settings
+        public bool IsMultiSigOnServer { get; set; }
+
+        // some hardware devices like Jade require sending full input transactions if there are multiple inputs
+        // https://github.com/Blockstream/Jade/blob/0d6ce77bf23ef2b5dc43cdae3967b4207e8cad52/main/process/sign_tx.c#L586
+        public bool DefaultIncludeNonWitnessUtxo { get; set; }
+        #endregion
+
         public override string ToString()
         {
             return AccountDerivation.ToString();
@@ -114,7 +131,7 @@ namespace BTCPayServer
         public string ToPrettyString()
         {
             return !string.IsNullOrEmpty(Label) ? Label :
-                   !String.IsNullOrEmpty(AccountOriginal) ? AccountOriginal :
+                   !string.IsNullOrEmpty(AccountOriginal) ? AccountOriginal :
                    ToString();
         }
 

@@ -11,14 +11,12 @@ using BTCPayServer.Client.Models;
 using BTCPayServer.Data;
 using BTCPayServer.HostedServices;
 using BTCPayServer.Models.WalletViewModels;
-using BTCPayServer.Payments;
 using BTCPayServer.PayoutProcessors;
 using BTCPayServer.Payouts;
 using BTCPayServer.Services;
 using BTCPayServer.Services.Rates;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -149,14 +147,13 @@ namespace BTCPayServer.Controllers
                 return View(model);
             model.AutoApproveClaims = model.AutoApproveClaims &&  (await
                 _authorizationService.AuthorizeAsync(User, storeId, Policies.CanCreatePullPayments)).Succeeded;
-            await _pullPaymentService.CreatePullPayment(new CreatePullPayment
+            await _pullPaymentService.CreatePullPayment(CurrentStore, new CreatePullPaymentRequest
             {
                 Name = model.Name,
                 Description = model.Description,
                 Amount = model.Amount,
                 Currency = model.Currency,
-                StoreId = storeId,
-                PayoutMethods = selectedPaymentMethodIds,
+                PayoutMethods = selectedPaymentMethodIds.Select(p => p.ToString()).ToArray(),
                 BOLT11Expiration = TimeSpan.FromDays(model.BOLT11Expiration),
                 AutoApproveClaims = model.AutoApproveClaims
             });
@@ -441,7 +438,28 @@ namespace BTCPayServer.Controllers
                         });
                         break;
                     }
-
+                case "mark-awaiting-payment":
+                    await using (var context = _dbContextFactory.CreateContext())
+                    {
+                        var payouts = (await PullPaymentHostedService.GetPayouts(new PullPaymentHostedService.PayoutQuery()
+                        {
+                            States = new[] { PayoutState.InProgress },
+                            Stores = new[] { storeId },
+                            PayoutIds = payoutIds
+                        }, context));
+                        foreach (var payout in payouts)
+                        {
+                            payout.State = PayoutState.AwaitingPayment;
+                            payout.Proof = null;
+                        }
+                        await context.SaveChangesAsync();
+                    }
+                    TempData.SetStatusMessageModel(new StatusMessageModel
+                    {
+                        Message = "Payout payments have been marked as awaiting payment",
+                        Severity = StatusMessageModel.StatusSeverity.Success
+                    });
+                    break;
                 case "cancel":
                     await _pullPaymentService.Cancel(
                         new PullPaymentHostedService.CancelRequest(payoutIds, new[] { storeId }));

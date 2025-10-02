@@ -6,7 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using BTCPayServer.Client;
 using BTCPayServer.Client.Models;
+
 using BTCPayServer.Data;
+using BTCPayServer.Events;
 using BTCPayServer.Models.AppViewModels;
 using BTCPayServer.Plugins.Crowdfund;
 using BTCPayServer.Plugins.PointOfSale;
@@ -28,7 +30,7 @@ namespace BTCPayServer.Services.Apps
         private readonly Dictionary<string, AppBaseType> _appTypes;
         static AppService()
         {
-            _defaultSerializer = new JsonSerializerSettings()
+            _defaultSerializer = new JsonSerializerSettings
             {
                 ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver(),
                 Formatting = Formatting.None
@@ -40,24 +42,28 @@ namespace BTCPayServer.Services.Apps
         readonly ApplicationDbContextFactory _ContextFactory;
         private readonly InvoiceRepository _InvoiceRepository;
         readonly CurrencyNameTable _Currencies;
-        private readonly DisplayFormatter _displayFormatter;
         private readonly StoreRepository _storeRepository;
+        private readonly EventAggregator _eventAggregator;
         public CurrencyNameTable Currencies => _Currencies;
+        private readonly string[] _paidStatuses = [
+            InvoiceStatus.Processing.ToString(),
+            InvoiceStatus.Settled.ToString()
+        ];
 
         public AppService(
             IEnumerable<AppBaseType> apps,
             ApplicationDbContextFactory contextFactory,
             InvoiceRepository invoiceRepository,
             CurrencyNameTable currencies,
-            DisplayFormatter displayFormatter,
-            StoreRepository storeRepository)
+            StoreRepository storeRepository,
+            EventAggregator eventAggregator)
         {
             _appTypes = apps.ToDictionary(a => a.Type, a => a);
             _ContextFactory = contextFactory;
             _InvoiceRepository = invoiceRepository;
             _Currencies = currencies;
             _storeRepository = storeRepository;
-            _displayFormatter = displayFormatter;
+            _eventAggregator = eventAggregator;
         }
 #nullable enable
         public Dictionary<string, string> GetAvailableAppTypes()
@@ -86,11 +92,7 @@ namespace BTCPayServer.Services.Apps
         {
             if (GetAppType(appData.AppType) is not IHasItemStatsAppType salesType)
                 throw new InvalidOperationException("This app isn't a SalesAppBaseType");
-            var paidInvoices = await GetInvoicesForApp(_InvoiceRepository, appData, null,
-            [
-                InvoiceStatus.Processing.ToString(),
-                InvoiceStatus.Settled.ToString()
-            ]);
+            var paidInvoices = await GetInvoicesForApp(_InvoiceRepository, appData, null, _paidStatuses);
             return await salesType.GetItemStats(appData, paidInvoices);
         }
 
@@ -132,8 +134,7 @@ namespace BTCPayServer.Services.Apps
         {
             if (GetAppType(app.AppType) is not IHasSaleStatsAppType salesType)
                 throw new InvalidOperationException("This app isn't a SalesAppBaseType");
-            var paidInvoices = await GetInvoicesForApp(_InvoiceRepository, app, DateTimeOffset.UtcNow - TimeSpan.FromDays(numberOfDays));
-
+            var paidInvoices = await GetInvoicesForApp(_InvoiceRepository, app, DateTimeOffset.UtcNow - TimeSpan.FromDays(numberOfDays), _paidStatuses);
             return await salesType.GetSalesStats(app, paidInvoices, numberOfDays);
         }
 
@@ -232,6 +233,7 @@ namespace BTCPayServer.Services.Apps
             await using var ctx = _ContextFactory.CreateContext();
             ctx.Apps.Add(appData);
             ctx.Entry(appData).State = EntityState.Deleted;
+            _eventAggregator.Publish(new AppEvent.Deleted(appData));
             return await ctx.SaveChangesAsync() == 1;
         }
 
@@ -240,6 +242,7 @@ namespace BTCPayServer.Services.Apps
             await using var ctx = _ContextFactory.CreateContext();
             appData.Archived = archived;
             ctx.Entry(appData).State = EntityState.Modified;
+            _eventAggregator.Publish(new AppEvent.Updated(appData));
             return await ctx.SaveChangesAsync() == 1;
         }
 
@@ -447,7 +450,8 @@ retry:
         public async Task UpdateOrCreateApp(AppData app)
         {
             await using var ctx = _ContextFactory.CreateContext();
-            if (string.IsNullOrEmpty(app.Id))
+            var newApp = string.IsNullOrEmpty(app.Id);
+            if (newApp)
             {
                 app.Id = Encoders.Base58.EncodeData(RandomUtils.GetBytes(20));
                 app.Created = DateTimeOffset.UtcNow;
@@ -461,6 +465,10 @@ retry:
                 ctx.Entry(app).Property(data => data.AppType).IsModified = false;
             }
             await ctx.SaveChangesAsync();
+            if (newApp)
+                _eventAggregator.Publish(new AppEvent.Created(app));
+            else
+                _eventAggregator.Publish(new AppEvent.Updated(app));
         }
 
         private static bool TryParseJson(string json, [MaybeNullWhen(false)] out JObject result)
@@ -478,7 +486,7 @@ retry:
         }
 #nullable enable
         
-        public static bool TryParsePosCartItems(JObject? posData, [MaybeNullWhen(false)] out List<PosCartItem> cartItems)
+        public static bool TryParsePosCartItems(JObject? posData, [MaybeNullWhen(false)] out List<AppCartItem> cartItems)
         {
             cartItems = null;
             if (posData is null)
@@ -487,12 +495,13 @@ retry:
                 return false;
             try
             {
-                cartItems = new List<PosCartItem>();
+                cartItems = [];
                 foreach (var o in cartObject.OfType<JObject>())
                 {
                     var id = o.GetValue("id", StringComparison.InvariantCulture)?.ToString();
                     if (id == null)
                         continue;
+                    var title = o.GetValue("title", StringComparison.InvariantCulture)?.ToString();
                     var countStr = o.GetValue("count", StringComparison.InvariantCulture)?.ToString() ?? string.Empty;
                     var price = o.GetValue("price") switch
                     {
@@ -503,7 +512,7 @@ retry:
                     };
                     if (int.TryParse(countStr, out var count))
                     {
-                        cartItems.Add(new PosCartItem { Id = id, Count = count, Price = price });
+                        cartItems.Add(new AppCartItem { Id = id, Title = title, Count = count, Price = price });
                     }
                 }
                 return true;
@@ -532,13 +541,5 @@ retry:
             var appType = GetAppType(app.AppType);
             return await appType?.ViewLink(app)!;
         }
-#nullable restore
-    }
-
-    public class PosCartItem
-    {
-        public string Id { get; set; }
-        public int Count { get; set; }
-        public decimal Price { get; set; }
     }
 }

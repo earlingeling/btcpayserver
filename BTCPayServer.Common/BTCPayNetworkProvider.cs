@@ -3,13 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using BTCPayServer.Configuration;
 using BTCPayServer.Logging;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NBitcoin;
 using NBXplorer;
-using StandardConfiguration;
 
 namespace BTCPayServer
 {
@@ -39,12 +35,6 @@ namespace BTCPayServer
             foreach (var network in networksList)
             {
                 _Networks.Add(network.CryptoCode.ToUpperInvariant(), network);
-            }
-
-            foreach (var chain in selectedChains.ExplicitlySelected)
-            {
-                if (GetNetwork<BTCPayNetworkBase>(chain) == null)
-                    throw new ConfigException($"Invalid chains \"{chain}\"");
             }
 
             logs.Configuration.LogInformation("Supported chains: {Chains}", string.Join(',', _Networks.Select(n => n.Key).ToArray()));

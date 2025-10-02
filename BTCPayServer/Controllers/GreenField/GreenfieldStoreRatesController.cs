@@ -1,5 +1,4 @@
 #nullable enable
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -9,7 +8,6 @@ using BTCPayServer.Client;
 using BTCPayServer.Client.Models;
 using BTCPayServer.Data;
 using BTCPayServer.Rating;
-using BTCPayServer.Services.Invoices;
 using BTCPayServer.Services.Rates;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -70,7 +68,7 @@ namespace BTCPayServer.Controllers.GreenField
             var result = new List<StoreRateResult>();
             foreach (var rateTask in rateTasks)
             {
-                var rateTaskResult = rateTask.Value.Result;
+                var rateTaskResult = await rateTask.Value;
 
                 result.Add(new StoreRateResult()
                 {

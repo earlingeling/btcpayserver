@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -15,8 +14,6 @@ using BTCPayServer.Client.Models;
 using BTCPayServer.Controllers;
 using BTCPayServer.Data;
 using BTCPayServer.Events;
-using BTCPayServer.Lightning;
-using BTCPayServer.Lightning.CLightning;
 using BTCPayServer.Models.AccountViewModels;
 using BTCPayServer.Models.StoreViewModels;
 using BTCPayServer.Payments;
@@ -26,10 +23,8 @@ using BTCPayServer.Services;
 using BTCPayServer.Services.Invoices;
 using BTCPayServer.Services.Stores;
 using BTCPayServer.Services.Wallets;
-using BTCPayServer.Tests.Logging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Operations;
 using Microsoft.EntityFrameworkCore;
 using NBitcoin;
 using NBitcoin.DataEncoders;
@@ -183,7 +178,7 @@ namespace BTCPayServer.Tests
                 await RegisterAsync();
             }
             var store = GetController<UIUserStoresController>();
-            await store.CreateStore(new CreateStoreViewModel { Name = "Test Store", PreferredExchange = "coingecko" });
+            await store.CreateStore(new CreateStoreViewModel { Name = "Test Store", PreferredExchange = "coingecko", CanEditPreferredExchange = true});
             StoreId = store.CreatedStoreId;
             parent.Stores.Add(StoreId);
         }
@@ -243,7 +238,7 @@ namespace BTCPayServer.Tests
             await account.Register(RegisterDetails);
 
             //this addresses an obscure issue where LockSubscription is unintentionally set to "true",
-            //resulting in a large number of tests failing.  
+            //resulting in a large number of tests failing.
             if (account.RegisteredUserId == null)
             {
                 var settings = parent.PayTester.GetService<SettingsRepository>();
@@ -694,7 +689,7 @@ retry:
                         {
                             var xpub = (BitcoinExtPubKey)Network.Main.Parse(matched.Value);
                             var xpubTestnet = xpub.ExtPubKey.GetWif(Network.RegTest).ToString();
-                            blob1 = blob1.Replace(xpub.ToString(), xpubTestnet.ToString());
+                            blob1 = blob1.Replace(xpub.ToString(), xpubTestnet);
                             fields[1] = $"\\x{Encoders.Hex.EncodeData(ZipUtils.Zip(blob1))}";
                             localInvoice = string.Join(',', fields);
                         }

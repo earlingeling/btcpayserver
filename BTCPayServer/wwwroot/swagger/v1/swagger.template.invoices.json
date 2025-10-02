@@ -8,13 +8,7 @@
                 "summary": "Get invoices",
                 "parameters": [
                     {
-                        "name": "storeId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The store to query",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/StoreId"
                     },
                     {
                         "name": "orderId",
@@ -136,13 +130,7 @@
                 "summary": "Create a new invoice",
                 "parameters": [
                     {
-                        "name": "storeId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The store to query",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/StoreId"
                     }
                 ],
                 "description": "Create a new invoice",
@@ -200,22 +188,10 @@
                 "summary": "Get invoice",
                 "parameters": [
                     {
-                        "name": "storeId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The store to fetch",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/StoreId"
                     },
                     {
-                        "name": "invoiceId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The invoice to fetch",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/InvoiceId"
                     }
                 ],
                 "description": "View information about the specified invoice",
@@ -256,22 +232,10 @@
                 "operationId": "Invoices_ArchiveInvoice",
                 "parameters": [
                     {
-                        "name": "storeId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The store the invoice belongs to",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/StoreId"
                     },
                     {
-                        "name": "invoiceId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The invoice to remove",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/InvoiceId"
                     }
                 ],
                 "responses": {
@@ -313,22 +277,10 @@
                 "operationId": "Invoices_UpdateInvoice",
                 "parameters": [
                     {
-                        "name": "storeId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The store the invoice belongs to",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/StoreId"
                     },
                     {
-                        "name": "invoiceId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The invoice to update",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/InvoiceId"
                     }
                 ],
                 "responses": {
@@ -387,22 +339,10 @@
                 "summary": "Get invoice payment methods",
                 "parameters": [
                     {
-                        "name": "storeId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The store to fetch",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/StoreId"
                     },
                     {
-                        "name": "invoiceId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The invoice to fetch",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/InvoiceId"
                     },
                     {
                         "name": "onlyAccountedPayments",
@@ -459,6 +399,53 @@
                 ]
             }
         },
+        "/api/v1/stores/{storeId}/invoices/{invoiceId}/refund/{paymentMethodId}": {
+            "get": {
+                "tags": [
+                    "Invoices"
+                ],
+                "summary": "Get invoice refund trigger data",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/StoreId"
+                    },
+                    {
+                        "$ref": "#/components/parameters/InvoiceId"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PaymentMethodId"
+                    }
+                ],
+                "description": "View calculated refund amounts (payment then/now, invoice, overpaid) for the specified invoice/payment-method. This can be used preceding the POST /refund call.",
+                "operationId": "Invoices_GetInvoiceRefundTriggerData",
+                "responses": {
+                    "200": {
+                        "description": "specified invoice refund trigger data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InvoiceRefundTriggerData"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "If you are authenticated but forbidden to view the specified invoice"
+                    },
+                    "404": {
+                        "description": "The key is not found for this invoice"
+                    }
+                },
+                "security": [
+                    {
+                        "API_Key": [
+                            "btcpay.store.cancreatepullpayments"
+                        ],
+                        "Basic": []
+                    }
+                ]
+            }
+        },
         "/api/v1/stores/{storeId}/invoices/{invoiceId}/status": {
             "post": {
                 "tags": [
@@ -467,22 +454,10 @@
                 "summary": "Mark invoice status",
                 "parameters": [
                     {
-                        "name": "storeId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The store to query",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/StoreId"
                     },
                     {
-                        "name": "invoiceId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The invoice to update",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/InvoiceId"
                     }
                 ],
                 "description": "Mark an invoice as invalid or settled.",
@@ -540,22 +515,10 @@
                 "summary": "Unarchive invoice",
                 "parameters": [
                     {
-                        "name": "storeId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The store to query",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/StoreId"
                     },
                     {
-                        "name": "invoiceId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The invoice to update",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/InvoiceId"
                     }
                 ],
                 "description": "Unarchive an invoice",
@@ -603,22 +566,10 @@
                 "summary": "Activate Payment Method",
                 "parameters": [
                     {
-                        "name": "storeId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The store to query",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/StoreId"
                     },
                     {
-                        "name": "invoiceId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The invoice to update",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/InvoiceId"
                     },
                     {
                         "$ref": "#/components/parameters/PaymentMethodId"
@@ -662,22 +613,10 @@
                 "summary": "Refund invoice",
                 "parameters": [
                     {
-                        "name": "storeId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The store to query",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/StoreId"
                     },
                     {
-                        "name": "invoiceId",
-                        "in": "path",
-                        "required": true,
-                        "description": "The invoice to refund",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "$ref": "#/components/parameters/InvoiceId"
                     }
                 ],
                 "description": "Refund invoice",
@@ -790,6 +729,7 @@
                 "additionalProperties": false,
                 "properties": {
                     "status": {
+                        "type": "string",
                         "nullable": false,
                         "description": "Mark an invoice as completed or invalid.",
                         "allOf": [
@@ -856,6 +796,7 @@
                         "$ref": "#/components/schemas/InvoiceMetadata"
                     },
                     "checkout": {
+                        "type": "object",
                         "nullable": true,
                         "description": "Additional settings to customize the checkout flow",
                         "allOf": [
@@ -865,6 +806,7 @@
                         ]
                     },
                     "receipt": {
+                        "type": "object",
                         "nullable": true,
                         "description": "Additional settings to customize the public receipt",
                         "allOf": [
@@ -889,13 +831,23 @@
                                 "description": "The identifier of the invoice"
                             },
                             "storeId": {
-                                "type": "string",
-                                "description": "The store identifier that the invoice belongs to"
+                                "description": "The store identifier that the invoice belongs to",
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/StoreId"
+                                    }
+                                ]
                             },
                             "amount": {
                                 "type": "string",
                                 "format": "decimal",
                                 "description": "The amount of the invoice. Note that the amount will be zero for a top-up invoice that is paid after invoice expiry.",
+                                "example": "5.00"
+                            },
+                            "paidAmount": {
+                                "type": "string",
+                                "format": "decimal",
+                                "description": "The actual amount paid by the customer/buyer.",
                                 "example": "5.00"
                             },
                             "currency": {
@@ -1119,6 +1071,7 @@
                         "title": "Receipt information",
                         "properties": {
                             "receiptData": {
+                                "type": "object",
                                 "description": "A custom JSON object that represents information displayed on the receipt page of an invoice.",
                                 "nullable": true
                             }
@@ -1169,11 +1122,61 @@
                     }
                 }
             },
+            "InvoiceRefundTriggerData": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "paymentAmountThen": {
+                        "type": "string",
+                        "format": "decimal",
+                        "description": "The amount in crypto at the time the invoice was paid.",
+                        "example": "5.00"
+                    },
+                    "paymentAmountNow": {
+                        "type": "string",
+                        "format": "decimal",
+                        "description": "The current amount in crypto.",
+                        "example": "5.00"
+                    },
+                    "invoiceAmount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "description": "The fiat amount at the rate when the refund will be sent.",
+                        "example": "5.00"
+                    },
+                    "paymentCurrency": {
+                        "type": "string",
+                        "description": "The crypto currency of the invoice",
+                        "example": "BTC"
+                    },
+                    "paymentCurrencyDivisibility": {
+                        "type": "number",
+                        "description": "The maximum divisibility supported by the crypto currency of the invoice"
+                    },
+                    "invoiceCurrencyDivisibility": {
+                        "type": "number",
+                        "description": "The maximum divisibility supported by the fiat currency of the invoice"
+                    },
+                    "invoiceCurrency": {
+                        "type": "string",
+                        "description": "The fiat currency of the invoice",
+                        "example": "USD"
+                    },
+                    "overpaidPaymentAmount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "nullable": true,
+                        "description": "The amount by which the invoice is overpaid",
+                        "example": "2.00"
+                    }
+                }
+            },
             "CheckoutOptions": {
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
                     "speedPolicy": {
+                        "type": "string",
                         "nullable": true,
                         "allOf": [
                             {
@@ -1195,6 +1198,7 @@
                                 "$ref": "#/components/schemas/PaymentMethodId"
                             }
                         ],
+                        "type": "string",
                         "nullable": true,
                         "description": "Default payment type for the invoice (e.g., BTC, BTC-LightningNetwork). Default payment method set for the store is used if this parameter is not specified."
                     },
@@ -1204,6 +1208,7 @@
                         "description": "If true, payment methods are enabled individually upon user interaction in the invoice. Default to store's settings'"
                     },
                     "expirationMinutes": {
+                        "type": "number",
                         "nullable": true,
                         "description": "The number of minutes after which an invoice becomes expired. Defaults to the store's settings. (The default store settings is 15)",
                         "allOf": [
@@ -1226,9 +1231,10 @@
                         "type": "number",
                         "format": "double",
                         "nullable": true,
-                        "minimum": 0,
-                        "maximum": 100,
-                        "description": "A percentage determining whether to count the invoice as paid when the invoice is paid within the specified margin of error. Defaults to the store's settings. (The default store settings is 100)"
+                        "minimum": 0.0,
+                        "maximum": 100.0,
+                        "default": 0.0,
+                        "description": "A percentage determining whether to count the invoice as paid when the invoice is paid within the specified margin of error. Defaults to the store's settings. (The default store settings is 0)"
                     },
                     "redirectURL": {
                         "type": "string",

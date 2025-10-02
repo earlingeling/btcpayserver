@@ -1,15 +1,10 @@
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Threading.Tasks;
 using BTCPayServer.Abstractions.Constants;
-using BTCPayServer.Abstractions.Contracts;
 using BTCPayServer.Abstractions.Extensions;
 using BTCPayServer.Client;
 using BTCPayServer.Client.Models;
 using BTCPayServer.Data;
-using BTCPayServer.Events;
-using BTCPayServer.HostedServices;
 using BTCPayServer.ModelBinders;
 using BTCPayServer.Payments;
 using BTCPayServer.Payments.Bitcoin;
@@ -21,11 +16,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using NBitcoin;
+using NBXplorer;
 using NBXplorer.DerivationStrategy;
-using NBXplorer.Models;
 using Newtonsoft.Json.Linq;
-using Org.BouncyCastle.Asn1.X509.Qualified;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 using StoreData = BTCPayServer.Data.StoreData;
 
 namespace BTCPayServer.Controllers.Greenfield
@@ -122,22 +115,28 @@ namespace BTCPayServer.Controllers.Greenfield
             return Ok(result);
         }
 
-        private static OnChainPaymentMethodPreviewResultData GetPreviewResultData(int offset, int count, BTCPayNetwork network, DerivationStrategyBase strategy)
+        internal static OnChainPaymentMethodPreviewResultData GetPreviewResultData(int offset, int count, BTCPayNetwork network, DerivationStrategyBase strategy)
         {
-            var deposit = new NBXplorer.KeyPathTemplates(null).GetKeyPathTemplate(DerivationFeature.Deposit);
-            var line = strategy.GetLineFor(deposit);
+            var line = strategy.GetLineFor(DerivationFeature.Deposit);
             var result = new OnChainPaymentMethodPreviewResultData();
             for (var i = offset; i < count; i++)
             {
+                var keyPath = new KeyPath(0, (uint)i);
+                if (strategy is PolicyDerivationStrategy)
+                    keyPath = null;
                 var derivation = line.Derive((uint)i);
                 result.Addresses.Add(
-                    new
-                        OnChainPaymentMethodPreviewResultData.
-                        OnChainPaymentMethodPreviewResultAddressItem()
+                    new()
                     {
-                        KeyPath = deposit.GetKeyPath((uint)i).ToString(),
+                        KeyPath = keyPath?.ToString(),
+                        Index = i,
                         Address =
-                            network.NBXplorerNetwork.CreateAddress(strategy, deposit.GetKeyPath((uint)i), derivation.ScriptPubKey)
+#pragma warning disable CS0612 // Type or member is obsolete
+                            // We should be able to derive the address from the scriptPubKey.
+                            // However, Elements has blinded addresses, so we can't derive the address from the scriptPubKey.
+                            // We should probably just use a special if/else just for elements here instead of relying on obsolete stuff.
+                            network.NBXplorerNetwork.CreateAddress(strategy, keyPath ?? new(), derivation.ScriptPubKey)
+#pragma warning restore CS0612 // Type or member is obsolete
                                 .ToString()
                     });
             }

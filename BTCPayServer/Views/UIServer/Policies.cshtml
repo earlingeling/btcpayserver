@@ -1,10 +1,10 @@
 @using BTCPayServer.Services
 @using BTCPayServer.Services.Mails;
 @model BTCPayServer.Services.PoliciesSettings
-@inject SettingsRepository _SettingsRepository
+@inject EmailSenderFactory EmailSenderFactory
 @inject TransactionLinkProviders TransactionLinkProviders
 @{
-    ViewData.SetActivePage(ServerNavPages.Policies);
+    ViewData.SetActivePage(ServerNavPages.Policies, StringLocalizer["Policies"]);
     var linkProviders = TransactionLinkProviders.ToArray();
 }
 
@@ -20,7 +20,7 @@
 
 <form method="post">
     <div class="sticky-header">
-        <h2 text-translate="true">@ViewData["Title"]</h2>
+        <h2>@ViewData["Title"]</h2>
 		<button id="page-primary" type="submit" class="btn btn-primary" name="command" value="Save">Save</button>
     </div>
     <partial name="_StatusMessage" />
@@ -47,10 +47,9 @@
                             <div class="subsettings">
                                 <div class="d-flex my-3">
                                     @{
-                                        var emailSettings = (await _SettingsRepository.GetSettingAsync<EmailSettings>()) ?? new EmailSettings();
                                         /* The "|| Model.RequiresConfirmedEmail" check is for the case when a user had checked
                                            the checkbox without first configuring the e-mail settings so that they can uncheck it. */
-                                        var isEmailConfigured = emailSettings.IsComplete() || Model.RequiresConfirmedEmail;
+                                        var isEmailConfigured = await EmailSenderFactory.IsComplete() || Model.RequiresConfirmedEmail;
                                     }
                                     <input asp-for="RequiresConfirmedEmail" type="checkbox" class="btcpay-toggle me-3" disabled="@(isEmailConfigured ? null : "disabled")" />
                                     <div>
@@ -90,7 +89,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="mb-5">
                     <h4 class="mb-3" text-translate="true">Users</h4>
                     <div class="d-flex my-3">
@@ -121,6 +120,13 @@
                             </div>
                         </div>
                     </div>
+					<div class="d-flex my-3">
+						<input asp-for="AllowCreateColdWalletForAll" type="checkbox" class="btcpay-toggle me-3" />
+						<div>
+							<label asp-for="AllowCreateColdWalletForAll" class="form-check-label"></label>
+							<span asp-validation-for="AllowCreateColdWalletForAll" class="text-danger"></span>
+						</div>
+					</div>
                     <div class="d-flex my-3">
                         <input asp-for="AllowHotWalletRPCImportForAll" type="checkbox" class="btcpay-toggle me-3"/>
                         <div>
@@ -167,7 +173,7 @@
                             </div>
                         </div>
                     }
-                    @* 
+                    @*
 					    Let's uncomment this when we have new experimental features.
 					    <div class="d-flex align-items-center my-3">
                         <input asp-for="Experimental" type="checkbox" class="btcpay-toggle me-3" />
@@ -196,8 +202,23 @@
 
                 <h4 class="mt-5" text-translate="true">Customization</h4>
                 <div class="form-group mb-3">
-                    <label asp-for="DefaultCurrency" class="form-label"></label>
-                    <input asp-for="DefaultCurrency" placeholder="@StoreBlob.StandardDefaultCurrency" class="form-control" currency-selection />
+                    <label asp-for="DefaultStoreTemplate" class="form-label"></label>
+                    @if (Model.DefaultStoreTemplate is null)
+                    {
+                        <div class="input-group">
+                            <input value="@StringLocalizer["Not configured"]" type="text" readonly class="form-control"/>
+                            <button type="submit" class="btn btn-primary" name="command" value="SetTemplate" id="SetTemplate" text-translate="true">Create template from selected store</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="input-group">
+                            <input value="@StringLocalizer["Configured"]" type="text" readonly class="form-control"/>
+                            <button type="submit" class="btn btn-primary" name="command" value="SetTemplate" id="SetTemplate" text-translate="true">Replace template from selected store</button>
+                            <button type="submit" class="btn btn-danger" name="command" value="ResetTemplate" id="ResetTemplate" text-translate="true">Remove store template</button>
+                        </div>
+                    }
+                    <div class="form-text" text-translate="true">The store template sets defaults for all new stores. It includes rates settings, default invoice settings, checkout display settings but excludes sensitive data like access tokens, payment method settings, webhooks.</div>
                 </div>
                 <div class="form-group mb-5">
                     <label asp-for="RootAppId" class="form-label"></label>
@@ -284,7 +305,7 @@
         for (let element of document.getElementsByClassName("collapse-on-js")){
             if (element.classList.contains("show")){
                 element.classList.remove("show");
-            }    
+            }
         }
     </script>
 }
