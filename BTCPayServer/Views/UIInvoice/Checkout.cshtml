@@ -253,22 +253,46 @@
                                 <small class="text-muted d-block mb-2">{{$t('guide_provider_selection')}}</small>
                                 <div v-if="selectedCountry === 'Norway'" class="d-grid gap-2">
                                     <button class="btn btn-success btn-sm" @@click="showCoinbaseGuide">
-                                        <i class="fas fa-coins me-1"></i>Coinbase - {{$t('badge_recommended')}} (3-8% avgift)
+                                        <i class="fas fa-coins me-1"></i>Coinbase <i class="fas fa-star text-warning ms-1"></i> (3-8% avgift)
+                                    </button>
+                                    <button class="btn btn-outline-primary btn-sm" @@click="showFiriGuide">
+                                        <i class="fas fa-university me-1"></i>Firi <i class="fas fa-flag text-primary ms-1"></i> (4% avgift)
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" @@click="showMoonPayGuide">
+                                        <i class="fas fa-credit-card me-1"></i>MoonPay <i class="fas fa-clock text-info ms-1"></i> (15% avgift)
                                     </button>
                                 </div>
                                 <div v-if="selectedCountry === 'Sweden'" class="d-grid gap-2">
+                                    <button class="btn btn-success btn-sm" @@click="showCoinbaseGuide">
+                                        <i class="fas fa-coins me-1"></i>Coinbase <i class="fas fa-star text-warning ms-1"></i> (3-8% avgift)
+                                    </button>
                                     <button class="btn btn-primary btn-sm" @@click="showSafelloGuide">
-                                        <i class="fas fa-university me-1"></i>Safello - Svensk (7-8% avgift)
+                                        <i class="fas fa-university me-1"></i>Safello <i class="fas fa-flag text-primary ms-1"></i> (7-8% avgift)
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" @@click="showMoonPayGuide">
+                                        <i class="fas fa-credit-card me-1"></i>MoonPay <i class="fas fa-clock text-info ms-1"></i> (15% avgift)
                                     </button>
                                 </div>
                                 <div v-if="selectedCountry === 'Denmark'" class="d-grid gap-2">
                                     <button class="btn btn-success btn-sm" @@click="showCoinbaseGuide">
-                                        <i class="fas fa-coins me-1"></i>Coinbase - {{$t('badge_recommended')}} (3-8% avgift)
+                                        <i class="fas fa-coins me-1"></i>Coinbase <i class="fas fa-star text-warning ms-1"></i> (3-8% avgift)
+                                    </button>
+                                    <button class="btn btn-outline-primary btn-sm" @@click="showBinanceGuide">
+                                        <i class="fas fa-university me-1"></i>Binance <i class="fas fa-globe text-primary ms-1"></i> (5% avgift)
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" @@click="showMoonPayGuide">
+                                        <i class="fas fa-credit-card me-1"></i>MoonPay <i class="fas fa-clock text-info ms-1"></i> (15% avgift)
                                     </button>
                                 </div>
                                 <div v-if="selectedCountry === 'Other'" class="d-grid gap-2">
                                     <button class="btn btn-success btn-sm" @@click="showCoinbaseGuide">
-                                        <i class="fas fa-coins me-1"></i>Coinbase - {{$t('badge_recommended')}} (3-8% avgift)
+                                        <i class="fas fa-coins me-1"></i>Coinbase <i class="fas fa-star text-warning ms-1"></i> (3-8% avgift)
+                                    </button>
+                                    <button class="btn btn-outline-primary btn-sm" @@click="showBinanceGuide">
+                                        <i class="fas fa-university me-1"></i>Binance <i class="fas fa-globe text-primary ms-1"></i> (5% avgift)
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" @@click="showMoonPayGuide">
+                                        <i class="fas fa-credit-card me-1"></i>MoonPay <i class="fas fa-clock text-info ms-1"></i> (15% avgift)
                                     </button>
                                 </div>
                             </div>

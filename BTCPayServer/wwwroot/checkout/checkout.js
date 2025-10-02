@@ -285,6 +285,18 @@ function initApp() {
                 // Show Safello step-by-step guide (using step 20 as fallback)
                 showStep(20); // Use step 20 as fallback since step 23 doesn't exist
             },
+            showFiriGuide() {
+                // Show Firi step-by-step guide (placeholder)
+                showStep(21); // Use Coinbase guide as placeholder
+            },
+            showMoonPayGuide() {
+                // Show MoonPay step-by-step guide (placeholder)
+                showStep(21); // Use Coinbase guide as placeholder
+            },
+            showBinanceGuide() {
+                // Show Binance step-by-step guide (placeholder)
+                showStep(21); // Use Coinbase guide as placeholder
+            },
             resetCountrySelection() {
                 // Reset country selection when going back to homepage
                 this.selectedCountry = null;
