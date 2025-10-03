@@ -69,6 +69,7 @@ namespace BTCPayServer.Controllers
         private readonly EmailSenderFactory _emailSenderFactory;
         private readonly TransactionLinkProviders _transactionLinkProviders;
         private readonly LocalizerService _localizer;
+        private readonly ApplicationDbContextFactory _dbContextFactory;
         public IStringLocalizer StringLocalizer { get; }
 
         public UIServerController(
@@ -98,7 +99,8 @@ namespace BTCPayServer.Controllers
             TransactionLinkProviders transactionLinkProviders,
             LocalizerService localizer,
             IStringLocalizer stringLocalizer,
-            BTCPayServerEnvironment environment
+            BTCPayServerEnvironment environment,
+            ApplicationDbContextFactory dbContextFactory
         )
         {
             _policiesSettings = policiesSettings;
@@ -128,6 +130,7 @@ namespace BTCPayServer.Controllers
             _localizer = localizer;
             Environment = environment;
             StringLocalizer = stringLocalizer;
+            _dbContextFactory = dbContextFactory;
         }
 
         [HttpGet("server/stores")]

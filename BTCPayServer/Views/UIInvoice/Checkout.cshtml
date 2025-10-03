@@ -1,6 +1,7 @@
 @using BTCPayServer.Services
 @using BTCPayServer.Abstractions.Contracts
 @using BTCPayServer.Components.TruncateCenter
+@using BTCPayServer.Models.ServerViewModels
 @inject LanguageService LangService
 @inject BTCPayServerEnvironment Env
 @inject IEnumerable<IUIExtension> UiExtensions 
@@ -251,50 +252,64 @@
                             <!-- Provider Selection -->
                             <div v-if="selectedCountry" class="text-center">
                                 <small class="text-muted d-block mb-2">{{$t('guide_provider_selection')}}</small>
-                                <div v-if="selectedCountry === 'Norway'" class="d-grid gap-2">
-                                    <button class="btn btn-success btn-sm" @@click="showCoinbaseGuide">
-                                        <i class="fas fa-coins me-1"></i>Coinbase <i class="fas fa-star text-warning ms-1"></i> (3-8% avgift)
-                                    </button>
-                                    <button class="btn btn-outline-primary btn-sm" @@click="showFiriGuide">
-                                        <i class="fas fa-university me-1"></i>Firi <i class="fas fa-flag text-primary ms-1"></i> (4% avgift)
-                                    </button>
-                                    <button class="btn btn-outline-secondary btn-sm" @@click="showMoonPayGuide">
-                                        <i class="fas fa-credit-card me-1"></i>MoonPay <i class="fas fa-clock text-info ms-1"></i> (15% avgift)
-                                    </button>
-                                </div>
-                                <div v-if="selectedCountry === 'Sweden'" class="d-grid gap-2">
-                                    <button class="btn btn-success btn-sm" @@click="showCoinbaseGuide">
-                                        <i class="fas fa-coins me-1"></i>Coinbase <i class="fas fa-star text-warning ms-1"></i> (3-8% avgift)
-                                    </button>
-                                    <button class="btn btn-primary btn-sm" @@click="showSafelloGuide">
-                                        <i class="fas fa-university me-1"></i>Safello <i class="fas fa-flag text-primary ms-1"></i> (7-8% avgift)
-                                    </button>
-                                    <button class="btn btn-outline-secondary btn-sm" @@click="showMoonPayGuide">
-                                        <i class="fas fa-credit-card me-1"></i>MoonPay <i class="fas fa-clock text-info ms-1"></i> (15% avgift)
-                                    </button>
-                                </div>
-                                <div v-if="selectedCountry === 'Denmark'" class="d-grid gap-2">
-                                    <button class="btn btn-success btn-sm" @@click="showCoinbaseGuide">
-                                        <i class="fas fa-coins me-1"></i>Coinbase <i class="fas fa-star text-warning ms-1"></i> (3-8% avgift)
-                                    </button>
-                                    <button class="btn btn-outline-primary btn-sm" @@click="showBinanceGuide">
-                                        <i class="fas fa-university me-1"></i>Binance <i class="fas fa-globe text-primary ms-1"></i> (5% avgift)
-                                    </button>
-                                    <button class="btn btn-outline-secondary btn-sm" @@click="showMoonPayGuide">
-                                        <i class="fas fa-credit-card me-1"></i>MoonPay <i class="fas fa-clock text-info ms-1"></i> (15% avgift)
-                                    </button>
-                                </div>
-                                <div v-if="selectedCountry === 'Other'" class="d-grid gap-2">
-                                    <button class="btn btn-success btn-sm" @@click="showCoinbaseGuide">
-                                        <i class="fas fa-coins me-1"></i>Coinbase <i class="fas fa-star text-warning ms-1"></i> (3-8% avgift)
-                                    </button>
-                                    <button class="btn btn-outline-primary btn-sm" @@click="showBinanceGuide">
-                                        <i class="fas fa-university me-1"></i>Binance <i class="fas fa-globe text-primary ms-1"></i> (5% avgift)
-                                    </button>
-                                    <button class="btn btn-outline-secondary btn-sm" @@click="showMoonPayGuide">
-                                        <i class="fas fa-credit-card me-1"></i>MoonPay <i class="fas fa-clock text-info ms-1"></i> (15% avgift)
-                                    </button>
-                                </div>
+                                @{
+                                    var providerSettings = ViewData["ProviderSettings"] as CheckoutProvidersSettings ?? new CheckoutProvidersSettings();
+                                }
+                                @foreach (var provider in providerSettings.Providers)
+                                {
+                                    @if (provider.EnabledCountries?.Contains("Norway") == true)
+                                    {
+                                        <div v-if="selectedCountry === 'Norway'" class="d-grid gap-2">
+                                            <button class="@provider.ButtonClass" @@click="showProviderGuide('@provider.Name')">
+                                                <i class="@provider.Icon me-1"></i>@provider.Name 
+                                                @if (!string.IsNullOrEmpty(provider.BadgeIcon))
+                                                {
+                                                    <i class="@provider.BadgeIcon ms-1"></i>
+                                                }
+                                                (@provider.FeeText)
+                                            </button>
+                                        </div>
+                                    }
+                                    @if (provider.EnabledCountries?.Contains("Sweden") == true)
+                                    {
+                                        <div v-if="selectedCountry === 'Sweden'" class="d-grid gap-2">
+                                            <button class="@provider.ButtonClass" @@click="showProviderGuide('@provider.Name')">
+                                                <i class="@provider.Icon me-1"></i>@provider.Name 
+                                                @if (!string.IsNullOrEmpty(provider.BadgeIcon))
+                                                {
+                                                    <i class="@provider.BadgeIcon ms-1"></i>
+                                                }
+                                                (@provider.FeeText)
+                                            </button>
+                                        </div>
+                                    }
+                                    @if (provider.EnabledCountries?.Contains("Denmark") == true)
+                                    {
+                                        <div v-if="selectedCountry === 'Denmark'" class="d-grid gap-2">
+                                            <button class="@provider.ButtonClass" @@click="showProviderGuide('@provider.Name')">
+                                                <i class="@provider.Icon me-1"></i>@provider.Name 
+                                                @if (!string.IsNullOrEmpty(provider.BadgeIcon))
+                                                {
+                                                    <i class="@provider.BadgeIcon ms-1"></i>
+                                                }
+                                                (@provider.FeeText)
+                                            </button>
+                                        </div>
+                                    }
+                                    @if (provider.EnabledCountries?.Contains("Other") == true)
+                                    {
+                                        <div v-if="selectedCountry === 'Other'" class="d-grid gap-2">
+                                            <button class="@provider.ButtonClass" @@click="showProviderGuide('@provider.Name')">
+                                                <i class="@provider.Icon me-1"></i>@provider.Name 
+                                                @if (!string.IsNullOrEmpty(provider.BadgeIcon))
+                                                {
+                                                    <i class="@provider.BadgeIcon ms-1"></i>
+                                                }
+                                                (@provider.FeeText)
+                                            </button>
+                                        </div>
+                                    }
+                                }
                             </div>
                         </div>
                     </div>
@@ -433,6 +448,41 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Close step21 (Coinbase) -->
+            </div>
+            
+            <!-- Dynamic Provider Steps -->
+            <div id="step999" hidden>
+                <div class="card">
+                    <h4 class="card-header" id="provider-step-title">Provider Instructions</h4>
+                    <div class="text-center mt-2">
+                        <a @@click="showStep(1)" class="btn btn-link">{{$t('home')}}</a>
+                    </div>
+                    <div class="card-body">
+                        <!-- Intro Text -->
+                        <div id="provider-intro-text" class="mb-4">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                        
+                        <!-- Steps List -->
+                        <div id="provider-steps-list">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                        
+                        <!-- Outro Text -->
+                        <div id="provider-outro-text" class="mt-4">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="text-center mt-2">
+                            <a @@click="showStep(1)" class="btn btn-link">{{$t('home')}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Add more steps as needed -->
         </div>
         <!-- Payment Wizard End -->
@@ -707,6 +757,7 @@ function toggleInstructions(button) {
         const availableLanguages = @Safe.Json(LangService.GetLanguages().Select(language => language.Code));
         const initialSrvModel = @Safe.Json(Model);
         const qrOptions = { margin: 0, type: 'svg', color: { dark: '#000', light: '#fff' } };
+        const providerSettings = @Safe.Json(ViewData["ProviderSettings"]);
         window.exports = {};
     </script>
     @if (Model.CelebratePayment)

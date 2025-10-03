@@ -103,6 +103,8 @@ function initApp() {
                 isModal: srvModel.isModal,
                 pollTimeoutID: null,
                 paymentSound: null,
+                providerSettings: providerSettings || { providers: [] },
+                selectedCountry: null,
                 nfcReadSound: null,
                 errorSound: null,
                 nfc: {
@@ -296,6 +298,83 @@ function initApp() {
             showBinanceGuide() {
                 // Show Binance step-by-step guide (placeholder)
                 showStep(21); // Use Coinbase guide as placeholder
+            },
+            showProviderGuide(providerName) {
+                // Find the provider in the settings
+                const provider = this.providerSettings.providers.find(p => p.name === providerName);
+                if (!provider) {
+                    console.error(`Provider ${providerName} not found in settings`);
+                    return;
+                }
+                
+                // Populate the dynamic step with provider data
+                this.populateProviderStep(provider);
+                
+                // Show the dynamic step
+                showStep(999);
+            },
+            getLocalizedText(textObj) {
+                const currentLang = this.$i18n.locale;
+                switch (currentLang) {
+                    case 'no': return textObj.norwegian || textObj.english;
+                    case 'sv': return textObj.swedish || textObj.english;
+                    case 'da': return textObj.danish || textObj.english;
+                    default: return textObj.english;
+                }
+            },
+            populateProviderStep(provider) {
+                // Update the title
+                const titleElement = document.getElementById('provider-step-title');
+                if (titleElement) {
+                    titleElement.textContent = `${provider.name} Instructions`;
+                }
+                
+                // Populate intro text
+                const introElement = document.getElementById('provider-intro-text');
+                if (introElement && provider.translations && provider.translations.introText) {
+                    const introText = this.getLocalizedText(provider.translations.introText);
+                    if (introText) {
+                        introElement.innerHTML = `<p class="card-text">${introText}</p>`;
+                        introElement.style.display = 'block';
+                    } else {
+                        introElement.style.display = 'none';
+                    }
+                } else if (introElement) {
+                    introElement.style.display = 'none';
+                }
+                
+                // Populate steps list
+                const stepsElement = document.getElementById('provider-steps-list');
+                if (stepsElement && provider.translations && provider.translations.steps && provider.translations.steps.length > 0) {
+                    let stepsHtml = '<ol class="list-group list-group-numbered">';
+                    
+                    provider.translations.steps.forEach((step) => {
+                        const stepContent = this.getLocalizedText(step.stepText);
+                        if (stepContent) {
+                            stepsHtml += `<li class="list-group-item">${stepContent}</li>`;
+                        }
+                    });
+                    
+                    stepsHtml += '</ol>';
+                    stepsElement.innerHTML = stepsHtml;
+                    stepsElement.style.display = 'block';
+                } else if (stepsElement) {
+                    stepsElement.style.display = 'none';
+                }
+                
+                // Populate outro text
+                const outroElement = document.getElementById('provider-outro-text');
+                if (outroElement && provider.translations && provider.translations.outroText) {
+                    const outroText = this.getLocalizedText(provider.translations.outroText);
+                    if (outroText) {
+                        outroElement.innerHTML = `<p class="card-text">${outroText}</p>`;
+                        outroElement.style.display = 'block';
+                    } else {
+                        outroElement.style.display = 'none';
+                    }
+                } else if (outroElement) {
+                    outroElement.style.display = 'none';
+                }
             },
             resetCountrySelection() {
                 // Reset country selection when going back to homepage

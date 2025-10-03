@@ -46,6 +46,7 @@ namespace BTCPayServer.Data
         public DbSet<RefundData> Refunds { get; set; }
         public DbSet<SettingData> Settings { get; set; }
         public DbSet<StoreSettingData> StoreSettings { get; set; }
+        public DbSet<CheckoutProviderTranslation> CheckoutProviderTranslations { get; set; }
         public DbSet<StoreWebhookData> StoreWebhooks { get; set; }
         public DbSet<StoreData> Stores { get; set; }
         public DbSet<U2FDevice> U2FDevices { get; set; }

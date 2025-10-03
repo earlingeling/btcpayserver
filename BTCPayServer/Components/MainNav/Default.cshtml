@@ -316,6 +316,9 @@
                 <li class="nav-item nav-item-sub" permission="@Policies.CanModifyServerSettings">
                     <a asp-controller="UIServer" id="SectionNav-@ServerNavPages.Translations" class="nav-link @ViewData.ActivePageClass(ServerNavPages.Translations)" asp-action="ListDictionaries" text-translate="true">Translations</a>
                 </li>
+                <li class="nav-item nav-item-sub" permission="@Policies.CanModifyServerSettings">
+                    <a asp-controller="UIServer" id="SectionNav-@ServerNavPages.CheckoutProviders" class="nav-link @ViewData.ActivePageClass(ServerNavPages.CheckoutProviders)" asp-action="CheckoutProviders" text-translate="true">Checkout Providers</a>
+                </li>
                 @if (BtcPayServerOptions.DockerDeployment)
                 {
                     <li class="nav-item nav-item-sub" permission="@Policies.CanModifyServerSettings">

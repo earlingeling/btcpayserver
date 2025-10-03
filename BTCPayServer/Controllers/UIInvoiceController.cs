@@ -67,6 +67,7 @@ namespace BTCPayServer.Controllers
         private readonly AppService _appService;
         private readonly IFileService _fileService;
         private readonly UriResolver _uriResolver;
+        private readonly SettingsRepository _SettingsRepository;
 
         public WebhookSender WebhookNotificationManager { get; }
         public IEnumerable<IGlobalCheckoutModelExtension> GlobalCheckoutModelExtensions { get; }
@@ -102,7 +103,8 @@ namespace BTCPayServer.Controllers
             Dictionary<PaymentMethodId, ICheckoutModelExtension> paymentModelExtensions,
             IEnumerable<IGlobalCheckoutModelExtension> globalCheckoutModelExtensions,
             IStringLocalizer stringLocalizer,
-            PrettyNameProvider prettyName)
+            PrettyNameProvider prettyName,
+            SettingsRepository settingsRepository)
         {
             _displayFormatter = displayFormatter;
             _CurrencyNameTable = currencyNameTable ?? throw new ArgumentNullException(nameof(currencyNameTable));
@@ -133,6 +135,7 @@ namespace BTCPayServer.Controllers
             _defaultRules = defaultRules;
             _appService = appService;
             StringLocalizer = stringLocalizer;
+            _SettingsRepository = settingsRepository;
         }
 
         internal async Task<InvoiceEntity> CreatePaymentRequestInvoice(Data.PaymentRequestData prData, decimal? amount, decimal amountDue, StoreData storeData, HttpRequest request, CancellationToken cancellationToken)
