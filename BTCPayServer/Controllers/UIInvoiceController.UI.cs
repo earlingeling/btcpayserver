@@ -724,8 +724,9 @@ namespace BTCPayServer.Controllers
 
             // Load checkout provider translations from database
             using var ctx = _dbContextFactory.CreateContext();
+            // Load English providers as base (they have EnabledCountries data)
             var providerTranslations = await ctx.CheckoutProviderTranslations
-                .Where(x => x.Language == lang) // Use current language
+                .Where(x => x.Language == "en") // Always use English as base for provider data
                 .ToListAsync();
             
             var providerSettings = new CheckoutProvidersSettings
@@ -754,7 +755,7 @@ namespace BTCPayServer.Controllers
                             Swedish = GetProviderTranslation(ctx, p.ProviderName, "sv", "outro"),
                             Danish = GetProviderTranslation(ctx, p.ProviderName, "da", "outro")
                         },
-                        Steps = GetProviderSteps(ctx, p.ProviderName, lang)
+                        Steps = GetProviderSteps(ctx, p.ProviderName, lang ?? "en")
                     }
                 }).ToList()
             };

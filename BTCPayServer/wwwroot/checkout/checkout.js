@@ -314,7 +314,7 @@ function initApp() {
                 showStep(999);
             },
             getLocalizedText(textObj) {
-                const currentLang = this.$i18n.locale;
+                const currentLang = i18next.language;
                 switch (currentLang) {
                     case 'no': return textObj.norwegian || textObj.english;
                     case 'sv': return textObj.swedish || textObj.english;
