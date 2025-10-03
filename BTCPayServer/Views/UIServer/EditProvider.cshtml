@@ -1,0 +1,419 @@
+@using BTCPayServer.Models.ServerViewModels
+@model ProviderEditModel
+@{
+    ViewData.SetActivePage(ServerNavPages.CheckoutProviders, $"Edit Provider: {Model.ProviderName}");
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="mb-4">@ViewData["Title"]</h3>
+        
+        <form method="post">
+            <div class="row">
+                <!-- Provider Basic Info -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Provider Details</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label asp-for="Provider.Name" class="form-label">Provider Name</label>
+                                <input asp-for="Provider.Name" class="form-control" readonly />
+                                <div class="form-text">Provider name cannot be changed</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label asp-for="Provider.Icon" class="form-label">Icon Class</label>
+                                <input asp-for="Provider.Icon" class="form-control" placeholder="fas fa-coins" />
+                                <div class="form-text">Font Awesome icon class (e.g., fas fa-coins)</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label asp-for="Provider.ButtonClass" class="form-label">Button Style</label>
+                                <select asp-for="Provider.ButtonClass" class="form-select">
+                                    <option value="btn btn-primary">Primary (Blue)</option>
+                                    <option value="btn btn-secondary">Secondary (Gray)</option>
+                                    <option value="btn btn-success">Success (Green)</option>
+                                    <option value="btn btn-warning">Warning (Yellow)</option>
+                                    <option value="btn btn-danger">Danger (Red)</option>
+                                    <option value="btn btn-outline-primary">Outline Primary</option>
+                                    <option value="btn btn-outline-secondary">Outline Secondary</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label asp-for="Provider.FeeText" class="form-label">Fee Text</label>
+                                <input asp-for="Provider.FeeText" class="form-control" placeholder="3-8% avgift" />
+                                <div class="form-text">Display text for fees (e.g., "3-8% avgift")</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label asp-for="Provider.BadgeIcon" class="form-label">Badge Icon</label>
+                                <input asp-for="Provider.BadgeIcon" class="form-control" placeholder="fas fa-star" />
+                                <div class="form-text">Optional badge icon (e.g., fas fa-star)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Country Availability -->
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Country Availability</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="Provider.EnabledCountries" value="Norway" 
+                                       @(Model.Provider.EnabledCountries?.Contains("Norway") == true ? "checked" : "") />
+                                <label class="form-check-label">
+                                    <i class="flag-icon flag-icon-no me-2"></i>Norway
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="Provider.EnabledCountries" value="Sweden" 
+                                       @(Model.Provider.EnabledCountries?.Contains("Sweden") == true ? "checked" : "") />
+                                <label class="form-check-label">
+                                    <i class="flag-icon flag-icon-se me-2"></i>Sweden
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="Provider.EnabledCountries" value="Denmark" 
+                                       @(Model.Provider.EnabledCountries?.Contains("Denmark") == true ? "checked" : "") />
+                                <label class="form-check-label">
+                                    <i class="flag-icon flag-icon-dk me-2"></i>Denmark
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="Provider.EnabledCountries" value="Other" 
+                                       @(Model.Provider.EnabledCountries?.Contains("Other") == true ? "checked" : "") />
+                                <label class="form-check-label">
+                                    <i class="fas fa-globe me-2"></i>Other Countries
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Provider Translations -->
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Provider Translations</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Language Tabs -->
+                            <ul class="nav nav-tabs" id="providerTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="intro-tab" data-bs-toggle="tab" data-bs-target="#intro" type="button" role="tab">
+                                        <i class="fas fa-info-circle me-2"></i>Intro Text
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="steps-tab" data-bs-toggle="tab" data-bs-target="#steps" type="button" role="tab">
+                                        <i class="fas fa-list-ol me-2"></i>Steps (@Model.Provider.Translations.Steps.Count)
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="outro-tab" data-bs-toggle="tab" data-bs-target="#outro" type="button" role="tab">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Outro Text
+                                    </button>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content mt-3" id="providerTabContent">
+                                <!-- Intro Text -->
+                                <div class="tab-pane fade show active" id="intro" role="tabpanel">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6><i class="flag-icon flag-icon-gb me-2"></i>English</h6>
+                                            <textarea asp-for="Provider.Translations.IntroText.English" class="form-control" rows="8" 
+                                                      placeholder="Enter intro text in English..."></textarea>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6><i class="flag-icon flag-icon-no me-2"></i>Norwegian</h6>
+                                            <textarea asp-for="Provider.Translations.IntroText.Norwegian" class="form-control" rows="8" 
+                                                      placeholder="Enter intro text in Norwegian..."></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <h6><i class="flag-icon flag-icon-se me-2"></i>Swedish</h6>
+                                            <textarea asp-for="Provider.Translations.IntroText.Swedish" class="form-control" rows="8" 
+                                                      placeholder="Enter intro text in Swedish..."></textarea>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6><i class="flag-icon flag-icon-dk me-2"></i>Danish</h6>
+                                            <textarea asp-for="Provider.Translations.IntroText.Danish" class="form-control" rows="8" 
+                                                      placeholder="Enter intro text in Danish..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Steps -->
+                                <div class="tab-pane fade" id="steps" role="tabpanel">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h6>Provider Steps</h6>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addStep()">
+                                            <i class="fas fa-plus me-1"></i>Add Step
+                                        </button>
+                                    </div>
+                                    
+                                    <div id="steps-container">
+                                        @for (int i = 0; i < Model.Provider.Translations.Steps.Count; i++)
+                                        {
+                                            <div class="card mb-3 step-item" data-step="@Model.Provider.Translations.Steps[i].StepNumber">
+                                                <div class="card-header d-flex justify-content-between align-items-center">
+                                                    <h6 class="mb-0">Step @Model.Provider.Translations.Steps[i].StepNumber</h6>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeStep(@Model.Provider.Translations.Steps[i].StepNumber)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <h6><i class="flag-icon flag-icon-gb me-2"></i>English</h6>
+                                                            <textarea name="Provider.Translations.Steps[@i].English" class="form-control" rows="4">@Model.Provider.Translations.Steps[i].English</textarea>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <h6><i class="flag-icon flag-icon-no me-2"></i>Norwegian</h6>
+                                                            <textarea name="Provider.Translations.Steps[@i].Norwegian" class="form-control" rows="4">@Model.Provider.Translations.Steps[i].Norwegian</textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mt-2">
+                                                        <div class="col-md-6">
+                                                            <h6><i class="flag-icon flag-icon-se me-2"></i>Swedish</h6>
+                                                            <textarea name="Provider.Translations.Steps[@i].Swedish" class="form-control" rows="4">@Model.Provider.Translations.Steps[i].Swedish</textarea>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <h6><i class="flag-icon flag-icon-dk me-2"></i>Danish</h6>
+                                                            <textarea name="Provider.Translations.Steps[@i].Danish" class="form-control" rows="4">@Model.Provider.Translations.Steps[i].Danish</textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                                <!-- Outro Text -->
+                                <div class="tab-pane fade" id="outro" role="tabpanel">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6><i class="flag-icon flag-icon-gb me-2"></i>English</h6>
+                                            <textarea asp-for="Provider.Translations.OutroText.English" class="form-control" rows="8" 
+                                                      placeholder="Enter outro text in English..."></textarea>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6><i class="flag-icon flag-icon-no me-2"></i>Norwegian</h6>
+                                            <textarea asp-for="Provider.Translations.OutroText.Norwegian" class="form-control" rows="8" 
+                                                      placeholder="Enter outro text in Norwegian..."></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <h6><i class="flag-icon flag-icon-se me-2"></i>Swedish</h6>
+                                            <textarea asp-for="Provider.Translations.OutroText.Swedish" class="form-control" rows="8" 
+                                                      placeholder="Enter outro text in Swedish..."></textarea>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6><i class="flag-icon flag-icon-dk me-2"></i>Danish</h6>
+                                            <textarea asp-for="Provider.Translations.OutroText.Danish" class="form-control" rows="8" 
+                                                      placeholder="Enter outro text in Danish..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step Calculations -->
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Step Calculations</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted mb-3">Configure dynamic calculations for provider steps</p>
+                            
+                            <div id="calculations-container">
+                                @for (int i = 0; i < Model.Calculations.Steps.Count; i++)
+                                {
+                                    <div class="card mb-3 calculation-item" data-step="@Model.Calculations.Steps[i].StepNumber">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <h6 class="mb-0">Step @Model.Calculations.Steps[i].StepNumber Calculation</h6>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeCalculation(@Model.Calculations.Steps[i].StepNumber)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Calculation Type</label>
+                                                        <select name="Calculations.Steps[@i].CalculationType" class="form-select">
+                                                            <option value="amount_due" @(Model.Calculations.Steps[i].CalculationType == "amount_due" ? "selected" : "")>Amount Due</option>
+                                                            <option value="dynamic_amount" @(Model.Calculations.Steps[i].CalculationType == "dynamic_amount" ? "selected" : "")>Dynamic Amount</option>
+                                                            <option value="custom" @(Model.Calculations.Steps[i].CalculationType == "custom" ? "selected" : "")>Custom Formula</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Display Format</label>
+                                                        <input name="Calculations.Steps[@i].DisplayFormat" class="form-control" 
+                                                               value="@Model.Calculations.Steps[i].DisplayFormat" 
+                                                               placeholder="HTML template with {{result}} placeholder" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Formula</label>
+                                                <textarea name="Calculations.Steps[@i].CalculationFormula" class="form-control" rows="3" 
+                                                          placeholder="JavaScript-like formula using srvModel properties">@Model.Calculations.Steps[i].CalculationFormula</textarea>
+                                                <div class="form-text">Use srvModel.orderAmountFiat, srvModel.rate, etc.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            
+                            <button type="button" class="btn btn-outline-primary" onclick="addCalculation()">
+                                <i class="fas fa-plus me-1"></i>Add Calculation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <a asp-action="CheckoutProviders" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Overview
+                                </a>
+                                <div>
+                                    <button type="button" class="btn btn-outline-info me-2" onclick="previewProvider()">
+                                        <i class="fas fa-eye me-2"></i>Preview
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Save Provider
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+let stepCounter = @Model.Provider.Translations.Steps.Count;
+let calculationCounter = @Model.Calculations.Steps.Count;
+
+function addStep() {
+    stepCounter++;
+    const stepHtml = `
+        <div class="card mb-3 step-item" data-step="${stepCounter}">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">Step ${stepCounter}</h6>
+                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeStep(${stepCounter})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="flag-icon flag-icon-gb me-2"></i>English</h6>
+                        <textarea name="Provider.Translations.Steps[${stepCounter-1}].English" class="form-control" rows="4"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="flag-icon flag-icon-no me-2"></i>Norwegian</h6>
+                        <textarea name="Provider.Translations.Steps[${stepCounter-1}].Norwegian" class="form-control" rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <h6><i class="flag-icon flag-icon-se me-2"></i>Swedish</h6>
+                        <textarea name="Provider.Translations.Steps[${stepCounter-1}].Swedish" class="form-control" rows="4"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="flag-icon flag-icon-dk me-2"></i>Danish</h6>
+                        <textarea name="Provider.Translations.Steps[${stepCounter-1}].Danish" class="form-control" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.getElementById('steps-container').insertAdjacentHTML('beforeend', stepHtml);
+    updateStepsTab();
+}
+
+function removeStep(stepNumber) {
+    if (confirm(`Are you sure you want to remove step ${stepNumber}?`)) {
+        document.querySelector(`[data-step="${stepNumber}"]`).remove();
+        updateStepsTab();
+    }
+}
+
+function addCalculation() {
+    calculationCounter++;
+    const calculationHtml = `
+        <div class="card mb-3 calculation-item" data-step="${calculationCounter}">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">Step ${calculationCounter} Calculation</h6>
+                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeCalculation(${calculationCounter})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Calculation Type</label>
+                            <select name="Calculations.Steps[${calculationCounter-1}].CalculationType" class="form-select">
+                                <option value="amount_due">Amount Due</option>
+                                <option value="dynamic_amount">Dynamic Amount</option>
+                                <option value="custom">Custom Formula</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Display Format</label>
+                            <input name="Calculations.Steps[${calculationCounter-1}].DisplayFormat" class="form-control" 
+                                   placeholder="HTML template with {{result}} placeholder" />
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Formula</label>
+                    <textarea name="Calculations.Steps[${calculationCounter-1}].CalculationFormula" class="form-control" rows="3" 
+                              placeholder="JavaScript-like formula using srvModel properties"></textarea>
+                    <div class="form-text">Use srvModel.orderAmountFiat, srvModel.rate, etc.</div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.getElementById('calculations-container').insertAdjacentHTML('beforeend', calculationHtml);
+}
+
+function removeCalculation(stepNumber) {
+    if (confirm(`Are you sure you want to remove calculation for step ${stepNumber}?`)) {
+        document.querySelector(`.calculation-item[data-step="${stepNumber}"]`).remove();
+    }
+}
+
+function updateStepsTab() {
+    const stepCount = document.querySelectorAll('.step-item').length;
+    document.querySelector('#steps-tab').innerHTML = `<i class="fas fa-list-ol me-2"></i>Steps (${stepCount})`;
+}
+
+function previewProvider() {
+    // Simple preview - could be enhanced
+    alert('Provider preview functionality would be implemented here');
+}
+</script>

@@ -1,0 +1,257 @@
+@using BTCPayServer.Models.ServerViewModels
+@model PageContentEditModel
+@{
+    ViewData.SetActivePage(ServerNavPages.CheckoutProviders, $"Edit {Model.PageTitle}");
+}
+
+<div class="row">
+    <div class="col-lg-8">
+        <h3 class="mb-4">@ViewData["Title"]</h3>
+        
+        <form method="post">
+            <div class="row">
+                <!-- Language Navigation -->
+                <div class="col-md-3">
+                    <div class="nav nav-pills flex-column" id="language-tabs" role="tablist">
+                        <button class="nav-link active" id="english-tab" data-bs-toggle="tab" data-bs-target="#english" type="button" role="tab">
+                            <i class="flag-icon flag-icon-gb me-2"></i>English
+                        </button>
+                        <button class="nav-link" id="norwegian-tab" data-bs-toggle="tab" data-bs-target="#norwegian" type="button" role="tab">
+                            <i class="flag-icon flag-icon-no me-2"></i>Norwegian
+                        </button>
+                        <button class="nav-link" id="swedish-tab" data-bs-toggle="tab" data-bs-target="#swedish" type="button" role="tab">
+                            <i class="flag-icon flag-icon-se me-2"></i>Swedish
+                        </button>
+                        <button class="nav-link" id="danish-tab" data-bs-toggle="tab" data-bs-target="#danish" type="button" role="tab">
+                            <i class="flag-icon flag-icon-dk me-2"></i>Danish
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Content Forms -->
+                <div class="col-md-9">
+                    <div class="tab-content" id="language-tabContent">
+                        <!-- English -->
+                        <div class="tab-pane fade show active" id="english" role="tabpanel">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="flag-icon flag-icon-gb me-2"></i>English Content
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label asp-for="Translations.Title.English" class="form-label">Title</label>
+                                        <input asp-for="Translations.Title.English" class="form-control" placeholder="Enter page title in English" />
+                                        <span asp-validation-for="Translations.Title.English" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="Translations.Content.English" class="form-label">Content</label>
+                                        <textarea asp-for="Translations.Content.English" class="form-control" rows="15" 
+                                                  placeholder="Enter content with line breaks for paragraphs...&#10;&#10;Each line break will create a new paragraph.&#10;&#10;You can use multiple line breaks for spacing."></textarea>
+                                        <div class="form-text">Use line breaks to separate paragraphs. Multiple line breaks will create spacing.</div>
+                                        <span asp-validation-for="Translations.Content.English" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Norwegian -->
+                        <div class="tab-pane fade" id="norwegian" role="tabpanel">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="flag-icon flag-icon-no me-2"></i>Norwegian Content
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label asp-for="Translations.Title.Norwegian" class="form-label">Title</label>
+                                        <input asp-for="Translations.Title.Norwegian" class="form-control" placeholder="Enter page title in Norwegian" />
+                                        <span asp-validation-for="Translations.Title.Norwegian" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="Translations.Content.Norwegian" class="form-label">Content</label>
+                                        <textarea asp-for="Translations.Content.Norwegian" class="form-control" rows="15" 
+                                                  placeholder="Enter content with line breaks for paragraphs...&#10;&#10;Each line break will create a new paragraph.&#10;&#10;You can use multiple line breaks for spacing."></textarea>
+                                        <div class="form-text">Use line breaks to separate paragraphs. Multiple line breaks will create spacing.</div>
+                                        <span asp-validation-for="Translations.Content.Norwegian" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Swedish -->
+                        <div class="tab-pane fade" id="swedish" role="tabpanel">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="flag-icon flag-icon-se me-2"></i>Swedish Content
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label asp-for="Translations.Title.Swedish" class="form-label">Title</label>
+                                        <input asp-for="Translations.Title.Swedish" class="form-control" placeholder="Enter page title in Swedish" />
+                                        <span asp-validation-for="Translations.Title.Swedish" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="Translations.Content.Swedish" class="form-label">Content</label>
+                                        <textarea asp-for="Translations.Content.Swedish" class="form-control" rows="15" 
+                                                  placeholder="Enter content with line breaks for paragraphs...&#10;&#10;Each line break will create a new paragraph.&#10;&#10;You can use multiple line breaks for spacing."></textarea>
+                                        <div class="form-text">Use line breaks to separate paragraphs. Multiple line breaks will create spacing.</div>
+                                        <span asp-validation-for="Translations.Content.Swedish" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Danish -->
+                        <div class="tab-pane fade" id="danish" role="tabpanel">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="flag-icon flag-icon-dk me-2"></i>Danish Content
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label asp-for="Translations.Title.Danish" class="form-label">Title</label>
+                                        <input asp-for="Translations.Title.Danish" class="form-control" placeholder="Enter page title in Danish" />
+                                        <span asp-validation-for="Translations.Title.Danish" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="Translations.Content.Danish" class="form-label">Content</label>
+                                        <textarea asp-for="Translations.Content.Danish" class="form-control" rows="15" 
+                                                  placeholder="Enter content with line breaks for paragraphs...&#10;&#10;Each line break will create a new paragraph.&#10;&#10;You can use multiple line breaks for spacing."></textarea>
+                                        <div class="form-text">Use line breaks to separate paragraphs. Multiple line breaks will create spacing.</div>
+                                        <span asp-validation-for="Translations.Content.Danish" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <a asp-action="CheckoutProviders" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Overview
+                                </a>
+                                <div>
+                                    <button type="button" class="btn btn-outline-info me-2" onclick="previewContent()">
+                                        <i class="fas fa-eye me-2"></i>Preview
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Page Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Page Key:</dt>
+                    <dd class="col-sm-8"><code>@Model.PageKey</code></dd>
+                    
+                    <dt class="col-sm-4">Page Type:</dt>
+                    <dd class="col-sm-8">@Model.PageTitle</dd>
+                    
+                    <dt class="col-sm-4">Languages:</dt>
+                    <dd class="col-sm-8">4 (EN, NO, SV, DA)</dd>
+                </dl>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Content Format:</strong> Use line breaks to separate paragraphs. The frontend will automatically convert line breaks to HTML paragraphs.
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-outline-primary" onclick="copyEnglishToAll()">
+                        <i class="fas fa-copy me-2"></i>Copy English to All Languages
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="clearAllContent()">
+                        <i class="fas fa-trash me-2"></i>Clear All Content
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function previewContent() {
+    const activeTab = document.querySelector('.tab-pane.active');
+    const content = activeTab.querySelector('textarea').value;
+    const title = activeTab.querySelector('input').value;
+    
+    // Create preview modal
+    const modal = document.createElement('div');
+    modal.className = 'modal fade';
+    modal.innerHTML = `
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">${title || 'Preview'}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div style="white-space: pre-line;">${content}</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    const bsModal = new bootstrap.Modal(modal);
+    bsModal.show();
+    
+    modal.addEventListener('hidden.bs.modal', () => {
+        document.body.removeChild(modal);
+    });
+}
+
+function copyEnglishToAll() {
+    const englishTitle = document.querySelector('#english input').value;
+    const englishContent = document.querySelector('#english textarea').value;
+    
+    document.querySelector('#norwegian input').value = englishTitle;
+    document.querySelector('#norwegian textarea').value = englishContent;
+    document.querySelector('#swedish input').value = englishTitle;
+    document.querySelector('#swedish textarea').value = englishContent;
+    document.querySelector('#danish input').value = englishTitle;
+    document.querySelector('#danish textarea').value = englishContent;
+}
+
+function clearAllContent() {
+    if (confirm('Are you sure you want to clear all content? This action cannot be undone.')) {
+        document.querySelectorAll('input[type="text"], textarea').forEach(el => el.value = '');
+    }
+}
+</script>

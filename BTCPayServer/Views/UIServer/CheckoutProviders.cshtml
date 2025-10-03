@@ -1,283 +1,151 @@
-@using BTCPayServer.Views.Server
-@model CheckoutProvidersSettings
+@using BTCPayServer.Models.ServerViewModels
+@model CheckoutContentOverviewModel
 @{
-    ViewData["Title"] = "Checkout Provider Settings";
-    ViewData.SetActivePage(ServerNavPages.CheckoutProviders, StringLocalizer["Checkout Provider Settings"]);
-    Layout = "../Shared/_Layout.cshtml";
-    var availableCountries = new[] { "Norway", "Sweden", "Denmark", "Other" };
+    ViewData.SetActivePage(ServerNavPages.CheckoutProviders, "Checkout Content Management");
 }
 
-@section PageFootContent {
-    <partial name="_ValidationScriptsPartial" />
-}
+<div class="row">
+    <div class="col-lg-8">
+        <h3 class="mb-4">@ViewData["Title"]</h3>
+    </div>
+</div>
 
-<form method="post">
-    <div class="sticky-header">
-        <h2>@ViewData["Title"]</h2>
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-outline-primary" name="command" value="add-provider">
-                <i class="fas fa-plus me-1"></i>Add Provider
-            </button>
-            <button id="page-primary" type="submit" class="btn btn-primary" name="command" value="Save">Save Settings</button>
+<div class="row">
+    <!-- Static Pages Section -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-file-alt me-2"></i>Static Pages
+                </h4>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Manage static content for checkout pages</p>
+                <div class="list-group list-group-flush">
+                    <a asp-action="EditPageContent" asp-route-pageKey="crypto_intro" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">
+                                <i class="fas fa-coins me-2"></i>Crypto Introduction
+                            </h5>
+                            <small class="text-muted">4 languages</small>
+                        </div>
+                        <p class="mb-1 text-muted">Introduction to cryptocurrency and Bitcoin</p>
+                    </a>
+                    <a asp-action="EditPageContent" asp-route-pageKey="kyc_info" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">
+                                <i class="fas fa-id-card me-2"></i>KYC Information
+                            </h5>
+                            <small class="text-muted">4 languages</small>
+                        </div>
+                        <p class="mb-1 text-muted">Know Your Customer requirements and process</p>
+                    </a>
+                    <a asp-action="EditPageContent" asp-route-pageKey="payment_guide" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">
+                                <i class="fas fa-credit-card me-2"></i>Payment Guide
+                            </h5>
+                            <small class="text-muted">4 languages</small>
+                        </div>
+                        <p class="mb-1 text-muted">General payment instructions and guidance</p>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
-    <partial name="_StatusMessage" />
 
-    <div class="row">
-        <div class="col-xl-10 col-xxl-constrain">
-            @for (int providerIndex = 0; providerIndex < Model.Providers.Count; providerIndex++)
-            {
-                var provider = Model.Providers[providerIndex];
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <h5 class="mb-0">@provider.Name</h5>
-                            <button type="submit" class="btn btn-sm btn-outline-danger" name="command" value="remove-provider:@providerIndex">
-                                <i class="fas fa-trash me-1"></i>Remove Provider
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <!-- Basic Provider Settings -->
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label asp-for="Providers[providerIndex].Name" class="form-label"></label>
-                                    <input asp-for="Providers[providerIndex].Name" class="form-control" />
-                                    <span asp-validation-for="Providers[providerIndex].Name" class="text-danger"></span>
+    <!-- Payment Providers Section -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-store me-2"></i>Payment Providers
+                </h4>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Manage payment providers and their configurations</p>
+                <div class="list-group list-group-flush">
+                    @if (Model.Providers.Providers.Any())
+                    {
+                        @foreach (var provider in Model.Providers.Providers)
+                        {
+                            <a asp-action="EditProvider" asp-route-providerId="@provider.Name" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">
+                                        <i class="@provider.Icon me-2"></i>@provider.Name
+                                    </h5>
+                                    <small class="text-muted">@provider.Translations.Steps.Count steps</small>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label asp-for="Providers[providerIndex].Icon" class="form-label"></label>
-                                    <input asp-for="Providers[providerIndex].Icon" class="form-control" placeholder="fas fa-coins" />
-                                    <div class="form-text">FontAwesome icon class (e.g., fas fa-coins)</div>
-                                    <span asp-validation-for="Providers[providerIndex].Icon" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label asp-for="Providers[providerIndex].ButtonClass" class="form-label"></label>
-                                    <input asp-for="Providers[providerIndex].ButtonClass" class="form-control" placeholder="btn btn-success btn-sm" />
-                                    <div class="form-text">Bootstrap button classes (e.g., btn btn-success btn-sm)</div>
-                                    <span asp-validation-for="Providers[providerIndex].ButtonClass" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label asp-for="Providers[providerIndex].FeeText" class="form-label"></label>
-                                    <input asp-for="Providers[providerIndex].FeeText" class="form-control" placeholder="3-8% avgift" />
-                                    <span asp-validation-for="Providers[providerIndex].FeeText" class="text-danger"></span>
-                                </div>
+                                <p class="mb-1 text-muted">
+                                    @if (provider.EnabledCountries.Any())
+                                    {
+                                        <span class="badge bg-secondary me-1">@string.Join(", ", provider.EnabledCountries)</span>
+                                    }
+                                    @if (!string.IsNullOrEmpty(provider.FeeText))
+                                    {
+                                        <span class="badge bg-info">@provider.FeeText</span>
+                                    }
+                                </p>
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <div class="list-group-item">
+                            <div class="text-center text-muted py-3">
+                                <i class="fas fa-plus-circle fa-2x mb-2"></i>
+                                <p class="mb-0">No providers configured yet</p>
+                                <small>Add your first payment provider to get started</small>
                             </div>
                         </div>
-                        
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label asp-for="Providers[providerIndex].BadgeIcon" class="form-label"></label>
-                                    <input asp-for="Providers[providerIndex].BadgeIcon" class="form-control" placeholder="fas fa-star text-warning" />
-                                    <div class="form-text">Optional badge icon (e.g., fas fa-star text-warning)</div>
-                                    <span asp-validation-for="Providers[providerIndex].BadgeIcon" class="text-danger"></span>
-                                </div>
+                    }
+                    <a asp-action="AddProvider" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-plus me-2"></i>Add New Provider
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label class="form-label">Enabled Countries</label>
-                                    <div class="d-flex flex-wrap gap-2">
-                                        @foreach (var country in availableCountries)
-                                        {
-                                            var isChecked = provider.EnabledCountries?.Contains(country) == true;
-                                            <div class="form-check">
-                                                <input type="checkbox" 
-                                                       name="Providers[@providerIndex].EnabledCountries" 
-                                                       value="@country" 
-                                                       class="form-check-input" 
-                                                       @(isChecked ? "checked" : "") />
-                                                <label class="form-check-label">@country</label>
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
+                            <i class="fas fa-chevron-right"></i>
                         </div>
-
-                        <!-- Translations Section -->
-                        <div class="border-top pt-4">
-                            <h6 class="mb-3">Translations</h6>
-                            
-                            <!-- Intro Text -->
-                            <div class="mb-4">
-                                <label class="form-label">Intro Text</label>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group mb-3">
-                                            <label class="form-label">English</label>
-                                            <textarea asp-for="Providers[providerIndex].Translations.IntroText.English" 
-                                                      class="form-control" rows="3" 
-                                                      placeholder="Enter intro text in English..."></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group mb-3">
-                                            <label class="form-label">Norwegian</label>
-                                            <textarea asp-for="Providers[providerIndex].Translations.IntroText.Norwegian" 
-                                                      class="form-control" rows="3" 
-                                                      placeholder="Enter intro text in Norwegian..."></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group mb-3">
-                                            <label class="form-label">Swedish</label>
-                                            <textarea asp-for="Providers[providerIndex].Translations.IntroText.Swedish" 
-                                                      class="form-control" rows="3" 
-                                                      placeholder="Enter intro text in Swedish..."></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group mb-3">
-                                            <label class="form-label">Danish</label>
-                                            <textarea asp-for="Providers[providerIndex].Translations.IntroText.Danish" 
-                                                      class="form-control" rows="3" 
-                                                      placeholder="Enter intro text in Danish..."></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Outro Text -->
-                            <div class="mb-4">
-                                <label class="form-label">Outro Text (Optional)</label>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group mb-3">
-                                            <label class="form-label">English</label>
-                                            <textarea asp-for="Providers[providerIndex].Translations.OutroText.English" 
-                                                      class="form-control" rows="2" 
-                                                      placeholder="Enter outro text in English..."></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group mb-3">
-                                            <label class="form-label">Norwegian</label>
-                                            <textarea asp-for="Providers[providerIndex].Translations.OutroText.Norwegian" 
-                                                      class="form-control" rows="2" 
-                                                      placeholder="Enter outro text in Norwegian..."></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group mb-3">
-                                            <label class="form-label">Swedish</label>
-                                            <textarea asp-for="Providers[providerIndex].Translations.OutroText.Swedish" 
-                                                      class="form-control" rows="2" 
-                                                      placeholder="Enter outro text in Swedish..."></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group mb-3">
-                                            <label class="form-label">Danish</label>
-                                            <textarea asp-for="Providers[providerIndex].Translations.OutroText.Danish" 
-                                                      class="form-control" rows="2" 
-                                                      placeholder="Enter outro text in Danish..."></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Steps -->
-                            <div class="mb-4">
-                                <label class="form-label">Step Instructions</label>
-                                @for (int stepIndex = 0; stepIndex < provider.Translations.Steps.Count; stepIndex++)
-                                {
-                                    var step = provider.Translations.Steps[stepIndex];
-                                    <div class="border rounded p-3 mb-3">
-                                        <div class="d-flex align-items-center justify-content-between mb-2">
-                                            <h6 class="mb-0">Step @step.StepNumber</h6>
-                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeStep(@providerIndex, @stepIndex)">
-                                                <i class="fas fa-trash me-1"></i>Remove Step
-                                            </button>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label">English</label>
-                                                    <textarea name="Providers[@providerIndex].Translations.Steps[@stepIndex].StepText.English" 
-                                                              class="form-control" rows="2">@step.StepText.English</textarea>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label">Norwegian</label>
-                                                    <textarea name="Providers[@providerIndex].Translations.Steps[@stepIndex].StepText.Norwegian" 
-                                                              class="form-control" rows="2">@step.StepText.Norwegian</textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label">Swedish</label>
-                                                    <textarea name="Providers[@providerIndex].Translations.Steps[@stepIndex].StepText.Swedish" 
-                                                              class="form-control" rows="2">@step.StepText.Swedish</textarea>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label">Danish</label>
-                                                    <textarea name="Providers[@providerIndex].Translations.Steps[@stepIndex].StepText.Danish" 
-                                                              class="form-control" rows="2">@step.StepText.Danish</textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <input type="hidden" name="Providers[@providerIndex].Translations.Steps[@stepIndex].StepNumber" value="@step.StepNumber" />
-                                    </div>
-                                }
-                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="addStep(@providerIndex)">
-                                    <i class="fas fa-plus me-1"></i>Add Step
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    </a>
                 </div>
-            }
-            
-            @if (Model.Providers.Count == 0)
-            {
-                <div class="text-center text-muted py-5">
-                    <i class="fas fa-info-circle me-2"></i>No providers configured. Click "Add Provider" to get started.
-                </div>
-            }
+            </div>
         </div>
     </div>
-</form>
+</div>
 
-<script>
-function addStep(providerIndex) {
-    // This would need JavaScript to dynamically add step fields
-    // For now, we'll handle this server-side
-    const form = document.createElement('form');
-    form.method = 'post';
-    form.innerHTML = `
-        <input type="hidden" name="command" value="add-step:${providerIndex}">
-    `;
-    document.body.appendChild(form);
-    form.submit();
-}
-
-function removeStep(providerIndex, stepIndex) {
-    const form = document.createElement('form');
-    form.method = 'post';
-    form.innerHTML = `
-        <input type="hidden" name="command" value="remove-step:${providerIndex}:${stepIndex}">
-    `;
-    document.body.appendChild(form);
-    form.submit();
-}
-</script>
+<!-- Quick Stats -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Stats</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="border-end">
+                            <h3 class="text-primary">@Model.StaticPages.Pages.Count</h3>
+                            <p class="text-muted mb-0">Static Pages</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border-end">
+                            <h3 class="text-success">@Model.Providers.Providers.Count</h3>
+                            <p class="text-muted mb-0">Payment Providers</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border-end">
+                            <h3 class="text-info">@Model.Providers.Providers.Sum(p => p.Translations.Steps.Count)</h3>
+                            <p class="text-muted mb-0">Total Steps</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 class="text-warning">4</h3>
+                        <p class="text-muted mb-0">Languages</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
