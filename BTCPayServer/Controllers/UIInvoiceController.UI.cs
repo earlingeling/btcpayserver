@@ -725,7 +725,7 @@ namespace BTCPayServer.Controllers
             // Load checkout provider translations from database
             using var ctx = _dbContextFactory.CreateContext();
             var providerTranslations = await ctx.CheckoutProviderTranslations
-                .Where(x => x.Language == "en") // Use English as base
+                .Where(x => x.Language == lang) // Use current language
                 .ToListAsync();
             
             var providerSettings = new CheckoutProvidersSettings
@@ -742,19 +742,19 @@ namespace BTCPayServer.Controllers
                     {
                         IntroText = new MultiLanguageText
                         {
-                            English = p.IntroText ?? "",
+                            English = GetProviderTranslation(ctx, p.ProviderName, "en", "intro"),
                             Norwegian = GetProviderTranslation(ctx, p.ProviderName, "no", "intro"),
                             Swedish = GetProviderTranslation(ctx, p.ProviderName, "sv", "intro"),
                             Danish = GetProviderTranslation(ctx, p.ProviderName, "da", "intro")
                         },
                         OutroText = new MultiLanguageText
                         {
-                            English = p.OutroText ?? "",
+                            English = GetProviderTranslation(ctx, p.ProviderName, "en", "outro"),
                             Norwegian = GetProviderTranslation(ctx, p.ProviderName, "no", "outro"),
                             Swedish = GetProviderTranslation(ctx, p.ProviderName, "sv", "outro"),
                             Danish = GetProviderTranslation(ctx, p.ProviderName, "da", "outro")
                         },
-                        Steps = GetProviderSteps(ctx, p.ProviderName)
+                        Steps = GetProviderSteps(ctx, p.ProviderName, lang)
                     }
                 }).ToList()
             };
@@ -769,27 +769,42 @@ namespace BTCPayServer.Controllers
             var translation = ctx.CheckoutProviderTranslations
                 .FirstOrDefault(x => x.ProviderName == providerName && x.Language == language);
             
-            return type switch
+            var text = type switch
             {
                 "intro" => translation?.IntroText ?? "",
                 "outro" => translation?.OutroText ?? "",
                 _ => ""
             };
+            
+            // If the text is empty for this language, fall back to English
+            if (string.IsNullOrEmpty(text) && language != "en")
+            {
+                var englishTranslation = ctx.CheckoutProviderTranslations
+                    .FirstOrDefault(x => x.ProviderName == providerName && x.Language == "en");
+                text = type switch
+                {
+                    "intro" => englishTranslation?.IntroText ?? "",
+                    "outro" => englishTranslation?.OutroText ?? "",
+                    _ => ""
+                };
+            }
+            
+            return text;
         }
 
-        private List<MultiLanguageStep> GetProviderSteps(ApplicationDbContext ctx, string providerName)
+        private List<MultiLanguageStep> GetProviderSteps(ApplicationDbContext ctx, string providerName, string currentLanguage)
         {
-            var englishSteps = ctx.CheckoutProviderTranslations
-                .FirstOrDefault(x => x.ProviderName == providerName && x.Language == "en");
+            var currentLanguageSteps = ctx.CheckoutProviderTranslations
+                .FirstOrDefault(x => x.ProviderName == providerName && x.Language == currentLanguage);
             
-            if (englishSteps?.StepsList == null) return new List<MultiLanguageStep>();
+            if (currentLanguageSteps?.StepsList == null) return new List<MultiLanguageStep>();
 
-            return englishSteps.StepsList.Select(s => new MultiLanguageStep
+            return currentLanguageSteps.StepsList.Select(s => new MultiLanguageStep
             {
                 StepNumber = s.StepNumber,
                 StepText = new MultiLanguageText
                 {
-                    English = s.StepText,
+                    English = GetProviderStepTranslation(ctx, providerName, "en", s.StepNumber),
                     Norwegian = GetProviderStepTranslation(ctx, providerName, "no", s.StepNumber),
                     Swedish = GetProviderStepTranslation(ctx, providerName, "sv", s.StepNumber),
                     Danish = GetProviderStepTranslation(ctx, providerName, "da", s.StepNumber)
@@ -802,7 +817,17 @@ namespace BTCPayServer.Controllers
             var translation = ctx.CheckoutProviderTranslations
                 .FirstOrDefault(x => x.ProviderName == providerName && x.Language == language);
             
-            return translation?.StepsList?.FirstOrDefault(s => s.StepNumber == stepNumber)?.StepText ?? "";
+            var stepText = translation?.StepsList?.FirstOrDefault(s => s.StepNumber == stepNumber)?.StepText ?? "";
+            
+            // If the text is empty for this language, fall back to English
+            if (string.IsNullOrEmpty(stepText) && language != "en")
+            {
+                var englishTranslation = ctx.CheckoutProviderTranslations
+                    .FirstOrDefault(x => x.ProviderName == providerName && x.Language == "en");
+                stepText = englishTranslation?.StepsList?.FirstOrDefault(s => s.StepNumber == stepNumber)?.StepText ?? "";
+            }
+            
+            return stepText;
         }
 
         private async Task<CheckoutModel?> GetCheckoutModel(string invoiceId, PaymentMethodId? paymentMethodId, string? lang, HashSet<PaymentMethodId>? excludedPaymentMethodIds = null)
