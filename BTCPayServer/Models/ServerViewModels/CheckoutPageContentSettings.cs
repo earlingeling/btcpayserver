@@ -27,18 +27,4 @@ namespace BTCPayServer.Models.ServerViewModels
         public MultiLanguageText Content { get; set; } = new();
     }
 
-    public class MultiLanguageText
-    {
-        [Display(Name = "English")]
-        public string English { get; set; } = string.Empty;
-        
-        [Display(Name = "Norwegian")]
-        public string Norwegian { get; set; } = string.Empty;
-        
-        [Display(Name = "Swedish")]
-        public string Swedish { get; set; } = string.Empty;
-        
-        [Display(Name = "Danish")]
-        public string Danish { get; set; } = string.Empty;
-    }
 }

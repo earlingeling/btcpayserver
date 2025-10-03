@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BTCPayServer.Abstractions.Constants;
 using BTCPayServer.Abstractions.Extensions;
@@ -14,12 +16,10 @@ namespace BTCPayServer.Controllers
 {
     public partial class UIServerController
     {
-        private readonly CheckoutPageContentService _pageContentService;
-        private readonly ProviderCalculationService _calculationService;
 
-        [HttpGet("server/checkout-providers")]
-        [Authorize(Policy = Policies.CanModifyServerSettings, AuthenticationSchemes = AuthenticationSchemes.Cookie)]
-        public async Task<IActionResult> CheckoutProviders()
+        [HttpGet("server/checkout-content")]
+        [Authorize(Policy = Client.Policies.CanModifyServerSettings, AuthenticationSchemes = AuthenticationSchemes.Cookie)]
+        public async Task<IActionResult> CheckoutContent()
         {
             using var ctx = _dbContextFactory.CreateContext();
             
@@ -54,7 +54,7 @@ namespace BTCPayServer.Controllers
                             Swedish = GetTranslation(p.ProviderName, "sv", "outro"),
                             Danish = GetTranslation(p.ProviderName, "da", "outro")
                         },
-                        Steps = GetStepsForProvider(p.ProviderName, "en")
+                        Steps = GetStepsForProvider(p.ProviderName)
                     }
                 }).ToList()
             };
@@ -68,11 +68,11 @@ namespace BTCPayServer.Controllers
                 Providers = providerSettings
             };
 
-            return View(model);
+            return View("CheckoutContent", model);
         }
 
         [HttpGet("server/checkout-providers/page/{pageKey}")]
-        [Authorize(Policy = Policies.CanModifyServerSettings, AuthenticationSchemes = AuthenticationSchemes.Cookie)]
+        [Authorize(Policy = Client.Policies.CanModifyServerSettings, AuthenticationSchemes = AuthenticationSchemes.Cookie)]
         public async Task<IActionResult> EditPageContent(string pageKey)
         {
             var translations = await _pageContentService.GetPageTranslations(pageKey);
@@ -88,7 +88,7 @@ namespace BTCPayServer.Controllers
         }
 
         [HttpPost("server/checkout-providers/page/{pageKey}")]
-        [Authorize(Policy = Policies.CanModifyServerSettings, AuthenticationSchemes = AuthenticationSchemes.Cookie)]
+        [Authorize(Policy = Client.Policies.CanModifyServerSettings, AuthenticationSchemes = AuthenticationSchemes.Cookie)]
         public async Task<IActionResult> SavePageContent(string pageKey, PageTranslations translations)
         {
             if (!ModelState.IsValid)
@@ -104,11 +104,11 @@ namespace BTCPayServer.Controllers
 
             await _pageContentService.SavePageContent(pageKey, translations);
             TempData[WellKnownTempData.SuccessMessage] = "Page content saved successfully";
-            return RedirectToAction("CheckoutProviders");
+            return RedirectToAction("CheckoutContent");
         }
 
         [HttpGet("server/checkout-providers/{providerId}")]
-        [Authorize(Policy = Policies.CanModifyServerSettings, AuthenticationSchemes = AuthenticationSchemes.Cookie)]
+        [Authorize(Policy = Client.Policies.CanModifyServerSettings, AuthenticationSchemes = AuthenticationSchemes.Cookie)]
         public async Task<IActionResult> EditProvider(string providerId)
         {
             using var ctx = _dbContextFactory.CreateContext();
@@ -120,7 +120,7 @@ namespace BTCPayServer.Controllers
             if (providerTranslation == null)
             {
                 TempData[WellKnownTempData.ErrorMessage] = "Provider not found";
-                return RedirectToAction("CheckoutProviders");
+                return RedirectToAction("CheckoutContent");
             }
 
             var provider = new Provider
@@ -147,7 +147,7 @@ namespace BTCPayServer.Controllers
                         Swedish = GetTranslation(providerTranslation.ProviderName, "sv", "outro"),
                         Danish = GetTranslation(providerTranslation.ProviderName, "da", "outro")
                     },
-                    Steps = GetStepsForProvider(providerTranslation.ProviderName, "en")
+                    Steps = GetStepsForProvider(providerTranslation.ProviderName)
                 }
             };
 
@@ -165,7 +165,7 @@ namespace BTCPayServer.Controllers
         }
 
         [HttpPost("server/checkout-providers/{providerId}")]
-        [Authorize(Policy = Policies.CanModifyServerSettings, AuthenticationSchemes = AuthenticationSchemes.Cookie)]
+        [Authorize(Policy = Client.Policies.CanModifyServerSettings, AuthenticationSchemes = AuthenticationSchemes.Cookie)]
         public async Task<IActionResult> SaveProvider(string providerId, ProviderEditModel model)
         {
             if (!ModelState.IsValid)
@@ -180,11 +180,11 @@ namespace BTCPayServer.Controllers
             await _calculationService.SaveProviderCalculations(providerId, model.Calculations.Steps);
 
             TempData[WellKnownTempData.SuccessMessage] = "Provider saved successfully";
-            return RedirectToAction("CheckoutProviders");
+            return RedirectToAction("CheckoutContent");
         }
 
         [HttpPost("server/checkout-providers/{providerId}/add-step")]
-        [Authorize(Policy = Policies.CanModifyServerSettings, AuthenticationSchemes = AuthenticationSchemes.Cookie)]
+        [Authorize(Policy = Client.Policies.CanModifyServerSettings, AuthenticationSchemes = AuthenticationSchemes.Cookie)]
         public async Task<IActionResult> AddProviderStep(string providerId, int stepNumber, string calculationType = "amount_due")
         {
             await _calculationService.AddProviderStep(providerId, stepNumber, calculationType);
@@ -193,7 +193,7 @@ namespace BTCPayServer.Controllers
         }
 
         [HttpPost("server/checkout-providers/{providerId}/remove-step")]
-        [Authorize(Policy = Policies.CanModifyServerSettings, AuthenticationSchemes = AuthenticationSchemes.Cookie)]
+        [Authorize(Policy = Client.Policies.CanModifyServerSettings, AuthenticationSchemes = AuthenticationSchemes.Cookie)]
         public async Task<IActionResult> RemoveProviderStep(string providerId, int stepNumber)
         {
             await _calculationService.RemoveProviderStep(providerId, stepNumber);
@@ -210,150 +210,6 @@ namespace BTCPayServer.Controllers
                 "payment_guide" => "Payment Guide",
                 _ => pageKey
             };
-        }
-
-        // Helper methods from existing CheckoutProviders.cs
-        private string GetTranslation(string providerName, string language, string type)
-        {
-            using var ctx = _dbContextFactory.CreateContext();
-            var translation = ctx.CheckoutProviderTranslations
-                .FirstOrDefault(x => x.ProviderName == providerName && x.Language == language);
-
-            string text = type switch
-            {
-                "intro" => translation?.IntroText ?? "",
-                "outro" => translation?.OutroText ?? "",
-                _ => ""
-            };
-
-            // If the text is empty for this language, fall back to English
-            if (string.IsNullOrEmpty(text) && language != "en")
-            {
-                var englishTranslation = ctx.CheckoutProviderTranslations
-                    .FirstOrDefault(x => x.ProviderName == providerName && x.Language == "en");
-                text = type switch
-                {
-                    "intro" => englishTranslation?.IntroText ?? "",
-                    "outro" => englishTranslation?.OutroText ?? "",
-                    _ => ""
-                };
-            }
-            return text;
-        }
-
-        private List<MultiLanguageStep> GetStepsForProvider(string providerName, string currentLanguage)
-        {
-            using var ctx = _dbContextFactory.CreateContext();
-            var currentLanguageSteps = ctx.CheckoutProviderTranslations
-                .FirstOrDefault(x => x.ProviderName == providerName && x.Language == currentLanguage);
-
-            if (currentLanguageSteps?.StepsList == null || !currentLanguageSteps.StepsList.Any())
-                return new List<MultiLanguageStep>();
-
-            return currentLanguageSteps.StepsList.Select(step => new MultiLanguageStep
-            {
-                StepNumber = step.StepNumber,
-                English = step.StepText,
-                Norwegian = GetStepTranslation(providerName, step.StepNumber, "no"),
-                Swedish = GetStepTranslation(providerName, step.StepNumber, "sv"),
-                Danish = GetStepTranslation(providerName, step.StepNumber, "da")
-            }).ToList();
-        }
-
-        private string GetStepTranslation(string providerName, int stepNumber, string language)
-        {
-            using var ctx = _dbContextFactory.CreateContext();
-            var translation = ctx.CheckoutProviderTranslations
-                .FirstOrDefault(x => x.ProviderName == providerName && x.Language == language);
-
-            var stepText = translation?.StepsList?.FirstOrDefault(s => s.StepNumber == stepNumber)?.StepText ?? "";
-
-            // If the text is empty for this language, fall back to English
-            if (string.IsNullOrEmpty(stepText) && language != "en")
-            {
-                var englishTranslation = ctx.CheckoutProviderTranslations
-                    .FirstOrDefault(x => x.ProviderName == providerName && x.Language == "en");
-                stepText = englishTranslation?.StepsList?.FirstOrDefault(s => s.StepNumber == stepNumber)?.StepText ?? "";
-            }
-            return stepText;
-        }
-
-        private async Task SaveProviderTranslations(Provider provider)
-        {
-            using var ctx = _dbContextFactory.CreateContext();
-            
-            var languages = new[] { "en", "no", "sv", "da" };
-            
-            foreach (var lang in languages)
-            {
-                var translation = await ctx.CheckoutProviderTranslations
-                    .FirstOrDefaultAsync(x => x.ProviderName == provider.Name && x.Language == lang);
-
-                var introText = lang switch
-                {
-                    "en" => provider.Translations.IntroText.English,
-                    "no" => provider.Translations.IntroText.Norwegian,
-                    "sv" => provider.Translations.IntroText.Swedish,
-                    "da" => provider.Translations.IntroText.Danish,
-                    _ => ""
-                };
-
-                var outroText = lang switch
-                {
-                    "en" => provider.Translations.OutroText.English,
-                    "no" => provider.Translations.OutroText.Norwegian,
-                    "sv" => provider.Translations.OutroText.Swedish,
-                    "da" => provider.Translations.OutroText.Danish,
-                    _ => ""
-                };
-
-                var steps = provider.Translations.Steps.Select(s => new ProviderStep
-                {
-                    StepNumber = s.StepNumber,
-                    StepText = lang switch
-                    {
-                        "en" => s.English,
-                        "no" => s.Norwegian,
-                        "sv" => s.Swedish,
-                        "da" => s.Danish,
-                        _ => ""
-                    }
-                }).ToList();
-
-                if (translation == null)
-                {
-                    translation = new CheckoutProviderTranslation
-                    {
-                        ProviderName = provider.Name,
-                        Language = lang,
-                        IntroText = introText,
-                        OutroText = outroText,
-                        Steps = System.Text.Json.JsonSerializer.Serialize(steps),
-                        EnabledCountries = System.Text.Json.JsonSerializer.Serialize(provider.EnabledCountries),
-                        IconClass = provider.Icon,
-                        ButtonClass = provider.ButtonClass,
-                        FeeText = provider.FeeText,
-                        BadgeIcon = provider.BadgeIcon,
-                        Created = DateTimeOffset.UtcNow,
-                        Updated = DateTimeOffset.UtcNow
-                    };
-                    ctx.CheckoutProviderTranslations.Add(translation);
-                }
-                else
-                {
-                    translation.IntroText = introText;
-                    translation.OutroText = outroText;
-                    translation.Steps = System.Text.Json.JsonSerializer.Serialize(steps);
-                    translation.EnabledCountries = System.Text.Json.JsonSerializer.Serialize(provider.EnabledCountries);
-                    translation.IconClass = provider.Icon;
-                    translation.ButtonClass = provider.ButtonClass;
-                    translation.FeeText = provider.FeeText;
-                    translation.BadgeIcon = provider.BadgeIcon;
-                    translation.Updated = DateTimeOffset.UtcNow;
-                }
-            }
-
-            await ctx.SaveChangesAsync();
         }
     }
 }

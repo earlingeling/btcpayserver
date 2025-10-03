@@ -1,0 +1,151 @@
+@using BTCPayServer.Models.ServerViewModels
+@model CheckoutContentOverviewModel
+@{
+    ViewData.SetActivePage(ServerNavPages.CheckoutProviders, "Checkout Content Management");
+}
+
+<div class="row">
+    <div class="col-lg-8">
+        <h3 class="mb-4">@ViewData["Title"]</h3>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Static Pages Section -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-file-alt me-2"></i>Static Pages
+                </h4>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Manage static content for checkout pages</p>
+                <div class="list-group list-group-flush">
+                    <a asp-action="EditPageContent" asp-route-pageKey="crypto_intro" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">
+                                <i class="fas fa-coins me-2"></i>Crypto Introduction
+                            </h5>
+                            <small class="text-muted">4 languages</small>
+                        </div>
+                        <p class="mb-1 text-muted">Introduction to cryptocurrency and Bitcoin</p>
+                    </a>
+                    <a asp-action="EditPageContent" asp-route-pageKey="kyc_info" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">
+                                <i class="fas fa-id-card me-2"></i>KYC Information
+                            </h5>
+                            <small class="text-muted">4 languages</small>
+                        </div>
+                        <p class="mb-1 text-muted">Know Your Customer requirements and process</p>
+                    </a>
+                    <a asp-action="EditPageContent" asp-route-pageKey="payment_guide" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">
+                                <i class="fas fa-credit-card me-2"></i>Payment Guide
+                            </h5>
+                            <small class="text-muted">4 languages</small>
+                        </div>
+                        <p class="mb-1 text-muted">General payment instructions and guidance</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Providers Section -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-store me-2"></i>Payment Providers
+                </h4>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Manage payment providers and their configurations</p>
+                <div class="list-group list-group-flush">
+                    @if (Model.Providers.Providers.Any())
+                    {
+                        @foreach (var provider in Model.Providers.Providers)
+                        {
+                            <a asp-action="EditProvider" asp-route-providerId="@provider.Name" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">
+                                        <i class="@provider.Icon me-2"></i>@provider.Name
+                                    </h5>
+                                    <small class="text-muted">@provider.Translations.Steps.Count steps</small>
+                                </div>
+                                <p class="mb-1 text-muted">
+                                    @if (provider.EnabledCountries.Any())
+                                    {
+                                        <span class="badge bg-secondary me-1">@string.Join(", ", provider.EnabledCountries)</span>
+                                    }
+                                    @if (!string.IsNullOrEmpty(provider.FeeText))
+                                    {
+                                        <span class="badge bg-info">@provider.FeeText</span>
+                                    }
+                                </p>
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <div class="list-group-item">
+                            <div class="text-center text-muted py-3">
+                                <i class="fas fa-plus-circle fa-2x mb-2"></i>
+                                <p class="mb-0">No providers configured yet</p>
+                                <small>Add your first payment provider to get started</small>
+                            </div>
+                        </div>
+                    }
+                    <a asp-action="AddProvider" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-plus me-2"></i>Add New Provider
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Stats -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Stats</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="border-end">
+                            <h3 class="text-primary">@Model.StaticPages.Pages.Count</h3>
+                            <p class="text-muted mb-0">Static Pages</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border-end">
+                            <h3 class="text-success">@Model.Providers.Providers.Count</h3>
+                            <p class="text-muted mb-0">Payment Providers</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border-end">
+                            <h3 class="text-info">@Model.Providers.Providers.Sum(p => p.Translations.Steps.Count)</h3>
+                            <p class="text-muted mb-0">Total Steps</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 class="text-warning">4</h3>
+                        <p class="text-muted mb-0">Languages</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
