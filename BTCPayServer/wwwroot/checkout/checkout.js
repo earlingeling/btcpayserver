@@ -125,7 +125,8 @@ function initApp() {
                 displayOtherLinks: false,
                 // New UI state
                 selectedCountry: null,
-                showPaymentGuide: false
+                showPaymentGuide: false,
+                currentProviderName: null
             }
         },
         computed: {
@@ -256,6 +257,13 @@ function initApp() {
             if (this.nfc.supported) {
                 await this.setupNFC();
             }
+            
+            // Initialize calculation engine
+            if (window.calculationEngine && this.providerSettings && this.providerSettings.providers) {
+                window.calculationEngine.initialize(this.providerSettings.providers);
+                window.calculationEngine.setSrvModel(this.srvModel);
+            }
+            
             updateLanguageSelect();
             
             window.parent.postMessage('loaded', '*');
@@ -307,6 +315,9 @@ function initApp() {
                     return;
                 }
                 
+                // Store current provider name for language refresh
+                this.currentProviderName = providerName;
+                
                 // Populate the dynamic step with provider data
                 this.populateProviderStep(provider);
                 
@@ -334,7 +345,9 @@ function initApp() {
                 if (introElement && provider.translations && provider.translations.introText) {
                     const introText = this.getLocalizedText(provider.translations.introText);
                     if (introText) {
-                        introElement.innerHTML = `<p class="card-text">${introText}</p>`;
+                        // Process calculations in intro text
+                        const processedIntroText = window.calculationEngine.processStepText(introText, provider.name);
+                        introElement.innerHTML = `<p class="card-text">${processedIntroText}</p>`;
                         introElement.style.display = 'block';
                     } else {
                         introElement.style.display = 'none';
@@ -351,7 +364,9 @@ function initApp() {
                     provider.translations.steps.forEach((step) => {
                         const stepContent = this.getLocalizedText(step.stepText);
                         if (stepContent) {
-                            stepsHtml += `<li class="list-group-item">${stepContent}</li>`;
+                            // Process calculations in step content
+                            const processedStepContent = window.calculationEngine.processStepText(stepContent, provider.name);
+                            stepsHtml += `<li class="list-group-item">${processedStepContent}</li>`;
                         }
                     });
                     
@@ -367,13 +382,27 @@ function initApp() {
                 if (outroElement && provider.translations && provider.translations.outroText) {
                     const outroText = this.getLocalizedText(provider.translations.outroText);
                     if (outroText) {
-                        outroElement.innerHTML = `<p class="card-text">${outroText}</p>`;
+                        // Process calculations in outro text
+                        const processedOutroText = window.calculationEngine.processStepText(outroText, provider.name);
+                        outroElement.innerHTML = `<p class="card-text">${processedOutroText}</p>`;
                         outroElement.style.display = 'block';
                     } else {
                         outroElement.style.display = 'none';
                     }
                 } else if (outroElement) {
                     outroElement.style.display = 'none';
+                }
+            },
+            refreshVisibleProviderContent() {
+                // Check if we're currently viewing a provider step (step 999)
+                const providerStep = document.getElementById('step999');
+                if (providerStep && !providerStep.hidden && this.currentProviderName) {
+                    // Find the current provider being displayed
+                    const currentProvider = this.providerSettings.providers.find(p => p.name === this.currentProviderName);
+                    if (currentProvider) {
+                        // Re-populate the provider step with new language
+                        this.populateProviderStep(currentProvider);
+                    }
                 }
             },
             resetCountrySelection() {
@@ -389,6 +418,19 @@ function initApp() {
             },
             changeLanguage (e) {
                 updateLanguage(e.target.value);
+                
+                // Refresh provider content when language changes
+                if (this.selectedCountry && this.providerSettings && this.providerSettings.providers) {
+                    // Find the current provider being displayed
+                    const currentProvider = this.providerSettings.providers.find(p => p.name === this.currentProviderName);
+                    if (currentProvider) {
+                        // Re-populate the provider step with new language
+                        this.populateProviderStep(currentProvider);
+                    }
+                }
+                
+                // Also refresh any visible provider content on the current step
+                this.refreshVisibleProviderContent();
             },
             padTime (val) {
                 return val.toString().padStart(2, '0');
@@ -471,6 +513,11 @@ function initApp() {
     
                 // updating ui
                 this.srvModel = data;
+                
+                // Update calculation engine with new srvModel data
+                if (window.calculationEngine) {
+                    window.calculationEngine.setSrvModel(this.srvModel);
+                }
             },
             replaceNewlines (value) {
                 return value ? value.replace(/\n/ig, '<br>') : '';

@@ -34,6 +34,9 @@ namespace BTCPayServer.Models.ServerViewModels
 
         [Display(Name = "Translations")]
         public ProviderTranslations Translations { get; set; } = new();
+
+        [Display(Name = "Calculations")]
+        public List<ProviderCalculation> Calculations { get; set; } = new();
     }
 
     public class ProviderTranslations
@@ -71,5 +74,23 @@ namespace BTCPayServer.Models.ServerViewModels
 
         [Display(Name = "Step Text")]
         public MultiLanguageText StepText { get; set; } = new();
+    }
+
+    public class ProviderCalculation
+    {
+        [Required]
+        [Display(Name = "Step Number")]
+        public int StepNumber { get; set; }
+
+        [Required]
+        [Display(Name = "Calculation Type")]
+        public string CalculationType { get; set; }
+
+        [Required]
+        [Display(Name = "Calculation Formula")]
+        public string CalculationFormula { get; set; }
+
+        [Display(Name = "Display Format")]
+        public string DisplayFormat { get; set; }
     }
 }

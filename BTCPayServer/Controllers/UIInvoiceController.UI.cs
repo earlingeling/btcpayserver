@@ -756,7 +756,8 @@ namespace BTCPayServer.Controllers
                             Danish = GetProviderTranslation(ctx, p.ProviderName, "da", "outro")
                         },
                         Steps = GetProviderSteps(ctx, p.ProviderName, lang ?? "en")
-                    }
+                    },
+                    Calculations = GetProviderCalculations(ctx, p.ProviderName)
                 }).ToList()
             };
             
@@ -811,6 +812,22 @@ namespace BTCPayServer.Controllers
                     Danish = GetProviderStepTranslation(ctx, providerName, "da", s.StepNumber)
                 }
             }).ToList();
+        }
+
+        private List<ProviderCalculation> GetProviderCalculations(ApplicationDbContext ctx, string providerName)
+        {
+            var calculations = ctx.ProviderStepCalculations
+                .Where(x => x.ProviderName == providerName)
+                .Select(x => new ProviderCalculation
+                {
+                    StepNumber = x.StepNumber,
+                    CalculationType = x.CalculationType,
+                    CalculationFormula = x.CalculationFormula,
+                    DisplayFormat = x.DisplayFormat
+                })
+                .ToList();
+
+            return calculations;
         }
 
         private string GetProviderStepTranslation(ApplicationDbContext ctx, string providerName, string language, int stepNumber)
