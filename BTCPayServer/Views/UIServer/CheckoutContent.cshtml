@@ -65,7 +65,7 @@
             <div class="card-body">
                 <p class="text-muted mb-3">Manage payment providers and their configurations</p>
                 <div class="list-group list-group-flush">
-                    @if (Model.Providers.Providers.Any())
+                    @if (Model.Providers?.Providers?.Any() == true)
                     {
                         @foreach (var provider in Model.Providers.Providers)
                         {
@@ -99,7 +99,7 @@
                             </div>
                         </div>
                     }
-                    <a asp-action="AddProvider" class="list-group-item list-group-item-action">
+                    <a asp-action="EditProvider" asp-route-providerId="add" class="list-group-item list-group-item-action">
                         <div class="d-flex w-100 justify-content-between align-items-center">
                             <div>
                                 <i class="fas fa-plus me-2"></i>Add New Provider

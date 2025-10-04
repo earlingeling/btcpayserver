@@ -1,0 +1,99 @@
+FRONTEND CALCULATION IMPLEMENTATION PROMPT
+==========================================
+
+CONTEXT:
+You are implementing dynamic calculation support for the BTCPay Server checkout page. The backend has been set up to store calculation formulas and step text with placeholders that need to be replaced with calculated values.
+
+CURRENT STATE:
+- The checkout page (checkout.cs) currently fetches provider data from the database and displays it
+- Provider data includes step text with placeholders like {{calc_1_dynamic_amount_Firi}}
+- Each provider has calculations stored with formulas and display formats
+- The frontend needs to perform calculations and replace placeholders with formatted results
+
+CALCULATION FLOW:
+1. Provider step text contains placeholders: "Please transfer {{calc_1_dynamic_amount_Firi}} to your account"
+2. Backend provides calculation formula: "(parseFloat(srvModel.orderAmountFiat.replace(/[^0-9.]/g, '')) / 100 * 1.05) + (0.00025 * parseFloat(srvModel.rate.replace(/[^0-9.]/g, '')) / 100) + 20"
+3. Backend provides display format: "<b>{{result}}</b>"
+4. Frontend calculates the result using srvModel data
+5. Frontend replaces {{calc_1_dynamic_amount_Firi}} with "<b>1390</b> kr"
+6. Final rendered text: "Please transfer <b>1390</b> kr to your account"
+
+PLACEHOLDER FORMAT:
+- Format: {{calc_[stepNumber]_[calculationType]_[providerName]}}
+- Examples: {{calc_1_dynamic_amount_Firi}}, {{calc_2_amount_due_Safello}}
+- Provider name ensures uniqueness when multiple providers use same calculation types
+
+SRVMODEL VARIABLES AVAILABLE:
+- srvModel.orderAmountFiat - Order amount in fiat currency (e.g., "1,000.00 kr")
+- srvModel.rate - Bitcoin exchange rate (e.g., "45,000.00")
+- srvModel.due - Amount due in BTC (e.g., "0.02222222")
+- srvModel.paid - Amount paid in BTC (e.g., "0.01111111")
+- srvModel.paymentMethodCurrency - Currency code (e.g., "BTC")
+- srvModel.address - Bitcoin address for payment
+- srvModel.feeRate - Recommended fee rate
+- srvModel.totalDue - Total amount due
+
+TASKS TO IMPLEMENT:
+1. Create a calculation engine that can evaluate JavaScript-like formulas using srvModel data
+2. Parse step text to find calculation placeholders using regex
+3. For each placeholder, find the corresponding calculation formula and display format
+4. Evaluate the formula with srvModel data
+5. Apply the display format to the result (replace {{result}} with calculated value)
+6. Replace the placeholder in step text with the formatted result
+7. Handle multiple providers with unique calculation names
+8. Ensure calculations work for all supported languages (English, Norwegian, Swedish, Danish)
+
+TECHNICAL REQUIREMENTS:
+- Use JavaScript to evaluate formulas safely
+- Handle regex parsing for placeholder detection
+- Support HTML formatting in display format results
+- Maintain existing checkout page functionality
+- Ensure calculations work for all provider step languages
+- Handle edge cases (missing data, invalid formulas, etc.)
+
+EXAMPLE IMPLEMENTATION:
+```javascript
+function processCalculations(stepText, calculations, srvModel) {
+    // Find all calculation placeholders
+    const placeholderRegex = /\{\{calc_(\d+)_([^_]+)_([^}]+)\}\}/g;
+    let processedText = stepText;
+    
+    let match;
+    while ((match = placeholderRegex.exec(stepText)) !== null) {
+        const [fullMatch, stepNumber, calculationType, providerName] = match;
+        
+        // Find the calculation for this provider and step
+        const calculation = findCalculation(calculations, stepNumber, calculationType, providerName);
+        if (calculation) {
+            // Evaluate the formula
+            const result = evaluateFormula(calculation.formula, srvModel);
+            
+            // Apply display format
+            const formattedResult = calculation.displayFormat.replace('{{result}}', result);
+            
+            // Replace placeholder with formatted result
+            processedText = processedText.replace(fullMatch, formattedResult);
+        }
+    }
+    
+    return processedText;
+}
+```
+
+DO NOT TRY TO RUN SUDO COMMANDS. ASK THE END USER TO PERFORM THEM FOR YOU!
+
+INTEGRATION POINTS:
+- Modify the existing checkout page rendering logic
+- Integrate with existing provider data fetching
+- Ensure calculations work with existing translation system
+- Maintain compatibility with existing step display logic
+
+TESTING SCENARIOS:
+1. Single provider with one calculation
+2. Multiple providers with different calculations
+3. Multiple providers with same calculation type but different formulas
+4. Missing calculation data (graceful fallback)
+5. Invalid formulas (error handling)
+6. All supported languages (EN, NO, SE, DA)
+
+This implementation should seamlessly integrate with the existing checkout page while adding dynamic calculation capabilities.

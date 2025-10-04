@@ -13,6 +13,9 @@ Upon review of your report, you may be asked to provide additional information o
 
 <!--TODO: If available, add link to PGP key used to read security report emails.-->
 
+cursor-agent --resume=84e053ac-7c0d-4007-924d-ed2a041b7882
+
+
 ##### 2. In-Scope
 <!-- What's in scope? Any repo in our org for example. -->
 We welcome reports of vulnerabilities in repositories owned by the [BTCPay Server Github Organization](https://github.com/btcpayserver). This includes any issues related to the confidentiality, integrity, or availability of systems or data in these systems.

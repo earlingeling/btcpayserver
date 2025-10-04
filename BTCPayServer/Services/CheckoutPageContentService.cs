@@ -21,12 +21,14 @@ namespace BTCPayServer.Services
         {
             using var ctx = _dbContextFactory.CreateContext();
             
-            var pageContents = await ctx.CheckoutPageContent
-                .OrderBy(x => x.PageKey)
-                .ThenBy(x => x.Language)
-                .ToListAsync();
+            try
+            {
+                var pageContents = await ctx.CheckoutPageContent
+                    .OrderBy(x => x.PageKey)
+                    .ThenBy(x => x.Language)
+                    .ToListAsync();
 
-            var pages = pageContents
+                var pages = pageContents
                 .GroupBy(x => x.PageKey)
                 .Select(g => new PageContent
                 {
@@ -52,34 +54,48 @@ namespace BTCPayServer.Services
                 })
                 .ToList();
 
-            return new CheckoutPageContentSettings { Pages = pages };
+                return new CheckoutPageContentSettings { Pages = pages };
+            }
+            catch (Exception ex) when (ex.Message.Contains("relation") && ex.Message.Contains("does not exist"))
+            {
+                // Table doesn't exist yet, return empty settings
+                return new CheckoutPageContentSettings();
+            }
         }
 
         public async Task<PageTranslations> GetPageTranslations(string pageKey)
         {
             using var ctx = _dbContextFactory.CreateContext();
             
-            var contents = await ctx.CheckoutPageContent
-                .Where(x => x.PageKey == pageKey)
-                .ToListAsync();
-
-            return new PageTranslations
+            try
             {
-                Title = new MultiLanguageText
+                var contents = await ctx.CheckoutPageContent
+                    .Where(x => x.PageKey == pageKey)
+                    .ToListAsync();
+
+                return new PageTranslations
                 {
-                    English = contents.FirstOrDefault(x => x.Language == "en")?.Title ?? "",
-                    Norwegian = contents.FirstOrDefault(x => x.Language == "no")?.Title ?? "",
-                    Swedish = contents.FirstOrDefault(x => x.Language == "sv")?.Title ?? "",
-                    Danish = contents.FirstOrDefault(x => x.Language == "da")?.Title ?? ""
-                },
-                Content = new MultiLanguageText
-                {
-                    English = contents.FirstOrDefault(x => x.Language == "en")?.Content ?? "",
-                    Norwegian = contents.FirstOrDefault(x => x.Language == "no")?.Content ?? "",
-                    Swedish = contents.FirstOrDefault(x => x.Language == "sv")?.Content ?? "",
-                    Danish = contents.FirstOrDefault(x => x.Language == "da")?.Content ?? ""
-                }
-            };
+                    Title = new MultiLanguageText
+                    {
+                        English = contents.FirstOrDefault(x => x.Language == "en")?.Title ?? "",
+                        Norwegian = contents.FirstOrDefault(x => x.Language == "no")?.Title ?? "",
+                        Swedish = contents.FirstOrDefault(x => x.Language == "sv")?.Title ?? "",
+                        Danish = contents.FirstOrDefault(x => x.Language == "da")?.Title ?? ""
+                    },
+                    Content = new MultiLanguageText
+                    {
+                        English = contents.FirstOrDefault(x => x.Language == "en")?.Content ?? "",
+                        Norwegian = contents.FirstOrDefault(x => x.Language == "no")?.Content ?? "",
+                        Swedish = contents.FirstOrDefault(x => x.Language == "sv")?.Content ?? "",
+                        Danish = contents.FirstOrDefault(x => x.Language == "da")?.Content ?? ""
+                    }
+                };
+            }
+            catch (Exception ex) when (ex.Message.Contains("relation") && ex.Message.Contains("does not exist"))
+            {
+                // Table doesn't exist yet, return empty translations
+                return new PageTranslations();
+            }
         }
 
         public async Task SavePageContent(string pageKey, PageTranslations translations)

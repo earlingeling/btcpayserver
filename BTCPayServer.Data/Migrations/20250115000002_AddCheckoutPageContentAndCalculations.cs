@@ -1,11 +1,14 @@
 using System;
+using BTCPayServer.Data;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace BTCPayServer.Data.Migrations
 {
-    /// <inheritdoc />
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20250115000002_AddCheckoutPageContentAndCalculations")]
     public partial class AddCheckoutPageContentAndCalculations : Migration
     {
         /// <inheritdoc />

@@ -8,7 +8,8 @@
     <div class="col-lg-12">
         <h3 class="mb-4">@ViewData["Title"]</h3>
         
-        <form method="post">
+        <form method="post" action="/server/checkout-providers/provider/@Model.ProviderName">
+            @Html.AntiForgeryToken()
             <div class="row">
                 <!-- Provider Basic Info -->
                 <div class="col-md-4">
@@ -19,8 +20,9 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <label asp-for="Provider.Name" class="form-label">Provider Name</label>
-                                <input asp-for="Provider.Name" class="form-control" readonly />
-                                <div class="form-text">Provider name cannot be changed</div>
+                                <input asp-for="Provider.Name" class="form-control" readonly="@(Model.ProviderName != "add" && !string.IsNullOrEmpty(Model.ProviderName))" />
+                                <span asp-validation-for="Provider.Name" class="text-danger"></span>
+                                <div class="form-text">@(Model.ProviderName == "add" ? "Enter a unique provider name" : "Provider name cannot be changed")</div>
                             </div>
                             
                             <div class="mb-3">
@@ -169,24 +171,45 @@
                                                     </button>
                                                 </div>
                                                 <div class="card-body">
+                                                    <input type="hidden" name="Provider.Translations.Steps[@i].StepNumber" value="@Model.Provider.Translations.Steps[i].StepNumber" />
                                                     <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <h6><i class="flag-icon flag-icon-gb me-2"></i>English</h6>
+                                                        <button type="button" class="btn btn-sm btn-outline-info insert-calculation-btn" data-textarea="Provider.Translations.Steps[@i].StepText.English">
+                                                            <i class="fas fa-calculator me-1"></i>Insert Calculation
+                                                        </button>
+                                                    </div>
+                                                    <textarea name="Provider.Translations.Steps[@i].StepText.English" class="form-control" rows="4">@Model.Provider.Translations.Steps[i].StepText.English</textarea>
+                                                </div>
                                                         <div class="col-md-6">
-                                                            <h6><i class="flag-icon flag-icon-gb me-2"></i>English</h6>
-                                                            <textarea name="Provider.Translations.Steps[@i].English" class="form-control" rows="4">@Model.Provider.Translations.Steps[i].English</textarea>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <h6><i class="flag-icon flag-icon-no me-2"></i>Norwegian</h6>
-                                                            <textarea name="Provider.Translations.Steps[@i].Norwegian" class="form-control" rows="4">@Model.Provider.Translations.Steps[i].Norwegian</textarea>
+                                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                <h6><i class="flag-icon flag-icon-no me-2"></i>Norwegian</h6>
+                                                                <button type="button" class="btn btn-sm btn-outline-info insert-calculation-btn" data-textarea="Provider.Translations.Steps[@i].StepText.Norwegian">
+                                                                    <i class="fas fa-calculator me-1"></i>Insert Calculation
+                                                                </button>
+                                                            </div>
+                                                            <textarea name="Provider.Translations.Steps[@i].StepText.Norwegian" class="form-control" rows="4">@Model.Provider.Translations.Steps[i].StepText.Norwegian</textarea>
                                                         </div>
                                                     </div>
                                                     <div class="row mt-2">
                                                         <div class="col-md-6">
-                                                            <h6><i class="flag-icon flag-icon-se me-2"></i>Swedish</h6>
-                                                            <textarea name="Provider.Translations.Steps[@i].Swedish" class="form-control" rows="4">@Model.Provider.Translations.Steps[i].Swedish</textarea>
+                                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                <h6><i class="flag-icon flag-icon-se me-2"></i>Swedish</h6>
+                                                                <button type="button" class="btn btn-sm btn-outline-info insert-calculation-btn" data-textarea="Provider.Translations.Steps[@i].StepText.Swedish">
+                                                                    <i class="fas fa-calculator me-1"></i>Insert Calculation
+                                                                </button>
+                                                            </div>
+                                                            <textarea name="Provider.Translations.Steps[@i].StepText.Swedish" class="form-control" rows="4">@Model.Provider.Translations.Steps[i].StepText.Swedish</textarea>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <h6><i class="flag-icon flag-icon-dk me-2"></i>Danish</h6>
-                                                            <textarea name="Provider.Translations.Steps[@i].Danish" class="form-control" rows="4">@Model.Provider.Translations.Steps[i].Danish</textarea>
+                                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                <h6><i class="flag-icon flag-icon-dk me-2"></i>Danish</h6>
+                                                                <button type="button" class="btn btn-sm btn-outline-info insert-calculation-btn" data-textarea="Provider.Translations.Steps[@i].StepText.Danish">
+                                                                    <i class="fas fa-calculator me-1"></i>Insert Calculation
+                                                                </button>
+                                                            </div>
+                                                            <textarea name="Provider.Translations.Steps[@i].StepText.Danish" class="form-control" rows="4">@Model.Provider.Translations.Steps[i].StepText.Danish</textarea>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -226,13 +249,50 @@
                         </div>
                     </div>
 
-                    <!-- Step Calculations -->
+                    <!-- Calculations -->
                     <div class="card mt-3">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">Step Calculations</h5>
+                            <h5 class="card-title mb-0">Calculations</h5>
                         </div>
                         <div class="card-body">
-                            <p class="text-muted mb-3">Configure dynamic calculations for provider steps</p>
+                            <p class="text-muted mb-3">Configure dynamic calculations that can be used in any step text</p>
+                            
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6><i class="fas fa-info-circle me-2"></i>Available srvModel Variables & Examples</h6>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <strong>Available variables:</strong><br>
+                                            • <code>srvModel.orderAmountFiat</code> - Order amount in fiat currency (e.g., "1,000.00 kr")<br>
+                                            • <code>srvModel.rate</code> - Bitcoin exchange rate (e.g., "45,000.00")<br>
+                                            • <code>srvModel.due</code> - Amount due in BTC (e.g., "0.02222222")<br>
+                                            • <code>srvModel.paid</code> - Amount paid in BTC (e.g., "0.01111111")<br>
+                                            • <code>srvModel.paymentMethodCurrency</code> - Currency code (e.g., "BTC")<br>
+                                            • <code>srvModel.address</code> - Bitcoin address for payment<br>
+                                            • <code>srvModel.feeRate</code> - Recommended fee rate<br>
+                                            • <code>srvModel.totalDue</code> - Total amount due
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Safello Examples:</strong><br>
+                                            <strong>Dynamic Amount:</strong><br>
+                                            <code>(parseFloat(srvModel.orderAmountFiat.replace(/[^0-9.]/g, '')) / 100 * 1.05) + (0.00025 * parseFloat(srvModel.rate.replace(/[^0-9.]/g, '')) / 100) + 20</code>
+                                            <br><br>
+                                            <strong>Amount Due:</strong><br>
+                                            <code>parseFloat(srvModel.due)</code>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Display Format:</strong><br>
+                                            <small class="text-muted">HTML template for how to display the calculated result. Use <code>{{result}}</code> as placeholder for the calculated value.</small>
+                                            <br><br>
+                                            <strong>Placeholder Format:</strong><br>
+                                            <code>{{calc_[stepNumber]_[type]_[providerName]}}</code>
+                                            <br><br>
+                                            <strong>Example Display Format:</strong><br>
+                                            <code><b>{{result}} kr</b></code>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             
                             <div id="calculations-container">
                                 @for (int i = 0; i < Model.Calculations.Steps.Count; i++)
@@ -245,14 +305,15 @@
                                             </button>
                                         </div>
                                         <div class="card-body">
+                                            <input type="hidden" name="Calculations.Steps[@i].StepNumber" value="@Model.Calculations.Steps[i].StepNumber" />
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="mb-3">
                                                         <label class="form-label">Calculation Type</label>
                                                         <select name="Calculations.Steps[@i].CalculationType" class="form-select">
-                                                            <option value="amount_due" @(Model.Calculations.Steps[i].CalculationType == "amount_due" ? "selected" : "")>Amount Due</option>
-                                                            <option value="dynamic_amount" @(Model.Calculations.Steps[i].CalculationType == "dynamic_amount" ? "selected" : "")>Dynamic Amount</option>
-                                                            <option value="custom" @(Model.Calculations.Steps[i].CalculationType == "custom" ? "selected" : "")>Custom Formula</option>
+                                                            <option value="amount_due" selected="@(Model.Calculations.Steps[i].CalculationType == "amount_due")">Amount Due</option>
+                                                            <option value="dynamic_amount" selected="@(Model.Calculations.Steps[i].CalculationType == "dynamic_amount")">Dynamic Amount</option>
+                                                            <option value="custom" selected="@(Model.Calculations.Steps[i].CalculationType == "custom")">Custom Formula</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -269,7 +330,7 @@
                                                 <label class="form-label">Formula</label>
                                                 <textarea name="Calculations.Steps[@i].CalculationFormula" class="form-control" rows="3" 
                                                           placeholder="JavaScript-like formula using srvModel properties">@Model.Calculations.Steps[i].CalculationFormula</textarea>
-                                                <div class="form-text">Use srvModel.orderAmountFiat, srvModel.rate, etc.</div>
+                                                <div class="form-text">Use the variables listed above in your formula.</div>
                                             </div>
                                         </div>
                                     </div>
@@ -306,6 +367,30 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Form Actions -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="fas fa-save me-2"></i>Save Provider
+                            </button>
+                            <a href="/server/checkout-content" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Content
+                            </a>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.ProviderName) && Model.ProviderName != "add")
+                        {
+                            <div>
+                                <button type="button" class="btn btn-outline-danger" onclick="deleteProvider('@Model.ProviderName')">
+                                    <i class="fas fa-trash me-2"></i>Delete Provider
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 </div>
@@ -325,24 +410,45 @@ function addStep() {
                 </button>
             </div>
             <div class="card-body">
+                <input type="hidden" name="Provider.Translations.Steps[${stepCounter-1}].StepNumber" value="${stepCounter}" />
                 <div class="row">
                     <div class="col-md-6">
-                        <h6><i class="flag-icon flag-icon-gb me-2"></i>English</h6>
-                        <textarea name="Provider.Translations.Steps[${stepCounter-1}].English" class="form-control" rows="4"></textarea>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6><i class="flag-icon flag-icon-gb me-2"></i>English</h6>
+                            <button type="button" class="btn btn-sm btn-outline-info insert-calculation-btn" data-textarea="Provider.Translations.Steps[${stepCounter-1}].StepText.English">
+                                <i class="fas fa-calculator me-1"></i>Insert Calculation
+                            </button>
+                        </div>
+                        <textarea name="Provider.Translations.Steps[${stepCounter-1}].StepText.English" class="form-control" rows="4"></textarea>
                     </div>
                     <div class="col-md-6">
-                        <h6><i class="flag-icon flag-icon-no me-2"></i>Norwegian</h6>
-                        <textarea name="Provider.Translations.Steps[${stepCounter-1}].Norwegian" class="form-control" rows="4"></textarea>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6><i class="flag-icon flag-icon-no me-2"></i>Norwegian</h6>
+                            <button type="button" class="btn btn-sm btn-outline-info insert-calculation-btn" data-textarea="Provider.Translations.Steps[${stepCounter-1}].StepText.Norwegian">
+                                <i class="fas fa-calculator me-1"></i>Insert Calculation
+                            </button>
+                        </div>
+                        <textarea name="Provider.Translations.Steps[${stepCounter-1}].StepText.Norwegian" class="form-control" rows="4"></textarea>
                     </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-6">
-                        <h6><i class="flag-icon flag-icon-se me-2"></i>Swedish</h6>
-                        <textarea name="Provider.Translations.Steps[${stepCounter-1}].Swedish" class="form-control" rows="4"></textarea>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6><i class="flag-icon flag-icon-se me-2"></i>Swedish</h6>
+                            <button type="button" class="btn btn-sm btn-outline-info insert-calculation-btn" data-textarea="Provider.Translations.Steps[${stepCounter-1}].StepText.Swedish">
+                                <i class="fas fa-calculator me-1"></i>Insert Calculation
+                            </button>
+                        </div>
+                        <textarea name="Provider.Translations.Steps[${stepCounter-1}].StepText.Swedish" class="form-control" rows="4"></textarea>
                     </div>
                     <div class="col-md-6">
-                        <h6><i class="flag-icon flag-icon-dk me-2"></i>Danish</h6>
-                        <textarea name="Provider.Translations.Steps[${stepCounter-1}].Danish" class="form-control" rows="4"></textarea>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6><i class="flag-icon flag-icon-dk me-2"></i>Danish</h6>
+                            <button type="button" class="btn btn-sm btn-outline-info insert-calculation-btn" data-textarea="Provider.Translations.Steps[${stepCounter-1}].StepText.Danish">
+                                <i class="fas fa-calculator me-1"></i>Insert Calculation
+                            </button>
+                        </div>
+                        <textarea name="Provider.Translations.Steps[${stepCounter-1}].StepText.Danish" class="form-control" rows="4"></textarea>
                     </div>
                 </div>
             </div>
@@ -370,11 +476,12 @@ function addCalculation() {
                 </button>
             </div>
             <div class="card-body">
+                <input type="hidden" name="Calculations.Steps[${calculationCounter-1}].StepNumber" value="${calculationCounter}" />
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label">Calculation Type</label>
-                            <select name="Calculations.Steps[${calculationCounter-1}].CalculationType" class="form-select">
+                            <select name="Calculations.Steps[${calculationCounter-1}].CalculationType" class="form-select" onchange="updateCalculationFormula(this)">
                                 <option value="amount_due">Amount Due</option>
                                 <option value="dynamic_amount">Dynamic Amount</option>
                                 <option value="custom">Custom Formula</option>
@@ -393,7 +500,7 @@ function addCalculation() {
                     <label class="form-label">Formula</label>
                     <textarea name="Calculations.Steps[${calculationCounter-1}].CalculationFormula" class="form-control" rows="3" 
                               placeholder="JavaScript-like formula using srvModel properties"></textarea>
-                    <div class="form-text">Use srvModel.orderAmountFiat, srvModel.rate, etc.</div>
+                    <div class="form-text">Use the variables listed above in your formula.</div>
                 </div>
             </div>
         </div>
@@ -415,5 +522,222 @@ function updateStepsTab() {
 function previewProvider() {
     // Simple preview - could be enhanced
     alert('Provider preview functionality would be implemented here');
+}
+
+function deleteProvider(providerName) {
+    if (confirm(`Are you sure you want to delete the provider "${providerName}"? This action cannot be undone.`)) {
+        // Create a form to submit the delete request
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/server/checkout-providers/provider/' + providerName + '/delete';
+        
+        // Add anti-forgery token
+        const token = document.querySelector('input[name="__RequestVerificationToken"]');
+        if (token) {
+            const tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = '__RequestVerificationToken';
+            tokenInput.value = token.value;
+            form.appendChild(tokenInput);
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function updateCalculationFormula(selectElement) {
+    const calculationType = selectElement.value;
+    const cardBody = selectElement.closest('.card-body');
+    const formulaTextarea = cardBody.querySelector('textarea[name*="CalculationFormula"]');
+    const displayFormatInput = cardBody.querySelector('input[name*="DisplayFormat"]');
+    
+    if (!formulaTextarea) return;
+    
+    // Set default formulas based on calculation type
+    const formulas = {
+        'amount_due': 'srvModel.orderAmountFiat',
+        'dynamic_amount': '(parseFloat(srvModel.orderAmountFiat.replace(/[^0-9.]/g, \'\')) / 100 * 1.05) + (0.00025 * parseFloat(srvModel.rate.replace(/[^0-9.]/g, \'\')) / 100) + 20',
+        'custom': 'srvModel.orderAmountFiat'
+    };
+    
+    const displayFormats = {
+        'amount_due': '{{$t(\'pmnt_due_amount\')}}: <b>{{result}} kr</b>',
+        'dynamic_amount': '{{$t(\'pmnt_dynamic_amount\')}}: <b>{{result}} kr</b>',
+        'custom': 'Amount: <b>{{result}}</b>'
+    };
+    
+    if (formulas[calculationType]) {
+        formulaTextarea.value = formulas[calculationType];
+    }
+    
+    if (displayFormats[calculationType] && displayFormatInput) {
+        displayFormatInput.value = displayFormats[calculationType];
+    }
+}
+
+// Initialize calculation formulas on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-fill existing calculation forms
+    const calculationSelects = document.querySelectorAll('select[name*="CalculationType"]');
+    calculationSelects.forEach(select => {
+        if (select.value && !select.closest('.card-body').querySelector('textarea[name*="CalculationFormula"]').value) {
+            updateCalculationFormula(select);
+        }
+    });
+    
+    // Add event listeners for Insert Calculation buttons
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('insert-calculation-btn') || e.target.closest('.insert-calculation-btn')) {
+            const button = e.target.classList.contains('insert-calculation-btn') ? e.target : e.target.closest('.insert-calculation-btn');
+            const textareaName = button.getAttribute('data-textarea');
+            showCalculationModal(textareaName);
+        }
+    });
+});
+
+let currentTextarea = null;
+
+function showCalculationModal(textareaName) {
+    currentTextarea = document.querySelector(`textarea[name="${textareaName}"]`);
+    if (!currentTextarea) {
+        console.error('Textarea not found:', textareaName);
+        return;
+    }
+    
+    // Get available calculations
+    const calculations = getAvailableCalculations();
+    
+    if (calculations.length === 0) {
+        alert('No calculations available. Please add calculations first in the Step Calculations section.');
+        return;
+    }
+    
+    // Create modal HTML
+    const modalHtml = `
+        <div class="modal fade" id="calculationModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Insert Calculation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Select a calculation to insert into the step text:</p>
+                        <div class="list-group">
+                            ${calculations.map(calc => `
+                                <button type="button" class="list-group-item list-group-item-action calculation-option-btn" data-placeholder="${calc.placeholder}">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <strong>Step ${calc.stepNumber} - ${calc.type}</strong><br>
+                                            <small class="text-muted">${calc.description}</small>
+                                        </div>
+                                        <div>
+                                            <code>${calc.placeholder}</code>
+                                        </div>
+                                    </div>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('calculationModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Show modal using jQuery or vanilla JS
+    const modalElement = document.getElementById('calculationModal');
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+    
+    // Add event listeners for calculation option buttons
+    modalElement.addEventListener('click', function(e) {
+        if (e.target.classList.contains('calculation-option-btn') || e.target.closest('.calculation-option-btn')) {
+            const button = e.target.classList.contains('calculation-option-btn') ? e.target : e.target.closest('.calculation-option-btn');
+            const placeholder = button.getAttribute('data-placeholder');
+            insertCalculation(placeholder);
+        }
+    });
+}
+
+function getAvailableCalculations() {
+    const calculations = [];
+    const calculationItems = document.querySelectorAll('.calculation-item');
+    const providerNameInput = document.querySelector('input[name="Provider.Name"]');
+    const providerName = providerNameInput?.value || 'NewProvider';
+    
+    calculationItems.forEach(item => {
+        const stepNumber = item.querySelector('input[name*="StepNumber"]')?.value;
+        const calculationType = item.querySelector('select[name*="CalculationType"]')?.value;
+        const formula = item.querySelector('textarea[name*="CalculationFormula"]')?.value;
+        const displayFormat = item.querySelector('input[name*="DisplayFormat"]')?.value;
+        
+        if (stepNumber && calculationType && formula) {
+            calculations.push({
+                stepNumber: stepNumber,
+                type: calculationType,
+                formula: formula,
+                displayFormat: displayFormat || '{{result}}',
+                placeholder: `{{calc_${stepNumber}_${calculationType}_${providerName}}}`,
+                description: getCalculationDescription(calculationType, formula)
+            });
+        }
+    });
+    
+    return calculations;
+}
+
+function getCalculationDescription(type, formula) {
+    switch (type) {
+        case 'amount_due':
+            return 'Shows the amount due from the invoice';
+        case 'dynamic_amount':
+            return 'Dynamic amount calculation';
+        case 'custom':
+            return `Custom formula: ${formula.substring(0, 50)}${formula.length > 50 ? '...' : ''}`;
+        default:
+            return 'Custom calculation';
+    }
+}
+
+function insertCalculation(placeholder) {
+    if (currentTextarea) {
+        const currentValue = currentTextarea.value;
+        const cursorPos = currentTextarea.selectionStart || currentTextarea.value.length;
+        const newValue = currentValue.substring(0, cursorPos) + placeholder + currentValue.substring(cursorPos);
+        currentTextarea.value = newValue;
+        
+        // Set cursor position after the inserted text
+        const newCursorPos = cursorPos + placeholder.length;
+        currentTextarea.selectionStart = currentTextarea.selectionEnd = newCursorPos;
+        currentTextarea.focus();
+        
+        // Trigger change event to ensure form validation works
+        currentTextarea.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    
+    // Close modal
+    const modalElement = document.getElementById('calculationModal');
+    if (modalElement) {
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        if (modal) {
+            modal.hide();
+        } else {
+            // Fallback: remove modal manually
+            modalElement.remove();
+        }
+    }
 }
 </script>

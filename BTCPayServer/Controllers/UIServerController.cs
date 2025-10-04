@@ -1377,5 +1377,6 @@ namespace BTCPayServer.Controllers
 
             return View("Logs", vm);
         }
+
     }
 }

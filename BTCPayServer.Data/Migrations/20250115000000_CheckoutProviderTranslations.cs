@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BTCPayServer.Migrations
+namespace BTCPayServer.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250115000000_CheckoutProviderTranslations")]
